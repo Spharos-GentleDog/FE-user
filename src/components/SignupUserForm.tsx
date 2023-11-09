@@ -63,14 +63,14 @@ function SignupUserForm(
             return;
         }
 
-        const response = await fetch(`${process.env.BASE_API_URL}/api/v1/user/signup/email-auth?email=${signup.email}`, {
-            method: 'POST',
+        const response = await fetch(`${process.env.BASE_API_URL}/api/v1/user/signup/email-check?userEmail=${signup.email}`, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
         })
         const data = await response.json();
-
+        console.log(data);
         if (data.code === 200) {
             setAuthEmail(true);
 
