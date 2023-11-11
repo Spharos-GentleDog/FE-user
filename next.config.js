@@ -37,7 +37,7 @@ const nextConfig = {
     NAVER_CLIENT_SECRET: process.env.NAVER_CLIENT_SECRET,
   },
   images: {
-    domains: ['https://gentledog-bucket.s3.ap-northeast-2.amazonaws.com']
+    domains: ['https://gentledog-bucket.s3.ap-northeast-2.amazonaws.com', 'loremflickr.com']
   }
 };
 

@@ -72,36 +72,52 @@ function SignupUserForm(
         const data = await response.json();
         console.log(data);
         if (data.code === 200) {
-            setAuthEmail(true);
-
-            if (authEmailClick) {
-                const response = await fetch(`${process.env.BASE_API_URL}/api/v1/user/signup/email-verify`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: signup.email,
-                        authEmail: signup.authEmail
-                    })
+            const response = await fetch(`${process.env.BASE_API_URL}/api/v1/user/signup/email-auth`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userEmail: signup.email,
                 })
+            })
 
-                const data = await response.json();
+            const data = await response.json();
 
-                if (data.code === 200) {
-                    setAuthEmail(false);
-                    setAuthEmailConfirm(true);
-                } else {
-                    setSignupError({
-                        ...signupError,
-                        authNumber: data.message
-                    })
-                }
+            if (data.code === 200) {
+                setAuthEmail(true);
             }
         } else {
             setSignupError({
                 ...signupError,
-                email: '이미 존재하는 이메일입니다.'
+                email: data.message
+            })
+        }
+    }
+
+    // 인증 코드 확인
+    const handleAuthEmailCheck = async () => {
+        const response = await fetch(`${process.env.BASE_API_URL}/api/v1/user/signup/email-verify`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                userEemail: signup.email,
+                code: signup.authEmail
+            })
+        })
+
+        const data = await response.json();
+        console.log(data);
+
+        if (data.code === 200) {
+            setAuthEmail(false);
+            setAuthEmailConfirm(true);
+        } else {
+            setSignupError({
+                ...signupError,
+                authNumber: data.message
             })
         }
     }
@@ -165,7 +181,7 @@ function SignupUserForm(
                             <Input
                                 className='mt-1 border-[#000000]'
                                 type='text'
-                                placeholder='인증번호 6자리'
+                                placeholder='인증코드 6자리'
                                 id='authEmail'
                                 name='authEmail'
                                 onChange={handleChange}
@@ -175,7 +191,8 @@ function SignupUserForm(
                                     fontSize='text-[10px]'
                                     sizeClass='py-2 px-3'
                                     translate='top-[5px]'
-                                    onClick={() => setAuthEmailClick(true)}
+                                    // onClick={() => setAuthEmailClick(true)}
+                                    onClick={handleAuthEmailCheck}
                                 >
                                     인증확인
                                 </ButtonSecondary>

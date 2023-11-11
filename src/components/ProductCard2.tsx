@@ -17,10 +17,11 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import NcImage from '@/shared/NcImage/NcImage';
+import { ProductList } from '@/types/product/productList';
 
 export interface ProductCardProps {
   className?: string;
-  data?: Product;
+  data?: ProductList;
   isLiked?: boolean;
 }
 
@@ -30,22 +31,28 @@ export interface ProductCardProps {
  */
 const ProductCard: FC<ProductCardProps> = ({
   className = '',
-  data = PRODUCTS[0],
   isLiked,
+  data,
 }) => {
   const {
-    name,
-    price,
-    description,
-    sizes,
+    productId,
+    productName,
+    productPrice,
+    productImage,
+    brandName,
+    discountRate,
+    discountType,
+    productCode,
+    productReviewCount,
+    productTotalRating,
+    categoryName,
+    sizeName,
+    colorName,
+    productStock,
     variants,
     variantType,
     status,
-    image,
-    rating,
-    id,
-    numberOfReviews,
-  } = data;
+  } = data || {};
 
   const [variantActive, setVariantActive] = useState(0);
   const [showModalQuickView, setShowModalQuickView] = useState(false);
@@ -78,7 +85,7 @@ const ProductCard: FC<ProductCardProps> = ({
       ),
       {
         position: 'top-right',
-        id: String(id) || 'product-detail',
+        id: String(data?.productCode) || 'product-detail',
         duration: 3000,
       }
     );
@@ -124,8 +131,8 @@ const ProductCard: FC<ProductCardProps> = ({
           <Image
             width={80}
             height={96}
-            src={image}
-            alt={name}
+            src={productImage || ""}
+            alt={productName || ""}
             className="absolute object-cover object-center"
           />
         </div>
@@ -134,16 +141,16 @@ const ProductCard: FC<ProductCardProps> = ({
           <div>
             <div className="flex justify-between ">
               <div>
-                <h3 className="text-base font-medium ">{name}</h3>
+                <h3 className="text-base font-medium ">{productName}</h3>
                 <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   <span>
-                    {variants ? variants[variantActive].name : `Natural`}
+                    {/* {variants ? variants[variantActive].name : `Natural`} */}
                   </span>
                   <span className="mx-2 border-s border-slate-200 dark:border-slate-700 h-4"></span>
                   <span>{size || 'XL'}</span>
                 </p>
               </div>
-              <Prices price={price} className="mt-0.5" />
+              <Prices price={productPrice} className="mt-0.5" />
             </div>
           </div>
           <div className="flex flex-1 items-end justify-between text-sm">
@@ -212,8 +219,8 @@ const ProductCard: FC<ProductCardProps> = ({
               key={index}
               onClick={() => setVariantActive(index)}
               className={`relative w-6 h-6 rounded-full overflow-hidden z-10 border cursor-pointer ${variantActive === index
-                  ? getBorderClass(variant.color)
-                  : 'border-transparent'
+                ? getBorderClass(variant.color)
+                : 'border-transparent'
                 }`}
               title={variant.name}
             >
@@ -233,8 +240,8 @@ const ProductCard: FC<ProductCardProps> = ({
             key={index}
             onClick={() => setVariantActive(index)}
             className={`relative w-11 h-6 rounded-full overflow-hidden z-10 border cursor-pointer ${variantActive === index
-                ? 'border-black dark:border-slate-300'
-                : 'border-transparent'
+              ? 'border-black dark:border-slate-300'
+              : 'border-transparent'
               }`}
             title={variant.name}
           >
@@ -282,25 +289,29 @@ const ProductCard: FC<ProductCardProps> = ({
    * @returns
    */
   const renderSizeList = () => {
-    if (!sizes || !sizes.length) {
+    if (!sizeName || !sizeName.length) {
       return null;
     }
 
-    return (
-      <div className="absolute bottom-0 inset-x-1 space-x-1.5 rtl:space-x-reverse flex justify-center opacity-0 invisible group-hover:bottom-4 group-hover:opacity-100 group-hover:visible transition-all">
-        {sizes.map((size, index) => {
-          return (
-            <div
-              key={index}
-              className="nc-shadow-lg w-10 h-10 rounded-xl bg-white hover:bg-slate-900 hover:text-white transition-colors cursor-pointer flex items-center justify-center uppercase font-semibold tracking-tight text-sm text-slate-900"
-              onClick={() => notifyAddTocart({ size })}
-            >
-              {size}
-            </div>
-          );
-        })}
-      </div>
-    );
+    // return (
+    //   <div className="absolute bottom-0 inset-x-1 space-x-1.5 rtl:space-x-reverse flex justify-center opacity-0 invisible group-hover:bottom-4 group-hover:opacity-100 group-hover:visible transition-all">
+    //     {
+    //       sizeName ? sizeName.map((size, index) => {
+    //         return (
+    //           <div
+    //             key={index}
+    //             className="nc-shadow-lg w-10 h-10 rounded-xl bg-white hover:bg-slate-900 hover:text-white transition-colors cursor-pointer flex items-center justify-center uppercase font-semibold tracking-tight text-sm text-slate-900"
+    //             onClick={() => notifyAddTocart({ size })}
+    //           >
+    //             {size}
+    //           </div>
+    //         );
+    //       })
+    //         :
+    //         ""
+    //     }
+    //   </div>
+    // );
   };
 
   return (
@@ -308,13 +319,13 @@ const ProductCard: FC<ProductCardProps> = ({
       <div
         className={`nc-ProductCard relative flex flex-col bg-transparent ${className}`}
       >
-        <Link href={`/product/${id}`} className="absolute inset-0"></Link>
+        <Link href={`/product/${productId}`} className="absolute inset-0"></Link>
 
         <div className="relative flex-shrink-0 bg-slate-50 dark:bg-slate-300 rounded-3xl overflow-hidden z-1 group">
-          <Link href={`/product/${id}`} className="block">
+          <Link href={`/product/${productId}`} className="block">
             <NcImage
               containerClassName="flex aspect-w-11 aspect-h-12 w-full h-0"
-              src={image}
+              src={productImage || ''}
               className="object-cover w-full h-full drop-shadow-xl"
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 40vw"
@@ -336,7 +347,7 @@ const ProductCard: FC<ProductCardProps> = ({
             </ButtonSecondary>
           </div>
           {/* 사이즈가 존재하면 사이즈가 뜨고 아니면 addCart 버튼이 뜸 */}
-          {sizes ? renderSizeList() : renderGroupButtons()}
+          {sizeName ? renderSizeList() : renderGroupButtons()}
         </div>
 
         {/* 이름과 설명 */}
@@ -344,19 +355,19 @@ const ProductCard: FC<ProductCardProps> = ({
           {renderVariants()}
           <div>
             <h2 className="nc-ProductCard__title text-base font-semibold transition-colors">
-              {name}
+              {productName}
             </h2>
             <p className={`text-sm text-slate-500 dark:text-slate-400 mt-1 `}>
-              {description}
+              {brandName}
             </p>
           </div>
 
           <div className="flex justify-between items-end ">
-            <Prices price={price} />
+            <Prices price={productPrice} />
             <div className="flex items-center mb-0.5">
               <StarIcon className="w-5 h-5 pb-[1px] text-amber-400" />
               <span className="text-sm ms-1 text-slate-500 dark:text-slate-400">
-                {rating || ''} ({numberOfReviews || 0} 후기)
+                {productTotalRating || ''} ({productReviewCount || 0} 후기)
               </span>
             </div>
           </div>
