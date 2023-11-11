@@ -25,11 +25,11 @@ function PageHome() {
       {/* make slider */}
 
       <div className="container relative space-y-24 my-24 lg:space-y-32 lg:my-32">
-        <SectionSliderProductCard
+        {/* <SectionSliderProductCard
           heading='신제품'
-        />
+        /> */}
 
-        {/* <SectionSliderProductCard2 heading='신제품' /> */}
+        <SectionSliderProductCard2 heading='신제품' />
 
         <SectionSliderProductCard
           heading="베스트 셀러"
