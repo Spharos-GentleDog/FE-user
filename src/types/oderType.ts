@@ -1,3 +1,4 @@
+// 주문 내역에서 브랜드와 상품의 타입
 export interface OrderBrandType {
   vendorId: number;
   brandName: string;
@@ -9,6 +10,7 @@ export interface OrderBrandType {
   procutsCount: number;
 }
 
+// 상세 주문 내역에서 모든 상품의 타입
 export interface OrderBrandProductsType{
   productId: number;
   imgUrl: string;
@@ -21,6 +23,7 @@ export interface OrderBrandProductsType{
   discountType: number;
 }
 
+// 상세 주문 내역에서 브랜드의 타입
 export interface OrderBrandDetailType {
   vendorId: number;
   brandName: string;
@@ -31,12 +34,14 @@ export interface OrderBrandDetailType {
   totalFee: number;
 }
 
+// 주문 내역의 타입
 export interface OrderListType {
   ordersId: number;
   createdAt: Date;
   brandProduct:OrderBrandType[]
 }
 
+// 상세 주문 내역의 타입
 export interface OrderDetailType {
   ordersId: number;
   createdAt: Date;

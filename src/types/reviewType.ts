@@ -1,3 +1,4 @@
+// 후기 타입
 export interface ReviewType {
   reviewId: number;
   productId: number;
@@ -10,6 +11,7 @@ export interface ReviewType {
   content: string;
 }
 
+// 후기 댓글 타입
 export interface ReviewCommentType {
   reviewCommentId: number;
   reviewId: number;
@@ -18,6 +20,7 @@ export interface ReviewCommentType {
   content: string;
 }
 
+// 후기 수
 export interface ReviewCountType {
   reviewCount: number;
 }

@@ -1,9 +1,11 @@
+// 상품 옵션 타입
 export interface ProductOptionType {
   productDetailId: number;
   color: string;
   size: string;
 }
 
+// 상품 세부 정보 타입
 export interface ProductDetailType {
   productId: number;
   productName: string;
@@ -19,6 +21,7 @@ export interface ProductDetailType {
   productStock: number;
 }
 
+// 장바구니 상품 정보 타입
 export interface CartProductType {
   productId: number;
   productName: string;

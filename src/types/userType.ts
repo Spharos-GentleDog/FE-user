@@ -1,3 +1,4 @@
+// 기본 주소
 export interface DefaultAddressType {
   addressId: number;
   userAddress: string;
@@ -8,6 +9,7 @@ export interface DefaultAddressType {
   recipientPhoneNumber: string;
 }
 
+// 주소 타입
 export interface AddressType {
   addressId: number;
   userAddress: string;
@@ -19,6 +21,7 @@ export interface AddressType {
   isDefault: boolean;
 }
 
+// 강아지 정보 타입
 export interface DogReviewType {
   dogId: number;
   dogName: string;
