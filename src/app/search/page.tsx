@@ -9,7 +9,7 @@ import ButtonCircle from "@/shared/Button/ButtonCircle";
 import ProductCard from "@/components/ProductCard";
 import { PRODUCTS } from "@/data/data";
 
-const PageSearch = ({}) => {
+const PageSearch = ({ }) => {
   return (
     <div className={`nc-PageSearch`} data-nc-id="PageSearch">
       <div
@@ -73,9 +73,9 @@ const PageSearch = ({}) => {
 
           {/* LOOP ITEMS */}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-10 mt-8 lg:mt-10">
-            {PRODUCTS.map((item, index) => (
+            {/* {PRODUCTS.map((item, index) => (
               <ProductCard data={item} key={index} />
-            ))}
+            ))} */}
           </div>
 
           {/* PAGINATION */}
