@@ -31,7 +31,7 @@ export default function RootLayout({
   params: any;
 }) {
   return (
-    <html lang="en" dir="" className={nanumGothic.className}>
+    <html lang="ko-kr" dir="" className={nanumGothic.className}>
       <body className=" bg-white text-base dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200">
         <AuthProvider>
           <SiteHeader />

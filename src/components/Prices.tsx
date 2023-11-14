@@ -19,7 +19,7 @@ const Prices: FC<PricesProps> = ({
   contentClass = "py-1 px-2 md:py-1.5 md:px-2.5 text-sm font-medium",
 }) => {
 
-  const formattedPrice = price?.toLocaleString('en-US');
+  const formattedPrice = price?.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' });
   return (
     <div className={`${className}`}>
       <div

@@ -6,8 +6,30 @@ import ButtonPrimary from '@/shared/Button/ButtonPrimary';
 import Image from 'next/image';
 import Link from 'next/link';
 import Icon from '@/components/Icon';
+import{CartProductType} from '@/types/productType';
 
-const CartPage = () => {
+/**
+ * 장바구니 데이터를 패칭합니다.
+ * @returns 장바구니 데이터.json
+ */
+export async function getData(){
+  const res = await fetch(
+    'https://6535d1a2c620ba9358ecaf38.mockapi.io/CartProductType',
+      { cache: 'no-cache'}
+    );
+  if (!res.ok) throw new Error(res.statusText);
+  return res.json();
+
+  };
+
+
+export default async function CartPage () {
+  const cartProducts:CartProductType[] = await getData();
+  console.log(cartProducts);
+  const totalPrice = cartProducts.reduce((sum, product) => sum + product.price, 0);
+  const totalPriceString = totalPrice.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' });
+
+
   /**
    * 재고 현황 아이콘 랜더링
    */
@@ -35,19 +57,19 @@ const CartPage = () => {
   /**
    * 제품 랜더링
    */
-  const renderProduct = (item: Product, index: number) => {
-    const { image, price, name } = item;
+  const renderProduct = (item:CartProductType) => {
+    const { productId, productName, price, imgUrl, brandName, color, size, count, isChecked, productStock, discount, discountType } = item;
 
     return (
       <div
-        key={index}
+        key={productId}
         className="relative flex py-8 sm:py-10 xl:py-12 first:pt-0 last:pb-0"
       >
         <div className="relative h-36 w-24 sm:w-32 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
           <Image
             fill
-            src={image}
-            alt={name}
+            src={imgUrl}
+            alt={productName}
             sizes="300px"
             className="h-full w-full object-contain object-center"
           />
@@ -59,18 +81,18 @@ const CartPage = () => {
             <div className="flex justify-between ">
               <div className="flex-[1.5] ">
                 <h3 className="text-base font-semibold">
-                  <Link href="/product-detail">{name}</Link>
+                  <Link href={`/product/${productId}`}>{productName}</Link>
                 </h3>
                 <div className="mt-1.5 sm:mt-2.5 flex text-sm text-slate-600 dark:text-slate-300">
                   <div className="flex items-center space-x-1.5">
-                    <Icon type='color'/>
+                    <Icon type="color" />
 
-                    <span>{`Black`}</span>
+                    <span>{color}</span>
                   </div>
                   <span className="mx-4 border-l border-slate-200 dark:border-slate-700 "></span>
                   <div className="flex items-center space-x-1.5">
-                    <Icon type='size'/>
-                    <span>{`2XL`}</span>
+                    <Icon type="size" />
+                    <span>{size}</span>
                   </div>
                 </div>
 
@@ -106,9 +128,9 @@ const CartPage = () => {
           </div>
 
           <div className="flex mt-auto pt-4 items-end justify-between text-sm">
-            {Math.random() > 0.6
-              ? renderStatusSoldout()
-              : renderStatusInstock()}
+            {productStock > 0
+              ? renderStatusInstock()
+              : renderStatusSoldout()}
 
             <a
               href="##"
@@ -149,13 +171,7 @@ const CartPage = () => {
         {/* todo: 상품 선택 체크박스, 브랜드 별로 체크박스, 삭제버튼 추가 */}
         <div className="flex flex-col lg:flex-row">
           <div className="w-full lg:w-[60%] xl:w-[55%] divide-y divide-slate-200 dark:divide-slate-700 ">
-            {[
-              PRODUCTS[0],
-              PRODUCTS[1],
-              PRODUCTS[2],
-              PRODUCTS[3],
-              PRODUCTS[4],
-            ].map(renderProduct)}
+            {cartProducts.map(renderProduct)}
           </div>
           <div className="border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-700 my-10 lg:my-0 lg:mx-10 xl:mx-16 2xl:mx-20 flex-shrink-0"></div>
           <div className="flex-1">
@@ -166,7 +182,7 @@ const CartPage = () => {
                 <div className="flex justify-between pb-4">
                   <span>상품 가격</span>
                   <span className="font-semibold text-slate-900 dark:text-slate-200">
-                    224,900
+                    {totalPriceString}
                   </span>
                 </div>
                 <div className="flex justify-between py-4">
@@ -191,7 +207,7 @@ const CartPage = () => {
               </ButtonPrimary>
               <div className="mt-5 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-center">
                 <p className="block relative pl-5">
-                  <Icon type='exclamation'/>
+                  <Icon type="exclamation" />
                   Learn more{` `}
                   <a
                     target="_blank"
@@ -222,5 +238,3 @@ const CartPage = () => {
     </div>
   );
 };
-
-export default CartPage;
