@@ -56,7 +56,7 @@ const SectionSliderProductCard: FC<SectionSliderProductCardProps> = ({
         }
       } else if (category === "best") {
         try {
-          const res = await fetch("https://653230c34d4c2e3f333dbc82.mockapi.io/products");
+          const res = await fetch("https://653230c34d4c2e3f333dbc82.mockapi.io/product");
           const data = await res.json();
           setProductData(data);
         } catch (error) {

@@ -33,12 +33,9 @@ export interface ProductList {
     discountType: number;
     productCode: string;
     categoryName: string;
-    variants?: ProductVariant[];
-    variantType?: "color";
     color?: colorList[];
     sizeName?: string[];
     allOfSizes?: string[];
-    // status?: "신제품" | "리미티드 에디션" | "품절" | "50% 할인";
     productReviewCount: number; // 리뷰 개수
     productTotalRating: number;
     productStock: number;   // 품절 여부를 판단하기 위한 재고 수량
