@@ -3,24 +3,32 @@ const nextConfig = {
   experimental: {
     appDir: true,
     typedRoutes: true,
+    reactRoot: true,
+    reactMode: 'concurrent',
   },
   images: {
+    domains: [
+      'https://gentledog-bucket.s3.ap-northeast-2.amazonaws.com',
+      'loremflickr.com',
+      'images.pexels.com',
+      'images.unsplash.com',
+    ],
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "images.pexels.com",
-        port: "",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-        port: "",
-        pathname: "/**",
+        protocol: 'https',
+        hostname: 'images.pexels.com',
+        port: '',
+        pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'gentledog-bucket.s3.ap-northeast-2.amazonaws.com'
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'gentledog-bucket.s3.ap-northeast-2.amazonaws.com',
       },
     ],
   },
@@ -36,9 +44,6 @@ const nextConfig = {
     NAVER_CLIENT_ID: process.env.NAVER_CLIENT_ID,
     NAVER_CLIENT_SECRET: process.env.NAVER_CLIENT_SECRET,
   },
-  images: {
-    domains: ['https://gentledog-bucket.s3.ap-northeast-2.amazonaws.com', 'loremflickr.com']
-  }
 };
 
 module.exports = nextConfig;
