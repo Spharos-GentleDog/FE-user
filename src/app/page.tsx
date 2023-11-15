@@ -16,18 +16,30 @@ function PageHome() {
       <div className="container relative space-y-24 my-24 lg:space-y-32 lg:my-32">
         <div className="relative py-24 lg:py-32">
           <BackgroundSection />
-          <SectionGridMoreExplore boxCard='box4' />
+
+          <SectionGridMoreExplore />
         </div>
+
+        <SectionSliderProductCard
+          category='new'
+          heading='신제품'
+        />
+
+        <SectionSliderProductCard
+          category='best'
+          heading="베스트 셀러"
+        />
 
         <SectionGridFeatureItems />
 
-        <div className="mt-24 lg:mt-32">
-          <DiscoverMoreSlider />
-        </div>
-
-        {/* 챗봇 컴포넌트 추가 */}
-        <Chatbot />
       </div>
+      <div className="mt-24 lg:mt-32">
+        <DiscoverMoreSlider />
+      </div>
+      
+      {/* 챗봇 컴포넌트 추가 */}
+        <Chatbot />
+      
     </div>
   );
 }

@@ -36,7 +36,7 @@ function PageHome2() {
         {/* SECTION */}
         <div className="relative py-24 lg:py-32">
           <BackgroundSection />
-          <SectionGridMoreExplore data={DEMO_MORE_EXPLORE_DATA_2} />
+          {/* <SectionGridMoreExplore data={DEMO_MORE_EXPLORE_DATA_2} /> */}
         </div>
 
         {/* SECTION */}

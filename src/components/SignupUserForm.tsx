@@ -71,7 +71,7 @@ function SignupUserForm(
         })
         const data = await response.json();
         console.log(data);
-        if (data.code === 200) {
+        if (!data.result) {
             const response = await fetch(`${process.env.BASE_API_URL}/api/v1/user/signup/email-auth`, {
                 method: 'POST',
                 headers: {
@@ -90,7 +90,7 @@ function SignupUserForm(
         } else {
             setSignupError({
                 ...signupError,
-                email: data.message
+                email: "이미 가입된 이메일 입니다!"
             })
         }
     }
@@ -98,12 +98,12 @@ function SignupUserForm(
     // 인증 코드 확인
     const handleAuthEmailCheck = async () => {
         const response = await fetch(`${process.env.BASE_API_URL}/api/v1/user/signup/email-verify`, {
-            method: 'GET',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                userEemail: signup.email,
+                userEmail: signup.email,
                 code: signup.authEmail
             })
         })

@@ -13,6 +13,7 @@ import { signOut, useSession } from "next-auth/react";
 export default function AvatarDropdown() {
 
   const session = useSession();
+
   return (
     <div className="AvatarDropdown ">
       <Popover className="relative">
@@ -41,7 +42,7 @@ export default function AvatarDropdown() {
                       {/* 이름과 주소 출력 */}
                       {/* todo: 유저이름 데이터 패칭 필요 */}
                       <div className="flex-grow">
-                        <h4 className="font-semibold">{session.data?.user.name}</h4>
+                        <h4 className="font-semibold">{session.data?.user.usersName} 님</h4>
                         {/* <p className="text-xs mt-0.5">Los Angeles, CA</p> */}
                       </div>
                     </div>

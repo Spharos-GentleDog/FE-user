@@ -31,11 +31,22 @@ const SectionSliderProductCard: FC<SectionSliderProductCardProps> = ({
 
   useEffect(() => {
     const getData = async () => {
-      try {
-        const url = category === "new" ? "https://653230c34d4c2e3f333dbc82.mockapi.io/product" : "https://653230c34d4c2e3f333dbc82.mockapi.io/products";
-        const res = await fetch(url);
-        if (!res.ok) {
-          throw new Error(`HTTP error! Status: ${res.status}`);
+      if (category === "new") {
+
+        try {
+          const res = await fetch("https://653230c34d4c2e3f333dbc82.mockapi.io/product");
+          const data = await res.json();
+          setProductData(data);
+        } catch (error) {
+          console.log('Error Fetch : ', error);
+        }
+      } else if (category === "best") {
+        try {
+          const res = await fetch("https://653230c34d4c2e3f333dbc82.mockapi.io/product");
+          const data = await res.json();
+          setProductData(data);
+        } catch (error) {
+          console.log('Error Fetch : ', error);
         }
         const data = await res.json();
         setProductData(data);
