@@ -6,32 +6,38 @@ import ButtonPrimary from '@/shared/Button/ButtonPrimary';
 import Image from 'next/image';
 import Link from 'next/link';
 import Icon from '@/components/Icon';
-import{CartProductType} from '@/types/productType';
+import { CartBrandProductsType, CartProductType } from '@/types/productType';
+import { groupProductsByBrand } from '@/utils/groupProductsByBrand';
 
 /**
  * 장바구니 데이터를 패칭합니다.
  * @returns 장바구니 데이터.json
  */
-export async function getData(){
+export async function getData() {
   const res = await fetch(
     'https://6535d1a2c620ba9358ecaf38.mockapi.io/CartProductType',
-      { cache: 'no-cache'}
-    );
+    { cache: 'no-cache' }
+  );
   if (!res.ok) throw new Error(res.statusText);
   return res.json();
+}
 
-  };
-
-
-export default async function CartPage () {
-  const cartProducts:CartProductType[] = await getData();
-  console.log(cartProducts);
-  const totalPrice = cartProducts.reduce((sum, product) => sum + product.price, 0);
-  const totalPriceString = totalPrice.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' });
-
+export default async function CartPage() {
+  const cartProducts: CartProductType[] = await getData();
+  // console.log(cartProducts);
+  const cartBrandProducts = groupProductsByBrand(cartProducts);
+  console.log(cartBrandProducts);
+  const totalPrice = cartProducts.reduce(
+    (sum, product) => sum + product.price,
+    0
+  );
+  const totalPriceString = totalPrice.toLocaleString('ko-KR', {
+    style: 'currency',
+    currency: 'KRW',
+  });
 
   /**
-   * 재고 현황 아이콘 랜더링
+   * 품절 아이콘 랜더링
    */
   const renderStatusSoldout = () => {
     return (
@@ -57,42 +63,41 @@ export default async function CartPage () {
   /**
    * 제품 랜더링
    */
-  const renderProduct = (item:CartProductType) => {
-    const { productId, productName, price, imgUrl, brandName, color, size, count, isChecked, productStock, discount, discountType } = item;
+  const renderProduct = (item: CartProductType) => {
 
     return (
-      <div
-        key={productId}
-        className="relative flex py-8 sm:py-10 xl:py-12 first:pt-0 last:pb-0"
-      >
+      <div className="relative flex py-8 sm:py-10 xl:py-12 first:pt-0 last:pb-0 last:mb-8">
         <div className="relative h-36 w-24 sm:w-32 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
           <Image
             fill
-            src={imgUrl}
-            alt={productName}
+            src={item.imgUrl}
+            alt={item.productName}
             sizes="300px"
             className="h-full w-full object-contain object-center"
           />
-          <Link href="/product-detail" className="absolute inset-0"></Link>
+          <Link
+            href={`/product/${item.productId}`}
+            className="absolute inset-0"
+          ></Link>
         </div>
 
         <div className="ml-3 sm:ml-6 flex flex-1 flex-col">
           <div>
             <div className="flex justify-between ">
               <div className="flex-[1.5] ">
-                <h3 className="text-base font-semibold">
-                  <Link href={`/product/${productId}`}>{productName}</Link>
+                <h3 className="text-base font-medium">
+                  <Link href={`/product/${item.productId}`}>{item.productName}</Link>
                 </h3>
                 <div className="mt-1.5 sm:mt-2.5 flex text-sm text-slate-600 dark:text-slate-300">
                   <div className="flex items-center space-x-1.5">
                     <Icon type="color" />
 
-                    <span>{color}</span>
+                    <span>{item.color}</span>
                   </div>
                   <span className="mx-4 border-l border-slate-200 dark:border-slate-700 "></span>
                   <div className="flex items-center space-x-1.5">
                     <Icon type="size" />
-                    <span>{size}</span>
+                    <span>{item.size}</span>
                   </div>
                 </div>
 
@@ -112,25 +117,23 @@ export default async function CartPage () {
                   </select>
                   <Prices
                     contentClass="py-1 px-2 md:py-1.5 md:px-2.5 text-sm font-medium h-full"
-                    price={price}
+                    price={item.price}
                   />
                 </div>
               </div>
 
-              <div className="hidden sm:block text-center relative">
-                <NcInputNumber className="relative z-10" />
-              </div>
 
               <div className="hidden flex-1 sm:flex justify-end">
-                <Prices price={price} className="mt-0.5" />
+                <Prices price={item.price} className="mt-0.5" />
               </div>
             </div>
+              <div className="hidden sm:block text-center relative pt-4">
+                <NcInputNumber defaultValue={item.count} className="relative z-10" />
+              </div>
           </div>
 
           <div className="flex mt-auto pt-4 items-end justify-between text-sm">
-            {productStock > 0
-              ? renderStatusInstock()
-              : renderStatusSoldout()}
+            {item.productStock > 0 ? renderStatusInstock() : renderStatusSoldout()}
 
             <a
               href="##"
@@ -147,9 +150,9 @@ export default async function CartPage () {
 
   return (
     <div className="nc-CartPage">
-      <main className="container py-16 lg:pb-28 lg:pt-20 ">
-        <div className="hidden lg:block mb-12">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold ">
+      <main className="container py-16 md:pb-28 md:pt-20 ">
+        <div className="hidden md:block mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold ">
             장바구니
           </h2>
           {/* todo: 페이지 뎁스 표시 수정? */}
@@ -169,11 +172,24 @@ export default async function CartPage () {
         <hr className="border-slate-200 dark:border-slate-700 my-10 xl:my-12" />
 
         {/* todo: 상품 선택 체크박스, 브랜드 별로 체크박스, 삭제버튼 추가 */}
-        <div className="flex flex-col lg:flex-row">
-          <div className="w-full lg:w-[60%] xl:w-[55%] divide-y divide-slate-200 dark:divide-slate-700 ">
-            {cartProducts.map(renderProduct)}
+        <div className="flex flex-col md:flex-row">
+          <div className="w-full md:w-[60%] xl:w-[55%] ">
+            {cartBrandProducts &&
+              Object.entries(cartBrandProducts).map(([brandName, items]) => (
+                <div 
+                key={brandName}
+                className='divide-y divide-slate-200 dark:divide-slate-700'
+                >
+                  <h3 className="text-base font-semibold mb-4 ">
+                    {brandName}
+                  </h3>
+                  {items.map((item) => renderProduct(item as CartProductType))}
+                </div>
+              ))}
           </div>
-          <div className="border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-700 my-10 lg:my-0 lg:mx-10 xl:mx-16 2xl:mx-20 flex-shrink-0"></div>
+
+          <div className="border-t md:border-t-0 md:border-l border-slate-200 dark:border-slate-700 my-10 md:my-0 md:mx-10 xl:mx-16 2xl:mx-20 flex-shrink-0"></div>
+
           <div className="flex-1">
             {/* todo: 데이터 패칭 */}
             <div className="sticky top-28">
@@ -237,4 +253,4 @@ export default async function CartPage () {
       </main>
     </div>
   );
-};
+}

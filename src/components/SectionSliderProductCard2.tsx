@@ -45,14 +45,14 @@ const SectionSliderProductCard: FC<SectionSliderProductCardProps> = ({
   const [isShow, setIsShow] = useState(false);
   const [productData, setProductData] = useState<ProductList[]>([]);
 
-  useEffect(() => {
-    const getData = async () => {
-      const res = await fetch("https://653230c34d4c2e3f333dbc82.mockapi.io/product");
-      const data = await res.json();
-      setProductData(data);
-    };
-    getData();
-  }, []);
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     const res = await fetch("https://653230c34d4c2e3f333dbc82.mockapi.io/product");
+  //     const data = await res.json();
+  //     setProductData(data);
+  //   };
+  //   getData();
+  // }, []);
 
   console.log(productData);
   useEffect(() => {
