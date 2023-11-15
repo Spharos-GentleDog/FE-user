@@ -13,6 +13,11 @@ function PageHome() {
       {/* make slider */}
 
       <div className="container relative space-y-24 my-24 lg:space-y-32 lg:my-32">
+        <div className="relative py-24 lg:py-32">
+          <BackgroundSection />
+          <SectionGridMoreExplore />
+        </div>
+
         <SectionSliderProductCard
           category='new'
           heading='신제품'
@@ -23,16 +28,11 @@ function PageHome() {
           heading="베스트 셀러"
         />
 
-        <div className="relative py-24 lg:py-32">
-          <BackgroundSection />
-          <SectionGridMoreExplore boxCard='box4' />
-        </div>
-
         <SectionGridFeatureItems />
 
-        <div className="mt-24 lg:mt-32">
-          <DiscoverMoreSlider />
-        </div>
+      </div>
+      <div className="mt-24 lg:mt-32">
+        <DiscoverMoreSlider />
       </div>
     </div>
   );
