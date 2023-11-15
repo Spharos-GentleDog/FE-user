@@ -2,7 +2,7 @@
 
 import ButtonPrimary from '@/shared/Button/ButtonPrimary'
 import { SignupAddressDataType, SignupDataType, SignupDogDataType } from '@/types/formDataType'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import SignupUserForm from './SignupUserForm'
 import SignupAddressForm from './SignupAddressForm'
 import { useRouter } from 'next/navigation'
@@ -187,16 +187,11 @@ function SignupForm() {
       const result = await res.json();
       if (result.code === 200) {
         alert('회원가입이 완료되었습니다.')
-        router.push(`/signup/pet?${signup.email}`)
+        router.push(`/signup/pet?userEmail=${signup.email}`)
       }
     } catch (error) {
       console.log(error)
     }
-
-    console.log(signup)
-    console.log(signupAddress)
-
-    // router.push(`/signup/pet?${signup.email}`)
   }
 
   return (

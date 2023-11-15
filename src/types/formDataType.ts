@@ -24,8 +24,8 @@ export interface SignupDogDataType {
     dogName: string
     dogAge: number
     dogWeight: number
-    dogColor: string
-    dogBreed: string
+    dogFurColor: string
+    dogBreed: number
     dogGender: string
     dogLegLength: number
     dogBodyLength: number

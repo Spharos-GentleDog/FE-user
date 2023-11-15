@@ -20,7 +20,12 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'gentledog-bucket.s3.ap-northeast-2.amazonaws.com'
+        hostname: 's3.amazonaws.com',
+        pathname: '/redqteam.com/isomorphic-furyroad/public/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'gentledog.s3.ap-northeast-2.amazonaws.com'
       },
     ],
   },
