@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import NcImage from "@/shared/NcImage/NcImage";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import image from "@/images/logo-name.svg"
 
 
 /**
@@ -14,7 +15,6 @@ const CardCategory4: FC<any> = ({
   categoryId,
   categoryName,
   categoryProductCount,
-  featuredImage = "",
   color = "bg-rose-50",
 }: {
   categoryId: number,
@@ -32,7 +32,7 @@ const CardCategory4: FC<any> = ({
           <div className="flex justify-between items-center">
             <NcImage
               alt=""
-              src={featuredImage}
+              src={image}
               containerClassName={`w-20 h-20 rounded-full overflow-hidden z-0 ${color}`}
               width={80}
               height={80}

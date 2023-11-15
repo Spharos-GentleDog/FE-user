@@ -8,12 +8,13 @@ export const options: NextAuthOptions = {
         CredentialsProvider({
             name: "Credentails",
             credentials: {
-                loginEmail: { label: "email", type: "text", placeholder: "IAMSUPERKING" },
+                userEmail: { label: "email", type: "text", placeholder: "userEmail" },
                 password: { label: "password", type: "password" },
             },
 
-            async authorize(credentials, req) {
-                if (!credentials?.loginEmail || !credentials?.password) return null
+            async authorize(credentials: any) {
+                console.log("credentials : ", credentials)
+                if (!credentials?.userEmail || !credentials?.password) return null
                 try {
                     const res = await fetch(`${process.env.BASE_API_URL}/api/v1/user/signin`, {
                         method: 'POST',
@@ -21,15 +22,15 @@ export const options: NextAuthOptions = {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            userEmail: credentials?.loginEmail,
+                            userEmail: credentials?.userEmail,
                             password: credentials?.password,
                         })
                     })
                     const user = await res.json();
-                    console.log(user.message)
 
+                    return user.result
                 } catch (e: any) {
-                    throw new Error(e.massage)
+                    throw new Error("로그인 에러 : ", e.massage)
                 }
                 return null
             }

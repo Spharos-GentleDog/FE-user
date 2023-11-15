@@ -2,7 +2,6 @@
 
 import React, { FC, useState } from "react";
 import CardCategory4 from "@/components/CardCategories/CardCategory4";
-import { ExploreType } from "./data";
 import CategoryHeading from "../CategoryHeading";
 import { ChildCategory } from "@/types/product/category";
 

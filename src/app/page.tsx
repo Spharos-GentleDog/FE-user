@@ -18,7 +18,7 @@ function PageHome() {
           <SectionGridMoreExplore />
         </div>
 
-        {/* <SectionSliderProductCard
+        <SectionSliderProductCard
           category='new'
           heading='신제품'
         />
@@ -26,7 +26,7 @@ function PageHome() {
         <SectionSliderProductCard
           category='best'
           heading="베스트 셀러"
-        /> */}
+        />
 
         <SectionGridFeatureItems />
 

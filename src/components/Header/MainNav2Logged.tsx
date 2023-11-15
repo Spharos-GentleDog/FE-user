@@ -11,7 +11,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Icon from '../Icon';
 import { useSession } from 'next-auth/react';
-import { Popover } from '@headlessui/react';
 
 export interface MainNav2LoggedProps { }
 
@@ -90,7 +89,7 @@ const MainNav2Logged: FC<MainNav2LoggedProps> = () => {
           )}
           {
             // 로그인 상태 판단
-            session.status === "authenticated" ?
+            session.status === "unauthenticated" ?
               <>
                 <Link href='/login' className='px-3'>
                   <Icon type="user" />

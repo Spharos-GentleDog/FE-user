@@ -12,7 +12,7 @@ function CategoryHeading({
     setCategory: any
 }) {
 
-    const [tabActive, setTabActive] = useState<number>(1);
+    const [tabActive, setTabActive] = useState(1);
     const [categoryData, setCategoryData] = useState<ParentCategoryType[]>([]);
 
     const handleCategoryFetch = async (categoryId: number, categoryName: string) => {
@@ -52,9 +52,8 @@ function CategoryHeading({
         }
 
         getData().then(() => {
-            setTabActive(1);
-
-            fetch(`https://653230c34d4c2e3f333dbc82.mockapi.io/category?parentCategoryId=${tabActive}`, {
+            // todo: 데이터 받아오고 나서 첫번째 카테고리 데이터 받아오기(전체 카테고리)
+            fetch(`https://653230c34d4c2e3f333dbc82.mockapi.io/category`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
