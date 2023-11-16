@@ -1,6 +1,9 @@
-import React from 'react'
-import axios from "axios";
-import { GetServerSideProps } from "next";
+'use client'
+import axios from 'axios';
+import { useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react'
+
+
 
 interface Payment {
     orderName: string;
@@ -14,55 +17,43 @@ interface Payment {
     orderId: string;
 }
 
-console.log("error : 1")
-export const getServerSideProps: GetServerSideProps<Props> = async (context) => {
-    console.log("error : 2")
-    const {
-        query: { paymentKey, orderId, amount },
-    } = context;
-
-    try {
-        // ------  결제 승인 ------
-        // @docs https://docs.tosspayments.com/guides/payment-widget/integration#3-결제-승인하기
-        const { data: payment } = await axios.post<Payment>(
-            "https://api.tosspayments.com/v1/payments/confirm",
-            {
-                paymentKey,
-                orderId,
-                amount,
-            },
-            {
-                headers: {
-                    Authorization: `Basic ${Buffer.from(
-                        `${process.env.TOSS_PAYMENTS_SECRET_KEY}:`
-                    ).toString("base64")}`,
-                },
-            }
-        );
-        console.log("error : 3")
-        console.log("payment", payment)
-        return {
-            props: { payment },
-        };
-    } catch (err: any) {
-        console.error("err", err.response.data);
-
-        return {
-            redirect: {
-                destination: `fail?code=${err.response.data.code}&message=${encodeURIComponent(err.response.data.message)}`,
-                permanent: false,
-            },
-        };
-    }
-
-
-};
-
 interface Props {
     payment: Payment;
 }
 
-function PaymentSuccess({ payment }: any) {
+function PaymentSuccess() {
+    const param =useSearchParams()
+    const [data, setData] = useState<Payment>()
+    const paymentKey = param.get('paymentKey')
+    const orderId = param.get('orderId')
+    const amount = param.get('amount')
+    console.log(paymentKey, orderId, amount)
+
+useEffect(() => {
+    const getData = async () => {
+    try {
+            const response = await axios.post<Payment>('https://api.tosspayments.com/v1/payments/confirm', {
+                    paymentKey: paymentKey,
+                    orderId: orderId,
+                    amount: amount
+                }, {
+                    headers: {
+                        Authorization: `Basic ${Buffer.from(`${process.env.TOSS_PAYMENTS_SECRET_KEY}:`).toString("base64")}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                setData(response.data);
+                console.log(response.data)
+            } catch (err: any) {
+                console.error("err", err.response.data);
+        }
+        
+    }
+    
+    getData();
+}, [])
+
     return (
         <main>
             <div className="result wrapper">
@@ -74,9 +65,9 @@ function PaymentSuccess({ payment }: any) {
                         />
                         결제 성공
                     </h2>
-                    <p>paymentKey = {payment?.paymentKey}</p>
-                    <p>orderId =  {payment?.orderId}</p>
-                    <p>amount = {payment?.totalAmount.toLocaleString()}원</p>
+                    <p>paymentKey = {data?.paymentKey}</p>
+                    <p>orderId =  {data?.orderId}</p>
+                    <p>amount = {data?.totalAmount.toLocaleString()}원</p>
                 </div>
             </div>
         </main>
