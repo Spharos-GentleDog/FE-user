@@ -35,6 +35,7 @@ export interface Product {
   rating?: string;
   numberOfReviews?: number;
   brandName?: string;
+  discountRate?: number;
 }
 
 // 상품 옵션 타입
@@ -53,7 +54,7 @@ export interface ProductDetailType {
   explainImgUrl: string[];
   brandName: string;
   brandLogoUrl: string;
-  discount: number;
+  discountRate: number;
   discountType: number;
   option: ProductOptionType[];
   totalFavorite: number;
@@ -74,8 +75,10 @@ export interface CartProductType {
   count: number;
   isChecked: boolean;
   productStock: number;
-  discount: number;
+  discountRate: number;
   discountType: number;
+  discountAmount: number;
+  discountedPrice: number;
 }
 
 export interface CartBrandProductsType {

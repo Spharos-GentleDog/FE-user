@@ -1,6 +1,6 @@
 import { CartBrandProductsType, CartProductType, Product, ProductDetailType } from '@/types/productType';
 
-type GeneralProductType = Product | ProductDetailType | CartProductType;
+export type GeneralProductType = Product | ProductDetailType | CartProductType;
 
 /**
  * 상품을 브랜드 별로 묶어주는 함수
