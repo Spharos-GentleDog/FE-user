@@ -1,24 +1,15 @@
-'use client';
+"use client";
 
-import ButtonPrimary from '@/shared/Button/ButtonPrimary';
-import Checkbox from '@/shared/Checkbox/Checkbox';
-import { CartBrandProductsType, CartProductType } from '@/types/productType';
-import { applyDiscounts } from '@/utils/applyDiscounts';
-import {
-  GeneralProductType,
-  groupProductsByBrand,
-} from '@/utils/groupProductsByBrand';
-import { useEffect, useState } from 'react';
-import Icon from './Icon';
-import RenderProduct from './RenderProduct';
-
-// 현재 발생하는 버그
-// 1. 전체 선택을 누르면 배송비가 올라가지만 브랜드 선택을 눌러서는 배송비가 올라가지 않음
-// 개별 상품만 눌러도 배송비가 올라가지 않음 올라가도록 해야됨
-// 2. 상품 수량 변경이 현재 되지않음
-// cartBrandProducts 상태가 변경되지 않아서 그런듯
-// 3. 상품 원래 체크 되어있지 않은 상품을 체크하고 수량을 변경하면 체크가 풀림
-// 체크 여부는 cartBrandProducts 상태에 따라 결정되어야하는데 현재는 따로 체크 상태를 관리하고 있어서 문제
+import ButtonPrimary from "@/shared/Button/ButtonPrimary";
+import Checkbox from "@/shared/Checkbox/Checkbox";
+import { CartBrandProductsType, CartProductType } from "@/types/productType";
+import { applyDiscounts } from "@/utils/applyDiscounts";
+import { groupProductsByBrand } from "@/utils/groupProductsByBrand";
+import { useEffect, useState } from "react";
+import Icon from "./Icon";
+import RenderProduct from "./RenderProduct";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import Button from "@/shared/Button/Button";
 
 /**
  * 장바구니 상품 출력
@@ -32,10 +23,10 @@ export default function CartList() {
     discountTotalString: string;
     totalPriceString: string;
   }>({
-    originalTotalPriceString: '',
-    deliveryFeeString: '',
-    discountTotalString: '',
-    totalPriceString: '',
+    originalTotalPriceString: "",
+    deliveryFeeString: "",
+    discountTotalString: "",
+    totalPriceString: "",
   });
   const [isBrandChecked, setIsBrandChecked] = useState<Record<string, boolean>>(
     {}
@@ -50,41 +41,41 @@ export default function CartList() {
     let totalPrice = 0;
     const freeShippingThreshold = 50000;
     const deliveryFeePerBrand = 3000;
-  
+
     if (cartBrandProducts) {
       Object.values(cartBrandProducts).forEach((brandItems) => {
         let brandTotalPrice = 0;
         let brandHasCheckedItem = false; // 브랜드 내 체크된 상품이 있는지 확인
-  
+
         brandItems.forEach((item) => {
           if (item.isChecked) {
             brandHasCheckedItem = true; // 체크된 상품이 있으면 true로 설정
             const originalPrice = item.price * item.count;
             originalTotalPrice += originalPrice;
-  
+
             const discountAmount = item.discountedPrice
               ? originalPrice - item.discountedPrice * item.count
               : 0;
             discountTotal += discountAmount;
-  
+
             const priceToUse = item.discountedPrice
               ? item.discountedPrice
               : item.price;
             totalPrice += priceToUse * item.count;
-  
+
             brandTotalPrice += priceToUse * item.count;
           }
         });
-  
+
         // 브랜드별로 체크된 상품이 있고, 그 총액이 무료 배송 기준 미만일 때만 배송비 추가
         if (brandHasCheckedItem && brandTotalPrice < freeShippingThreshold) {
           deliveryFee += deliveryFeePerBrand;
         }
       });
-  
+
       totalPrice += deliveryFee;
     }
-  
+
     return { originalTotalPrice, deliveryFee, discountTotal, totalPrice };
   };
 
@@ -119,8 +110,8 @@ export default function CartList() {
          * 장바구니 상품 정보
          */
         const res = await fetch(
-          'https://6535d1a2c620ba9358ecaf38.mockapi.io/CartProductType',
-          { cache: 'no-cache' }
+          "https://6535d1a2c620ba9358ecaf38.mockapi.io/CartProductType",
+          { cache: "no-cache" }
         );
         if (!res.ok) throw new Error(res.statusText);
 
@@ -132,7 +123,7 @@ export default function CartList() {
         const cartBrandProduct = groupProductsByBrand(discountedCartProducts);
         setCartBrandProducts(cartBrandProduct as CartBrandProductsType);
       } catch (e) {
-        console.error('Failed to fetch acrt products', e);
+        console.error("Failed to fetch acrt products", e);
       }
     }
     loadCartProducts();
@@ -143,21 +134,21 @@ export default function CartList() {
     const { originalTotalPrice, deliveryFee, discountTotal, totalPrice } =
       calculateCheckoutInfo();
     setCheckoutInfo({
-      originalTotalPriceString: originalTotalPrice.toLocaleString('ko-KR', {
-        style: 'currency',
-        currency: 'KRW',
+      originalTotalPriceString: originalTotalPrice.toLocaleString("ko-KR", {
+        style: "currency",
+        currency: "KRW",
       }),
-      deliveryFeeString: deliveryFee.toLocaleString('ko-KR', {
-        style: 'currency',
-        currency: 'KRW',
+      deliveryFeeString: deliveryFee.toLocaleString("ko-KR", {
+        style: "currency",
+        currency: "KRW",
       }),
-      discountTotalString: discountTotal.toLocaleString('ko-KR', {
-        style: 'currency',
-        currency: 'KRW',
+      discountTotalString: discountTotal.toLocaleString("ko-KR", {
+        style: "currency",
+        currency: "KRW",
       }),
-      totalPriceString: totalPrice.toLocaleString('ko-KR', {
-        style: 'currency',
-        currency: 'KRW',
+      totalPriceString: totalPrice.toLocaleString("ko-KR", {
+        style: "currency",
+        currency: "KRW",
       }),
     });
     // console.log('cartBrandProducts', cartBrandProducts)
@@ -194,9 +185,9 @@ export default function CartList() {
 
       return newState;
     });
-    setIsBrandChecked(prev => ({ ...prev, [brandName]: checked }));
+    setIsBrandChecked((prev) => ({ ...prev, [brandName]: checked }));
   };
-  
+
   /** 전체 선택 체크박스 상태 변경 핸들러 */
   const handleAllCheck = (checked: boolean) => {
     setCartBrandProducts((prevState) => {
@@ -232,20 +223,47 @@ export default function CartList() {
         .every((product) => product.isChecked);
       setIsAllChecked(allChecked);
     }
-    
   }, [cartBrandProducts]);
+
+  /** 체크된 상품들 삭제 */
+  const handleCheckedDelete = (cartBrandProducts: CartBrandProductsType) => {
+    const checkedProductIds = Object.values(cartBrandProducts)
+      .flat()
+      .reduce((acc: number[], product: CartProductType) => {
+        if (product.isChecked) {
+          acc.push(product.productDetailId);
+        }
+        return acc;
+      }, [] as number[]);
+
+    console.log(checkedProductIds);
+  };
+  /** 개별 상품 삭제 */
+  const handleItemDelete = (productDetailId: number) => {
+    // console.log(productDetailId);
+  };
 
   return (
     <>
       <div className="w-full md:w-[60%] xl:w-[55%] ">
-        <Checkbox
-          name="cart-all"
-          label="전체 선택"
-          labelClassName="text-base font-bold"
-          className="mb-4 flex items-center"
-          isChecked={isAllChecked}
-          onChange={(checked) => handleAllCheck(checked)}
-        />
+        <div className="flex justify-between">
+          <Checkbox
+            name="cart-all"
+            label="전체 선택"
+            labelClassName="text-lg font-bold"
+            className="mb-4 flex items-center"
+            isChecked={isAllChecked}
+            onChange={(checked) => handleAllCheck(checked)}
+          />
+          <button
+            className="flex"
+            onClick={() =>
+              cartBrandProducts && handleCheckedDelete(cartBrandProducts)
+            }
+          >
+            <div className="font-semibold text-base text-blue-500 dark:text-slate-200">선택 삭제</div>
+          </button>
+        </div>
         {cartBrandProducts &&
           Object.entries(cartBrandProducts).map(([brandName, items]) => (
             <div
@@ -264,13 +282,14 @@ export default function CartList() {
                 <RenderProduct
                   key={`cart-${item.productDetailId}`}
                   item={item}
+                  isChecked={item.isChecked}
                   onItemCheck={(checked) =>
                     handleItemCheck(checked, item.productDetailId)
                   }
                   onCountChange={(newCount) =>
                     handleCountChange(item.productDetailId, newCount)
                   }
-                  isChecked={item.isChecked}
+                  onItemDelete={() => handleItemDelete(item.productDetailId)}
                 />
               ))}
             </div>
@@ -297,7 +316,7 @@ export default function CartList() {
             <div className="flex justify-between py-4">
               <span>할인</span>
               <span className="font-semibold text-slate-900 dark:text-slate-200">
-                {checkoutInfo.discountTotalString !== '₩0'
+                {checkoutInfo.discountTotalString !== "₩0"
                   ? `- ${checkoutInfo.discountTotalString}`
                   : checkoutInfo.discountTotalString}
               </span>

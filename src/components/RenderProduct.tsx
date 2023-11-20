@@ -1,25 +1,31 @@
-import { CartProductType } from '@/types/productType';
-import Image from 'next/image';
-import Link from 'next/link';
-import Icon from './Icon';
-import Prices from './Prices';
-import NcInputNumber from './NcInputNumber';
-import RenderStatusInstock from './RenderStatusInstock';
-import RenderStatusSoldout from './RenderStatusSoldout';
-import Checkbox from '@/shared/Checkbox/Checkbox';
+import Checkbox from "@/shared/Checkbox/Checkbox";
+import { CartProductType } from "@/types/productType";
+import Image from "next/image";
+import Link from "next/link";
+import Icon from "./Icon";
+import NcInputNumber from "./NcInputNumber";
+import Prices from "./Prices";
+import RenderStatusInstock from "./RenderStatusInstock";
+import RenderStatusSoldout from "./RenderStatusSoldout";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 /**
  * 장바구니 상품 출력
+ * @param onItemCheck 체크 박스
+ * @param onCountChange 수량 변경
+ * @param onItemDelete 상품 삭제
  */
 export default function RenderProduct({
   item,
   onItemCheck,
   onCountChange,
+  onItemDelete,
   isChecked,
 }: {
   item: CartProductType;
   onItemCheck: (checked: boolean) => void;
   onCountChange?: (count: number) => void;
+  onItemDelete?: (id: number) => void;
   newCount?: number;
   isChecked: boolean;
 }) {
@@ -28,7 +34,7 @@ export default function RenderProduct({
       key={`cart-${item.productDetailId}`}
       className=" py-6 sm:py-4 xl:py-8 first:pt-0 last:pb-0 last:mb-8"
     >
-      <div className="flex pb-2 items-center">
+      <div className="flex pb-2 justify-between">
         <Checkbox
           name={`cart-${item.productDetailId}`}
           label={item.productName}
@@ -37,6 +43,14 @@ export default function RenderProduct({
           isChecked={isChecked}
           onChange={(checked) => onItemCheck(checked)}
         />
+        <button
+          className="flex"
+          onClick={() =>
+            onItemDelete && onItemDelete(item.productDetailId as number)
+          }
+        >
+          <XMarkIcon className="w-6" />
+        </button>
       </div>
       <div className="relative flex px-8">
         <div className="relative h-36 w-24 sm:w-32 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
@@ -54,16 +68,16 @@ export default function RenderProduct({
         </div>
 
         <div className="ml-3 sm:ml-6 flex flex-1 flex-col">
-          <div>
-            <div className="flex justify-between ">
+          <div className="flex">
+            <div className="flex-col justify-between ">
               <div className="flex-[1.5] ">
-                <div className="mt-1.5 sm:mt-2.5 flex text-sm text-slate-600 dark:text-slate-300">
+                <div className="flex flex-col lg:flex-row mt-1.5 sm:mt-2.5 text-sm text-slate-600 dark:text-slate-300">
                   <div className="flex items-center space-x-1.5">
                     <Icon type="color" />
 
                     <span>{item.color}</span>
                   </div>
-                  <span className="mx-4 border-l border-slate-200 dark:border-slate-700 "></span>
+                  <span className="hidden lg:block mx-4 border-l border-slate-200 dark:border-slate-700 "></span>
                   <div className="flex items-center space-x-1.5">
                     <Icon type="size" />
                     <span>{item.size}</span>
@@ -84,50 +98,35 @@ export default function RenderProduct({
                     <option value="6">6</option>
                     <option value="7">7</option>
                   </select>
-                  <Prices
-                    contentClass="py-1 px-2 md:py-1.5 md:px-2.5 text-sm font-medium h-full"
-                    price={
-                      item.discountedPrice ? item.discountedPrice : item.price
-                    }
-                  />
                 </div>
               </div>
 
-              <div className="hidden flex-1 sm:flex justify-end">
-                <Prices
-                  price={
-                    item.discountedPrice ? item.discountedPrice : item.price
+              <div className="hidden sm:block text-center relative pt-4">
+                <NcInputNumber
+                  defaultValue={item.count}
+                  className="relative z-10"
+                  onCountChange={(newCount) =>
+                    onCountChange && onCountChange(newCount)
                   }
-                  className="mt-0.5"
                 />
-                
+              </div>
+              {/* todo: 재고 수량에 따라 표시 다르게 하기 */}
+              <div className="flex mt-auto pt-4 items-end justify-between text-sm">
+                {item.productStock > 0 ? (
+                  <RenderStatusInstock />
+                ) : (
+                  <RenderStatusSoldout />
+                )}
               </div>
             </div>
-            <div className="hidden sm:block text-center relative pt-4">
-              <NcInputNumber
-                defaultValue={item.count}
-                className="relative z-10"
-                onCountChange={(newCount) =>
-                  onCountChange && onCountChange(newCount)
-                }
+            <div className=" flex-1 sm:flex justify-end">
+              <Prices
+                price={item.price}
+                discountRate={item.discountRate}
+                discountedPrice={item.discountedPrice}
+                className="mt-0.5"
               />
             </div>
-          </div>
-
-          <div className="flex mt-auto pt-4 items-end justify-between text-sm">
-            {item.productStock > 0 ? (
-              <RenderStatusInstock />
-            ) : (
-              <RenderStatusSoldout />
-            )}
-
-            {/* <a
-            href="##"
-            className="relative z-10 flex items-center mt-3 font-medium text-primary-6000 hover:text-primary-500 text-sm "
-          >
-            todo: 기능 활성화
-            <span>제거</span>
-          </a> */}
           </div>
         </div>
       </div>
