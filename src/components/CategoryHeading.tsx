@@ -27,7 +27,6 @@ function CategoryHeading({
             });
 
             const data = await res.json();
-            // console.log('data : ', data);
             setCategory(data);
         } catch (error) {
             console.log('Error Fetch : ', error);
@@ -37,19 +36,31 @@ function CategoryHeading({
     useEffect(() => {
         const getData = async () => {
             try {
-                const res = await fetch("https://653230c34d4c2e3f333dbc82.mockapi.io/category", {
+                const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/read-parent-category`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
+
                 const data = await res.json();
-                setCategoryData(data);
+
+                setCategoryData(data.result.parentCategoryDtoList);
 
             } catch (error) {
                 console.log('Error Fetch : ', error);
             }
         }
+
+        // getData().then(() => {
+        //     // todo: 데이터 받아오고 나서 첫번째 카테고리 데이터 받아오기(전체 카테고리)
+        //     fetch(`${process.env.BASE_API_URL}/api/v1/product/read-parent-category`, {
+        //         method: 'GET',
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         }
+        //     }).then(res => res.json()).then(data => setCategory(data.result.parentCategoryDtoList));
+        // });
 
         getData().then(() => {
             // todo: 데이터 받아오고 나서 첫번째 카테고리 데이터 받아오기(전체 카테고리)
@@ -76,12 +87,12 @@ function CategoryHeading({
             >
                 {categoryData?.map((item, index) => (
                     <NavItem2
-                        key={index}
-                        isActive={tabActive === item.categoryId}
-                        onClick={() => handleCategoryFetch(item.categoryId, item.categoryName)}
+                        key={item.parentCategoryId}
+                        isActive={tabActive === item.parentCategoryId}
+                        onClick={() => handleCategoryFetch(item.parentCategoryId, item.parentCategoryName)}
                     >
                         <div className="flex items-center justify-center space-x-1.5 sm:space-x-2.5 text-xs sm:text-sm ">
-                            {item.categoryName}
+                            {item.parentCategoryName}
                         </div>
                     </NavItem2>
                 ))}

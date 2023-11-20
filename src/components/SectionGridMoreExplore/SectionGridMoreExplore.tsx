@@ -32,7 +32,6 @@ const SectionGridMoreExplore: FC<SectionGridMoreExploreProps> = ({
   };
 
   const [category, setCategory] = useState<ChildCategory[]>([]);
-
   return (
     <div className={`nc-SectionGridMoreExplore relative ${className}`}>
       <CategoryHeading setCategory={setCategory} />

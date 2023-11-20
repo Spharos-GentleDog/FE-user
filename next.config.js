@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+  async rewrites() {
+    return [
+      {
+        source: "/",
+        destination: "/payment",
+      },
+    ];
+  },
   experimental: {
     appDir: true,
     typedRoutes: true,
@@ -20,7 +29,12 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'gentledog-bucket.s3.ap-northeast-2.amazonaws.com'
+        hostname: 's3.amazonaws.com',
+        pathname: '/redqteam.com/isomorphic-furyroad/public/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'gentledog.s3.ap-northeast-2.amazonaws.com'
       },
     ],
   },
@@ -35,9 +49,11 @@ const nextConfig = {
     KAKAO_CLIENT_SECRET: process.env.KAKAO_CLIENT_SECRET,
     NAVER_CLIENT_ID: process.env.NAVER_CLIENT_ID,
     NAVER_CLIENT_SECRET: process.env.NAVER_CLIENT_SECRET,
+    TOSS_PAYMENTS_SECRET_KEY: process.env.TOSS_PAYMENTS_SECRET_KEY,
+    TOSS_PAYMENTS_CLIENT_KEY: process.env.TOSS_PAYMENTS_CLIENT_KEY,
   },
   images: {
-    domains: ['https://gentledog-bucket.s3.ap-northeast-2.amazonaws.com', 'loremflickr.com']
+    domains: ['https://gentledog-bucket.s3.ap-northeast-2.amazonaws.com', 'loremflickr.com', 'https://static.toss.im']
   }
 };
 

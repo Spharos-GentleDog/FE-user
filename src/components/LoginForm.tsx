@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react'
 import toast from 'react-hot-toast';
-import LoginToast from './LoginToast';
+import Toast from './Toast';
 
 function LoginForm() {
 
@@ -65,7 +65,7 @@ function LoginForm() {
       // console.log(result);
       if (result?.status !== 200) {
         toast.custom((t) => (
-          <LoginToast message='아이디 및 비밀번호를 확인 후 다시 시도해주세요.' />
+          <Toast message='아이디 및 비밀번호를 확인 후 다시 시도해주세요.' />
         ));
       } else {
         router.push('/');

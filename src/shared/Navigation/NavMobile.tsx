@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import ButtonClose from "@/shared/ButtonClose/ButtonClose";
 import Logo from "@/shared/Logo/Logo";
 import { Disclosure } from "@/app/headlessui";
@@ -12,6 +12,8 @@ import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import SwitchDarkMode from "@/shared/SwitchDarkMode/SwitchDarkMode";
 import Link from "next/link";
 import { useThemeMode } from "@/hooks/useThemeMode";
+import { get } from "http";
+import { ChildCategory, ParentCategoryType } from "@/types/product/category";
 
 export interface NavMobileProps {
   data?: NavItemType[];
@@ -94,7 +96,7 @@ const NavMobile: React.FC<NavMobileProps> = ({
         <Link
           className="flex w-full items-center py-2.5 px-4 font-medium uppercase tracking-wide text-sm hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
           href={{
-            pathname: item.href || undefined,
+            pathname: `/collection` || undefined,
           }}
         >
           <span
@@ -176,27 +178,52 @@ const NavMobile: React.FC<NavMobileProps> = ({
 
   const { _toogleDarkMode } = useThemeMode();
 
+  const [parentCategoryData, setParentCategoryData] = React.useState<ParentCategoryType[]>([]);
+  const [categoryData, setCategoryData] = React.useState<ChildCategory[]>([]);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/read-parent-category`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await res.json();
+
+        setParentCategoryData(data.result.parentCategoryDtoList);
+
+      } catch (error) {
+        console.log('Error Fetch : ', error);
+      }
+    }
+
+    getData().then(async () => {
+      try {
+        const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/read-parent-category`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await res.json();
+      } catch (error) {
+        console.log('Error Fetch : ', error);
+      }
+    })
+  }, []);
+
   return (
     <div className="break-keep overflow-y-auto w-full h-screen py-2 transition transform shadow-lg ring-1 dark:ring-neutral-700 bg-white dark:bg-neutral-900 divide-y-2 divide-neutral-100 dark:divide-neutral-800">
       <div className="py-6 px-5">
         <button
-        onClick={_toogleDarkMode}
+          onClick={_toogleDarkMode}
         >
-        <Logo />
+          <Logo />
         </button>
-        {/* <div className="flex flex-col mt-5 text-slate-600 dark:text-slate-300 text-sm">
-          <span>
-            Discover the most outstanding articles on all topics of life. Write
-            your stories and share them
-          </span>
-
-          <div className="flex justify-between items-center mt-4">
-            <SocialsList itemClass="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full text-xl" />
-            <span className="block">
-              <SwitchDarkMode className="bg-neutral-100 dark:bg-neutral-800" />
-            </span>
-          </div>
-        </div> */}
         <span className="absolute right-2 top-2 p-1">
           <ButtonClose onClick={onClickClose} />
         </span>
