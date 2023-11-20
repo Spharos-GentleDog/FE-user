@@ -1,9 +1,8 @@
 import React from 'react'
-import { useRouter } from "next/router";
-import Link from 'next/link';
+// import { useRouter } from "next/router";
 
 function page() {
-    const { query } = useRouter();
+    // const { query } = useRouter();
 
     return (
         <main>
@@ -16,8 +15,8 @@ function page() {
                         />
                         결제 실패
                     </h2>
-                    <p>code = {query.code ?? "UNKNOWN_ERROR"}</p>
-                    <p>message = {query.message ?? "알 수 없음"}</p>
+                    <p>code = {"UNKNOWN_ERROR"}</p>
+                    <p>message = {"알 수 없음"}</p>
                 </div>
             </div>
         </main>

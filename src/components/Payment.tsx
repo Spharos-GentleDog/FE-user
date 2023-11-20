@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import { useEffect, useRef, useState } from "react";
 import {
@@ -6,14 +8,25 @@ import {
 } from "@tosspayments/payment-widget-sdk";
 import { nanoid } from "nanoid";
 import { useAsync } from "react-use";
+import toast from 'react-hot-toast';
+import Toast from './Toast';
 
-function Payment() {
+function Payment({
+    paymentClicked,
+    setPaymentClicked,
+    paymentProduct,
+    price
+}: {
+    paymentClicked: boolean
+    setPaymentClicked: React.Dispatch<React.SetStateAction<boolean>>
+    paymentProduct: any
+    price: number
+}) {
     // const clientKey = process.env.TOSS_PAYMENTS_;
     const paymentWidgetRef = useRef<PaymentWidgetInstance | null>(null);
     const paymentMethodsWidgetRef = useRef<ReturnType<
         PaymentWidgetInstance["renderPaymentMethods"]
     > | null>(null);
-    const [price, setPrice] = useState(50);
 
     useAsync(async () => {
         const paymentWidget = await loadPaymentWidget('test_ck_jExPeJWYVQ1RezQ2XYPnV49R5gvN', nanoid());
@@ -29,6 +42,32 @@ function Payment() {
         paymentMethodsWidgetRef.current = paymentMethodsWidget;
     }, []);
 
+    useEffect(() => {
+        if (paymentClicked) {
+            const getData = async () => {
+                const paymentWidget = paymentWidgetRef.current;
+
+                try {
+                    await paymentWidget?.requestPayment({
+                        orderId: nanoid(),
+                        orderName: "토스 티셔츠 외 2건",
+                        customerName: "김토스",
+                        customerEmail: "customer123@gmail.com",
+                        totalAmount: price,
+                        successUrl: `${window.location.origin}/checkout/success`,
+                        failUrl: `${window.location.origin}/checkout/fail`,
+                    });
+                } catch (error) {
+                    toast.custom((t) => (
+                        <Toast message=
+                            {(error as Error).message} />
+                    ));
+                }
+            };
+            getData();
+            setPaymentClicked(false)
+        }
+    }, [paymentClicked]);
 
     useEffect(() => {
         const paymentMethodsWidget = paymentMethodsWidgetRef.current;
@@ -50,27 +89,6 @@ function Payment() {
         >
             <div id="payment-widget" style={{ width: "100%" }} />
             <div id="agreement" style={{ width: "100%" }} />
-            <button
-                onClick={async () => {
-                    const paymentWidget = paymentWidgetRef.current;
-
-                    try {
-                        await paymentWidget?.requestPayment({
-                            orderId: nanoid(),
-                            orderName: "토스 티셔츠 외 2건",
-                            customerName: "김토스",
-                            customerEmail: "customer123@gmail.com",
-                            totalAmount: price,
-                            successUrl: `${window.location.origin}/checkout/success`,
-                            failUrl: `${window.location.origin}/checkout/fail`,
-                        });
-                    } catch (error) {
-                        console.error(error);
-                    }
-                }}
-            >
-                결제하기
-            </button>
         </main>
     )
 }

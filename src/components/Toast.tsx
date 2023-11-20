@@ -4,7 +4,7 @@ import React from 'react'
 /** 
  * 로그인 실패 토스트
  */
-function LoginToast({ message }: { message: string }) {
+function Toast({ message }: { message: string }) {
     return (
         <Transition
             // appear
@@ -30,4 +30,4 @@ function LoginToast({ message }: { message: string }) {
     )
 }
 
-export default LoginToast
+export default Toast

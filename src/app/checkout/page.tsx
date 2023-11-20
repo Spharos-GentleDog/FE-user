@@ -7,12 +7,13 @@ import { useState } from 'react';
 import ButtonPrimary from '@/shared/Button/ButtonPrimary';
 import Input from '@/shared/Input/Input';
 import ContactInfo from './ContactInfo';
-import PaymentMethod from './PaymentMethod';
 import ShippingAddress from './ShippingAddress';
 import Image from 'next/image';
 import Link from 'next/link';
 import Icon from '@/components/Icon';
 import Payment from '@/components/Payment';
+import { PaymentByProductList } from '@/types/payment/payment';
+import { paymentProductList } from '@/data/paymentProductList';
 
 const CheckoutPage = () => {
   /**
@@ -118,6 +119,15 @@ const CheckoutPage = () => {
       </div>
     );
   };
+  const [paymentProduct, setPaymentProduct] = useState<PaymentByProductList[]>([]); // 결제할 상품들
+  const [paymentClicked, setPaymentClicked] = useState(false);
+  const [price, setPrice] = useState(9999);
+
+  const handlePayment = (data: boolean) => {
+    setPaymentClicked(data);
+    setPrice(100000)
+    localStorage.setItem('paymentProduct', JSON.stringify(paymentProductList));
+  }
 
   // todo: 모달창으로 띄우고 기능 구현
   /**
@@ -149,18 +159,7 @@ const CheckoutPage = () => {
         </div>
 
         <div id="PaymentMethod" className="scroll-mt-24">
-          {/* <PaymentMethod
-            isActive={tabActive === 'PaymentMethod'}
-            onOpenActive={() => {
-              setTabActive('PaymentMethod');
-              handleScrollToEl('PaymentMethod');
-            }}
-            onCloseActive={() => {
-              setTabActive(null);
-              handleScrollToEl('ContactInfo');
-            }}
-          /> */}
-          <Payment />
+          <Payment paymentClicked={paymentClicked} setPaymentClicked={setPaymentClicked} paymentProduct={paymentProduct} price={price} />
         </div>
       </div>
     );
@@ -225,7 +224,7 @@ const CheckoutPage = () => {
         </div>
 
         {/* 결제하기 버튼 */}
-        <ButtonPrimary className="mt-8 w-full" >결제하기</ButtonPrimary>
+        <ButtonPrimary className="mt-8 w-full" onClick={() => handlePayment(true)}>결제하기</ButtonPrimary>
         <div className="mt-5 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-center">
           <p className="block relative pl-5">
             <Icon type="exclamation" />

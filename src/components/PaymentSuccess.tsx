@@ -1,41 +1,30 @@
 'use client'
+import ButtonPrimary from '@/shared/Button/ButtonPrimary';
+import { Payment } from '@/types/payment/payment';
 import axios from 'axios';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
-
-
-interface Payment {
-    orderName: string;
-    approvedAt: string;
-    receipt: {
-        url: string;
-    };
-    totalAmount: number;
-    method: "카드" | "가상계좌" | "계좌이체";
-    paymentKey: string;
-    orderId: string;
-}
-
-interface Props {
-    payment: Payment;
-}
-
 function PaymentSuccess() {
-    const param =useSearchParams()
+    const param = useSearchParams()
     const [data, setData] = useState<Payment>()
     const paymentKey = param.get('paymentKey')
     const orderId = param.get('orderId')
     const amount = param.get('amount')
-    console.log(paymentKey, orderId, amount)
 
-useEffect(() => {
-    const getData = async () => {
-    try {
-            const response = await axios.post<Payment>('https://api.tosspayments.com/v1/payments/confirm', {
+    if (typeof window !== 'undefined') {
+        const paymentProduct = localStorage.getItem('paymentProduct')
+    }
+
+
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const response = await axios.post<Payment>('https://api.tosspayments.com/v1/payments/confirm', {
                     paymentKey: paymentKey,
                     orderId: orderId,
-                    amount: amount
+                    amount: amount,
                 }, {
                     headers: {
                         Authorization: `Basic ${Buffer.from(`${process.env.TOSS_PAYMENTS_SECRET_KEY}:`).toString("base64")}`,
@@ -47,30 +36,60 @@ useEffect(() => {
                 console.log(response.data)
             } catch (err: any) {
                 console.error("err", err.response.data);
+            }
+
         }
-        
-    }
-    
-    getData();
-}, [])
+
+        getData();
+    }, [])
+
 
     return (
-        <main>
-            <div className="result wrapper">
-                <div className="box_section">
-                    <h2 style={{ padding: "20px 0px 10px 0px" }}>
-                        <img
-                            width="35px"
-                            src="https://static.toss.im/3d-emojis/u1F389_apng.png"
-                        />
-                        결제 성공
-                    </h2>
-                    <p>paymentKey = {data?.paymentKey}</p>
-                    <p>orderId =  {data?.orderId}</p>
-                    <p>amount = {data?.totalAmount.toLocaleString()}원</p>
+        <div className='bg-gray-100'>
+            <div className="max-w-md mx-auto grid grid-cols-1 gap-4 py-32">
+                <div className='box-border pb-4'>
+                    <h1 className="text-3xl font-bold mb-10 text-center">주문 완료!</h1>
+                    <div className="bg-white rounded-md overflow-hidden shadow-md mb-4">
+                        <table className="min-w-full">
+                            <tbody>
+                                <tr className="border-b">
+                                    <td className="py-2 px-4 font-semibold align-top">주문번호</td>
+                                    <td className="py-2 px-4">
+                                        2165464656156446465
+                                    </td>
+                                </tr>
+                                <tr className="border-b">
+                                    <td className="py-2 px-4 font-semibold align-top">배송지</td>
+                                    <td className="py-2 px-4">
+                                        <div className='flex'>소정완</div>
+                                        <div className='flex'>01012345678</div>
+                                        <div className='flex'>부산광역시 해운대구</div>
+                                        <div className='flex'>5202</div>
+                                        <div className='flex'>경비실에 두세요</div>
+                                    </td>
+                                </tr>
+                                <tr className="border-b">
+                                    <td className="py-2 px-4 font-semibold align-top">결제 수단</td>
+                                    <td className="py-2 px-4">
+                                        <div className='flex'>네이버페이</div>
+                                        <div className='flex'></div>
+                                    </td>
+                                </tr>
+                                <tr className="border-b">
+                                    <td className="py-2 px-4 font-semibold align-top">총 결제금액</td>
+                                    <td className="py-2 px-4">15730000원</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <Link href='/'>
+                        <ButtonPrimary className='w-full'>
+                            홈으로
+                        </ButtonPrimary>
+                    </Link>
                 </div>
             </div>
-        </main>
+        </div>
     )
 }
 

@@ -1,6 +1,6 @@
 export interface ParentCategoryType {
-    categoryId: number;
-    categoryName: string;
+    parentCategoryId: number;
+    parentCategoryName: string;
 }
 
 export interface ChildCategory {
