@@ -33,7 +33,7 @@ export interface Product {
   description: string;
   category: string;
   tags: string[];
-  link: "/product-detail/";
+  link: string; // todo: 수정 필요?
   variants?: ProductVariant[];
   variantType?: "color" | "image";
   sizes?: string[];
@@ -41,6 +41,7 @@ export interface Product {
   status?: "신제품" | "리미티드 에디션" | "품절" | "50% 할인";
   rating?: string;
   numberOfReviews?: number;
+  brandName?: string;
 }
 
 export interface Product2 {
@@ -426,5 +427,123 @@ export const SPORT_PRODUCTS: Product[] = [
     status: "리미티드 에디션",
     rating: "4.9",
     numberOfReviews: 98,
+  },
+];
+
+export const BRAND_PRODUCTS: Product[] = [
+  {
+    id: 1,
+    name: "레이 나일론 백팩",
+    description: "갈색 바퀴벌레 날개",
+    price: 12315325,
+    image: productImgs[16],
+    category: "Category 1",
+    tags: ["tag1", "tag2"],
+    link: "/product/1",
+    variants: DEMO_VARIANTS,
+    variantType: "image",
+    sizes: ["XS", "S", "M", "L", "XL"],
+    allOfSizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
+    status: "신제품",
+    rating: "4.4",
+    numberOfReviews: 98,
+    brandName: "Nike",
+  },
+  {
+    id: 2,
+    name: '1" 벨트',
+    description: "클래식 그린",
+    price: 132513251325,
+    image: productImgs[1],
+    category: "Category 1",
+    tags: ["tag1", "tag2"],
+    link: "/product/1",
+    variants: DEMO_VARIANT_COLORS,
+    variantType: "color",
+    status: "50% 할인",
+    rating: "4.9",
+    numberOfReviews: 98,
+    brandName: "Nike",
+  },
+  {
+    id: 3,
+    name: "와플 니트 비니",
+    description: "뉴 블루 아쿠아",
+    price: 132512351325,
+    image: productImgs[15],
+    category: "Category 1",
+    tags: ["tag1", "tag2"],
+    link: "/product/1",
+    variants: DEMO_VARIANTS,
+    variantType: "image",
+    sizes: ["S", "M", "L", "XL"],
+    allOfSizes: ["S", "M", "L", "XL", "2XL", "3XL"],
+    rating: "4.9",
+    numberOfReviews: 98,
+    brandName: "Nike",
+  },
+  {
+    id: 4,
+    name: "여행용 반려동물 캐리어",
+    description: "다크 핑크 2023",
+    price: 573463546,
+    image: productImgs[3],
+    category: "Category 1",
+    tags: ["tag1", "tag2"],
+    variants: DEMO_VARIANT_COLORS,
+    variantType: "color",
+    link: "/product/1",
+    status: "품절",
+    rating: "4.9",
+    numberOfReviews: 98,
+    brandName: "Nike",
+  },
+  {
+    id: 5,
+    name: "가죽 장갑",
+    description: "퍼펙트 민트 그린",
+    price: 465746574,
+    image: productImgs[4],
+    category: "Category 1",
+    tags: ["tag1", "tag2"],
+    variants: DEMO_VARIANTS,
+    variantType: "image",
+    sizes: ["XS", "S", "M", "L", "XL"],
+    allOfSizes: ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
+    link: "/product/1",
+    rating: "4.9",
+    numberOfReviews: 98,
+    brandName: "zara",
+  },
+  {
+    id: 6,
+    name: "후디 스웨트셔츠",
+    description: "2023년 뉴디자인",
+    price: 46574567,
+    image: productImgs[5],
+    category: "Category 1",
+    tags: ["tag1", "tag2"],
+    variantType: "color",
+    variants: DEMO_VARIANT_COLORS,
+    link: "/product/1",
+    rating: "4.9",
+    numberOfReviews: 98,
+    brandName: "zara",
+  },
+  {
+    id: 7,
+    name: "울 캐시미어 재킷",
+    description: "매트 블랙",
+    price: 467456745,
+    image: productImgs[8],
+    category: "Category 1",
+    tags: ["tag1", "tag2"],
+    variants: DEMO_VARIANTS,
+    variantType: "image",
+    link: "/product/1",
+    status: "신제품",
+    rating: "4.9",
+    numberOfReviews: 98,
+    brandName: "zara",
   },
 ];

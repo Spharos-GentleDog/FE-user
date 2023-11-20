@@ -255,6 +255,38 @@ const CheckoutPage = () => {
     );
   };
 
+  const renderBrandPay = () => {
+    return (
+      <div className="text-sm flex justify-end items-end">
+        <div className="w-full max-w-[150px] lg:max-w-[200px]">
+          <div className="flex justify-between py-2.5">
+            <span>상품 가격</span>
+            <span className="font-semibold text-slate-900 dark:text-slate-200">
+              249,000
+            </span>
+          </div>
+          <div className="flex justify-between py-2.5">
+            <span>배송비</span>
+            <span className="font-semibold text-slate-900 dark:text-slate-200">
+              50,000
+            </span>
+          </div>
+          {/* <div className="flex justify-between py-2.5">
+          <span>할인 합계</span>
+          <span className="font-semibold text-slate-900 dark:text-slate-200">
+          - 24,000
+          </span>
+          </div>
+          <div className="flex justify-between font-semibold text-slate-900 dark:text-slate-200 text-base pt-4">
+          <span>결제 합계</span>
+          <span>276,000</span>
+        </div> */}
+        </div>
+      </div>
+    )
+      };
+
+      
   return (
     <div className="nc-CheckoutPage">
       <main className="container py-16 lg:pb-28 lg:pt-20 ">
@@ -283,19 +315,19 @@ const CheckoutPage = () => {
           <div className="w-full lg:w-[60%] xl:w-[55%]">
             {/* <h3 className="text-lg font-semibold ">주문 목록</h3> */}
 
-            {/* 상품 표시 todo: 브랜드 별로 표시, 각 상품마다 쿠폰 적용, 수량 버튼 삭제, 브랜드별 가격 표시 */}
-            <div className="mb-8 divide-y divide-slate-200/70 dark:divide-slate-700 ">
-              <h3 className="text-base font-medium mb-4">브랜드 이름dsafafd</h3>
-              {[PRODUCTS[0], PRODUCTS[2], PRODUCTS[3]].map(renderProduct)}
-            </div>
-            <div className="mb-8 divide-y divide-slate-200/70 dark:divide-slate-700 ">
-              <h3 className="text-base font-medium mb-4">브랜드 이름dsafafd</h3>
-              {[PRODUCTS[0], PRODUCTS[2], PRODUCTS[3]].map(renderProduct)}
-            </div>
-            <div className="mb-8 divide-y divide-slate-200/70 dark:divide-slate-700 ">
-              <h3 className="text-base font-medium mb-4">브랜드 이름dsafafd</h3>
-              {[PRODUCTS[0], PRODUCTS[2], PRODUCTS[3]].map(renderProduct)}
-            </div>
+            {/* 상품 표시 todo: 각 상품마다 쿠폰 적용 */}
+            {/* 브랜드 별로 상품 출력 */}
+            {/* {Object.keys(groupedProducts).map((brand) => (
+              <div key={brand}>
+                <div className="mb-8 divide-y divide-slate-200/70 dark:divide-slate-700 ">
+                  <h3 className="text-lg font-semibold mb-4">{brand}</h3>
+                  {groupedProducts[brand].map((product, index) =>
+                    renderProduct(product, index)
+                  )}
+                  {renderBrandPay()}
+                </div>
+              </div>
+            ))} */}
           </div>
 
           <div className="flex-shrink-0 border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-700 my-10 lg:my-0 lg:mx-10 xl:mx-14 2xl:mx-16 "></div>
