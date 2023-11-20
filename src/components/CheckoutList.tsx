@@ -7,12 +7,19 @@ import { applyDiscounts } from "@/utils/applyDiscounts";
 import { groupProductsByBrand } from "@/utils/groupProductsByBrand";
 import { useEffect, useState } from "react";
 import Icon from "./Icon";
+import Label from "@/components/Label/Label";
 import RenderProduct from "./RenderProduct";
+import Input from "@/shared/Input/Input";
+import ShippingAddress from "@/app/checkout/ShippingAddress";
+import Payment from "./Payment";
+import { useSession } from "next-auth/react";
+import { PaymentByProductList } from "@/types/payment/payment";
+import { paymentProductList } from "@/data/paymentProductList";
 
 /**
  * 장바구니 상품 출력
  */
-export default function CartList() {
+export default function CheckoutList() {
   const [cartBrandProducts, setCartBrandProducts] =
     useState<CartBrandProductsType>();
   const [checkoutInfo, setCheckoutInfo] = useState<{
@@ -26,10 +33,82 @@ export default function CartList() {
     discountTotalString: "",
     totalPriceString: "",
   });
-  const [isBrandChecked, setIsBrandChecked] = useState<Record<string, boolean>>(
-    {}
-  );
-  const [isAllChecked, setIsAllChecked] = useState(false);
+  const session = useSession();
+  const [paymentProduct, setPaymentProduct] = useState<PaymentByProductList[]>(
+    []
+  ); // 결제할 상품들
+  const [paymentClicked, setPaymentClicked] = useState(false);
+  const [price, setPrice] = useState(9999);
+
+//   todo: 브랜드 별 금액 출력
+  const renderBrandPay = () => {
+    return (
+      <div className="text-sm flex justify-end items-end">
+        <div className="w-full max-w-[150px] lg:max-w-[200px]">
+          <div className="flex justify-between py-2.5">
+            <span>상품 가격</span>
+            <span className="font-semibold text-slate-900 dark:text-slate-200">
+              249,000
+            </span>
+          </div>
+          <div className="flex justify-between py-2.5">
+            <span>배송비</span>
+            <span className="font-semibold text-slate-900 dark:text-slate-200">
+              50,000
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  /**
+   * 스크롤 이동
+   */
+  const handleScrollToEl = (id: string) => {
+    const element = document.getElementById(id);
+    setTimeout(() => {
+      element?.scrollIntoView({ behavior: "smooth" });
+    }, 80);
+  };
+
+  const handlePayment = (data: boolean) => {
+    if (session.status === "authenticated") {
+      setPaymentClicked(data);
+      setPrice(100000);
+      setPaymentProduct(paymentProductList);
+      localStorage.setItem(
+        "paymentProduct",
+        JSON.stringify(paymentProductList)
+      );
+    } else {
+      // todo: 비회원 결제 하기 위한 페이지로 이동
+      alert("로그인이 필요합니다.");
+    }
+  };
+
+  const renderLeft = () => {
+    return (
+      <div className="space-y-8">
+        <div id="ShippingAddress" className="scroll-mt-24">
+          <ShippingAddress
+            onOpenActive={() => {
+              handleScrollToEl("ShippingAddress");
+            }}
+          />
+        </div>
+
+        <div id="PaymentMethod" className="scroll-mt-24">
+          <Payment
+            paymentClicked={paymentClicked}
+            setPaymentClicked={setPaymentClicked}
+            paymentProduct={paymentProduct}
+            price={price}
+          />
+        </div>
+      </div>
+    );
+  };
 
   /** 체크된 상품 주문 정보 */
   const calculateCheckoutInfo = () => {
@@ -75,25 +154,6 @@ export default function CartList() {
     }
 
     return { originalTotalPrice, deliveryFee, discountTotal, totalPrice };
-  };
-
-  /**
-   * 상품 수량 변경 핸들러
-   * @param productDetailId 상품 상세 아이디
-   * @returns 상품 수량 변경
-   */
-  const handleCountChange = (productDetailId: number, newCount: number) => {
-    setCartBrandProducts((prevState) => {
-      const newState = { ...prevState };
-      for (const brand in newState) {
-        newState[brand] = newState[brand].map((product) =>
-          product.productDetailId === productDetailId
-            ? { ...product, count: newCount }
-            : product
-        );
-      }
-      return newState;
-    });
   };
 
   // 상품 정보 패칭
@@ -150,156 +210,54 @@ export default function CartList() {
       }),
     });
     // console.log('cartBrandProducts', cartBrandProducts)
-  }, [isAllChecked, isBrandChecked, cartBrandProducts]);
-
-  /** 개별 체크박스 상태 변경 핸들러 */
-  const handleItemCheck = (checked: boolean, productDetailId: number) => {
-    setCartBrandProducts((prevState) => {
-      const newState = { ...prevState };
-
-      for (const brand in newState) {
-        newState[brand] = newState[brand].map((product) =>
-          product.productDetailId === productDetailId
-            ? { ...product, isChecked: checked }
-            : product
-        );
-      }
-
-      return newState;
-    });
-  };
-
-  /** 브랜드별 체크박스 상태 변경 핸들러 */
-  const handleBrandCheck = (checked: boolean, brandName: string) => {
-    setCartBrandProducts((prevState) => {
-      const newState = { ...prevState };
-
-      if (newState[brandName]) {
-        newState[brandName] = newState[brandName].map((product) => ({
-          ...product,
-          isChecked: checked,
-        }));
-      }
-
-      return newState;
-    });
-    setIsBrandChecked((prev) => ({ ...prev, [brandName]: checked }));
-  };
-
-  /** 전체 선택 체크박스 상태 변경 핸들러 */
-  const handleAllCheck = (checked: boolean) => {
-    setCartBrandProducts((prevState) => {
-      const newState = { ...prevState };
-
-      Object.keys(newState).forEach((brandName) => {
-        newState[brandName] = newState[brandName].map((product) => ({
-          ...product,
-          isChecked: checked,
-        }));
-      });
-      return newState;
-    });
-
-    setIsAllChecked(checked);
-  };
-
-  /**  개별 체크박스 상태에 따라 전체 선택 체크박스 상태 갱신*/
-  useEffect(() => {
-    if (cartBrandProducts) {
-      // 브랜드별 체크 상태 업데이트
-      const newIsBrandChecked: Record<string, boolean> = {};
-      Object.keys(cartBrandProducts).forEach((brandName) => {
-        newIsBrandChecked[brandName] = cartBrandProducts[brandName].every(
-          (product) => product.isChecked
-        );
-      });
-      setIsBrandChecked(newIsBrandChecked);
-
-      // 전체 선택 체크박스 상태 업데이트
-      const allChecked = Object.values(cartBrandProducts)
-        .flat()
-        .every((product) => product.isChecked);
-      setIsAllChecked(allChecked);
-    }
-  }, [cartBrandProducts]);
-
-  /** 체크된 상품들 삭제 */
-  const handleCheckedDelete = (cartBrandProducts: CartBrandProductsType) => {
-    const checkedProductIds = Object.values(cartBrandProducts)
-      .flat()
-      .reduce((acc: number[], product: CartProductType) => {
-        if (product.isChecked) {
-          acc.push(product.productDetailId);
-        }
-        return acc;
-      }, [] as number[]);
-
-    console.log(checkedProductIds);
-  };
-  /** 개별 상품 삭제 */
-  const handleItemDelete = (productDetailId: number) => {
-    // console.log(productDetailId);
-  };
+  }, []);
 
   return (
     <>
       <div className="w-full md:w-[60%] xl:w-[55%] ">
-        <div className="flex justify-between">
-          <Checkbox
-            name="cart-all"
-            label="전체 선택"
-            labelClassName="text-lg font-bold"
-            className="mb-4 flex items-center"
-            isChecked={isAllChecked}
-            onChange={(checked) => handleAllCheck(checked)}
-          />
-          <button
-            className="flex"
-            onClick={() =>
-              cartBrandProducts && handleCheckedDelete(cartBrandProducts)
-            }
-          >
-            <div className="font-semibold text-base text-blue-500 dark:text-slate-200">선택 삭제</div>
-          </button>
-        </div>
         {cartBrandProducts &&
           Object.entries(cartBrandProducts).map(([brandName, items]) => (
             <div
               key={`cart-${brandName}`}
               className="border-[1px] p-4 mb-2 divide-y divide-slate-200 dark:divide-slate-700"
             >
-              <Checkbox
-                name={`cart-${brandName}`}
-                label={brandName}
-                labelClassName="break-keep text-base font-semibold"
-                className="mb-4 flex items-center"
-                isChecked={isBrandChecked[brandName]}
-                onChange={(checked) => handleBrandCheck(checked, brandName)}
-              />
+                <div>{brandName}</div>
               {items.map((item) => (
-                <RenderProduct
+                  <RenderProduct
                   key={`cart-${item.productDetailId}`}
                   item={item}
                   isChecked={item.isChecked}
-                  onItemCheck={(checked) =>
-                    handleItemCheck(checked, item.productDetailId)
-                  }
-                  onCountChange={(newCount) =>
-                    handleCountChange(item.productDetailId, newCount)
-                  }
-                  onItemDelete={() => handleItemDelete(item.productDetailId)}
-                />
-              ))}
+                  />
+                  ))}
+                  <div className="p-4">{renderBrandPay()}</div>   
             </div>
           ))}
       </div>
       <div className="border-t md:border-t-0 md:border-l border-slate-200 dark:border-slate-700 my-10 md:my-0 md:mx-10 xl:mx-16 2xl:mx-20 flex-shrink-0"></div>
 
       <div className="flex-1">
+        <div className="flex-1 mt-8">{renderLeft()}</div>
+
         <div className="sticky top-28">
-          <h3 className="text-lg font-semibold ">주문 정보</h3>
+          <h3 className="text-lg font-semibold ">결제 정보</h3>
           <div className="mt-7 text-sm text-slate-500 dark:text-slate-400 divide-y divide-slate-200/70 dark:divide-slate-700/80">
-            <div className="flex justify-between pb-4">
+            <div className="pb-4">
+              <div className="flex justify-between px-2">
+                <Label className="text-sm">보유 포인트</Label>
+                {/* todo: 보유 포인트 조회 */}
+                <div>1,605 P</div>
+              </div>
+              <div className="flex mt-1.5">
+                <Input sizeClass="h-10 px-4 py-3" className="flex-1" />
+                <button
+                  onClick={() => {}}
+                  className="text-neutral-700 dark:text-neutral-200 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 rounded-2xl px-4 ml-3 font-medium text-sm bg-neutral-200/70 dark:bg-neutral-700 dark:hover:bg-neutral-800 w-24 flex justify-center items-center transition-colors"
+                >
+                  사용
+                </button>
+              </div>
+            </div>
+            <div className="flex justify-between py-4">
               <span>상품 가격</span>
               <span className="font-semibold text-slate-900 dark:text-slate-200">
                 {checkoutInfo.originalTotalPriceString}
@@ -324,8 +282,11 @@ export default function CartList() {
               <span>{checkoutInfo.totalPriceString}</span>
             </div>
           </div>
-          <ButtonPrimary href="/checkout" className="mt-8 w-full">
-            주문하기
+          <ButtonPrimary
+            onClick={() => handlePayment(true)}
+            className="mt-8 w-full"
+          >
+            결제하기
           </ButtonPrimary>
           <div className="mt-5 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-center">
             <p className="block relative pl-5">
