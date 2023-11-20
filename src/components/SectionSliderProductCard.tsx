@@ -4,8 +4,8 @@ import React, { FC, useEffect, useId, useRef, useState } from "react";
 import Heading from "@/components/Heading/Heading";
 // @ts-ignore
 import Glide from "@glidejs/glide/dist/glide.esm";
+import { ProductList } from "@/types/product/productList";
 import ProductCard from "./ProductCard";
-import { Product, PRODUCTS } from "@/data/data";
 
 export interface SectionSliderProductCardProps {
   className?: string;
@@ -14,7 +14,7 @@ export interface SectionSliderProductCardProps {
   headingFontClassName?: string;
   headingClassName?: string;
   subHeading?: string;
-  data?: Product[];
+  category?: string;
 }
 
 /**
@@ -35,52 +35,77 @@ const SectionSliderProductCard: FC<SectionSliderProductCardProps> = ({
   headingClassName,
   heading,
   subHeading = "",
-  data = PRODUCTS.filter((_, i) => i < 8 && i > 2),
+  category = "new",
 }) => {
   const sliderRef = useRef(null);
 
   //
   const [isShow, setIsShow] = useState(false);
+  const [productData, setProductData] = useState<ProductList[]>([]);
 
   useEffect(() => {
-    /**
-     * 슬라이더 옵션
-     */
-    const OPTIONS: Partial<Glide.Options> = {
-      // direction: document.querySelector("html")?.getAttribute("dir") || "ltr",
-      perView: 4,
-      gap: 32,
-      bound: true,
-      breakpoints: {
-        1280: {
-          perView: 4 - 1,
-        },
-        1024: {
-          gap: 20,
-          perView: 4 - 1,
-        },
-        768: {
-          gap: 20,
-          perView: 4 - 2,
-        },
-        640: {
-          gap: 20,
-          perView: 1.5,
-        },
-        500: {
-          gap: 20,
-          perView: 1.3,
-        },
-      },
-    };
-    if (!sliderRef.current) return;
+    const getData = async () => {
+      if (category === "new") {
 
-    let slider = new Glide(sliderRef.current, OPTIONS);
-    slider.mount();
-    setIsShow(true);
-    return () => {
-      slider.destroy();
-    };
+        try {
+          const res = await fetch("https://653230c34d4c2e3f333dbc82.mockapi.io/product");
+          const data = await res.json();
+          setProductData(data);
+        } catch (error) {
+          console.log('Error Fetch : ', error);
+        }
+      } else if (category === "best") {
+        try {
+          const res = await fetch("https://653230c34d4c2e3f333dbc82.mockapi.io/product");
+          const data = await res.json();
+          setProductData(data);
+        } catch (error) {
+          console.log('Error Fetch : ', error);
+        }
+      }
+
+    }
+
+    getData().then(() => {
+      const OPTIONS: Partial<Glide.Options> = {
+        // direction: document.querySelector("html")?.getAttribute("dir") || "ltr",
+        perView: 4,
+        gap: 32,
+        bound: true,
+        breakpoints: {
+          1280: {
+            perView: 4 - 1,
+          },
+          1024: {
+            gap: 20,
+            perView: 4 - 1,
+          },
+          768: {
+            gap: 20,
+            perView: 4 - 2,
+          },
+          640: {
+            gap: 20,
+            perView: 1.5,
+          },
+          500: {
+            gap: 20,
+            perView: 1.3,
+          },
+        },
+      };
+      if (!sliderRef.current) return;
+
+      let slider = new Glide(sliderRef.current, OPTIONS);
+      slider.mount();
+      setIsShow(true);
+      return () => {
+        slider.destroy();
+      };
+    });
+
+    getData();
+
   }, [sliderRef]);
 
   return (
@@ -96,12 +121,17 @@ const SectionSliderProductCard: FC<SectionSliderProductCardProps> = ({
         </Heading>
         <div className="glide__track" data-glide-el="track">
           <ul className="glide__slides">
-            {/* todo: 상품 카드 데이터 패칭 */}
-            {data.map((item, index) => (
-              <li key={index} className={`glide__slide ${itemClassName}`}>
-                <ProductCard data={item} />
-              </li>
-            ))}
+            {
+              productData
+                ?
+                productData && productData.map((item, index) => (
+                  <li key={index} className={`glide__slide ${itemClassName}`}>
+                    <ProductCard data={item} />
+                  </li>
+                ))
+                :
+                ""
+            }
           </ul>
         </div>
       </div>

@@ -19,7 +19,7 @@ export default function RenderProduct({
 }: {
   item: CartProductType;
   onItemCheck: (checked: boolean) => void;
-  onCountChange?: (id: number, count: number) => void;
+  onCountChange?: (count: number) => void;
   newCount?: number;
   isChecked: boolean;
 }) {
@@ -100,13 +100,16 @@ export default function RenderProduct({
                   }
                   className="mt-0.5"
                 />
+                
               </div>
             </div>
             <div className="hidden sm:block text-center relative pt-4">
               <NcInputNumber
                 defaultValue={item.count}
                 className="relative z-10"
-                onCountChange={(newCount) => onCountChange && onCountChange(item.productDetailId, newCount)}
+                onCountChange={(newCount) =>
+                  onCountChange && onCountChange(newCount)
+                }
               />
             </div>
           </div>

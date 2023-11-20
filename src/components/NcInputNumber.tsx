@@ -35,7 +35,6 @@ const NcInputNumber: FC<NcInputNumberProps> = ({
   const handleClickDecrement = () => {
     if (min < defaultValue) {
       const newCount = defaultValue - 1;
-      console.log('newCount', newCount);
       onCountChange && onCountChange(newCount);
     }
   };
@@ -43,7 +42,6 @@ const NcInputNumber: FC<NcInputNumberProps> = ({
   const handleClickIncrement = () => {
     if (max > defaultValue) {
       const newCount = defaultValue + 1;
-      console.log('newCount', newCount);
       onCountChange && onCountChange(newCount);
     }
   };

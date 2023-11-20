@@ -129,3 +129,4 @@ const SectionSliderProductCard: FC<SectionSliderProductCardProps> = ({
 };
 
 export default SectionSliderProductCard;
+

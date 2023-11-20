@@ -44,6 +44,28 @@ export interface Product {
   brandName?: string;
 }
 
+export interface Product2 {
+  productId: number;
+  productName: string;
+  productPrice: number;
+  ProductImage: StaticImageData | string;
+  brandName: string;
+  discountRate: number;
+  discountType: number;
+  productCode: string;
+  categoryName: string;
+  variants?: ProductVariant[];
+  variantType?: "color";
+  colorName?: string[];
+  sizeName?: string[];
+  allOfSizes?: string[];
+  // status?: "신제품" | "리미티드 에디션" | "품절" | "50% 할인";
+  productReviewCount: number; // 리뷰 개수
+  productTotalRating: number;
+  productStock: number;   // 품절 여부를 판단하기 위한 재고 수량
+}
+
+
 const DEMO_VARIANTS: ProductVariant[] = [
   {
     id: 1,
@@ -80,7 +102,7 @@ const DEMO_VARIANTS: ProductVariant[] = [
  * Fake data
  * 컬러별로 이미지가 다른 경우
  */
-const DEMO_VARIANT_COLORS: ProductVariant[] = [
+export const DEMO_VARIANT_COLORS: ProductVariant[] = [
   {
     id: 1,
     name: "Violet",
@@ -112,6 +134,7 @@ const DEMO_VARIANT_COLORS: ProductVariant[] = [
     featuredImage: productImgs[4],
   },
 ];
+
 /**
  * Fake data
  * TODO: Replace with real data

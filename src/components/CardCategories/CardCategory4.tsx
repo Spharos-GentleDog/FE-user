@@ -1,19 +1,9 @@
 import React, { FC } from "react";
 import NcImage from "@/shared/NcImage/NcImage";
-import explore1Svg from "@/images/collections/explore1.svg";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
-import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
+import image from "@/images/logo-name.svg"
 
-export interface CardCategory4Props {
-  className?: string;
-  featuredImage?: StaticImageData | string;
-  bgSVG?: string;
-  name: string;
-  desc: string;
-  color?: string;
-  count?: number;
-}
 
 /**
  * 카테고리 별 상품 카드
@@ -21,35 +11,34 @@ export interface CardCategory4Props {
  * @param desc 카테고리 설명
  * @param count 카테고리에 속한 상품 개수
  */
-const CardCategory4: FC<CardCategory4Props> = ({
-  className = "",
-  featuredImage = ".",
-  bgSVG = explore1Svg,
-  name,
-  desc,
+const CardCategory4: FC<any> = ({
+  categoryId,
+  categoryName,
+  categoryProductCount,
   color = "bg-rose-50",
-  count,
+}: {
+  categoryId: number,
+  categoryName: string,
+  categoryProductCount: number,
+  featuredImage: string,
+  color: string
 }) => {
   return (
     <div
-      className={`nc-CardCategory4 relative w-full aspect-w-12 aspect-h-11 h-0 rounded-3xl overflow-hidden bg-white dark:bg-neutral-900 group hover:nc-shadow-lg transition-shadow ${className}`}
+      className={`nc-CardCategory4 relative w-full aspect-w-12 aspect-h-11 h-0 rounded-3xl overflow-hidden bg-white dark:bg-neutral-900 group hover:nc-shadow-lg transition-shadow`}
     >
       <div>
-        <div className="absolute bottom-0 right-0 max-w-[280px] opacity-80">
-          <Image src={bgSVG} alt="" />
-        </div>
-
         <div className="absolute inset-5 sm:inset-8 flex flex-col justify-between">
           <div className="flex justify-between items-center">
             <NcImage
               alt=""
-              src={featuredImage}
+              src={image}
               containerClassName={`w-20 h-20 rounded-full overflow-hidden z-0 ${color}`}
               width={80}
               height={80}
             />
             <span className="text-xs text-slate-700 dark:text-neutral-300 font-medium">
-              {count} 개 제품들
+              {categoryProductCount} 개 제품들
             </span>
           </div>
 
@@ -57,9 +46,8 @@ const CardCategory4: FC<CardCategory4Props> = ({
             <span
               className={`block mb-2 text-sm text-slate-500 dark:text-slate-400`}
             >
-              {desc}
             </span>
-            <h2 className={`text-2xl sm:text-3xl font-semibold`}>{name}</h2>
+            <h2 className={`text-2xl sm:text-3xl font-semibold`}>{categoryName}</h2>
           </div>
 
           <Link

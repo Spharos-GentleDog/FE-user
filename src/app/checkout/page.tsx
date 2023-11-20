@@ -1,27 +1,25 @@
 'use client';
 
 import Label from '@/components/Label/Label';
-import NcInputNumber from '@/components/NcInputNumber';
 import Prices from '@/components/Prices';
 import { Product, PRODUCTS } from '@/data/data';
 import { useState } from 'react';
 import ButtonPrimary from '@/shared/Button/ButtonPrimary';
 import Input from '@/shared/Input/Input';
 import ContactInfo from './ContactInfo';
-import PaymentMethod from './PaymentMethod';
 import ShippingAddress from './ShippingAddress';
 import Image from 'next/image';
 import Link from 'next/link';
 import Icon from '@/components/Icon';
-import ModalAddress from '@/components/ModalAddress';
+import Payment from '@/components/Payment';
+import { PaymentByProductList } from '@/types/payment/payment';
+import { paymentProductList } from '@/data/paymentProductList';
 
 const CheckoutPage = () => {
   /**
    * 현재 탭
    */
-  const [tabActive, setTabActive] = useState<
-    'ContactInfo' | 'ShippingAddress' | 'PaymentMethod' | null
-  >(null);
+  const [tabActive, setTabActive] = useState<'ContactInfo' | 'ShippingAddress' | 'PaymentMethod' | null>(null);
 
   // const [isModalAddress, setIsModalAddress] = useState(false);
 
@@ -121,6 +119,15 @@ const CheckoutPage = () => {
       </div>
     );
   };
+  const [paymentProduct, setPaymentProduct] = useState<PaymentByProductList[]>([]); // 결제할 상품들
+  const [paymentClicked, setPaymentClicked] = useState(false);
+  const [price, setPrice] = useState(9999);
+
+  const handlePayment = (data: boolean) => {
+    setPaymentClicked(data);
+    setPrice(100000)
+    localStorage.setItem('paymentProduct', JSON.stringify(paymentProductList));
+  }
 
   // todo: 모달창으로 띄우고 기능 구현
   /**
@@ -152,17 +159,7 @@ const CheckoutPage = () => {
         </div>
 
         <div id="PaymentMethod" className="scroll-mt-24">
-          <PaymentMethod
-            isActive={tabActive === 'PaymentMethod'}
-            onOpenActive={() => {
-              setTabActive('PaymentMethod');
-              handleScrollToEl('PaymentMethod');
-            }}
-            onCloseActive={() => {
-              setTabActive(null);
-              handleScrollToEl('ContactInfo');
-            }}
-          />
+          <Payment paymentClicked={paymentClicked} setPaymentClicked={setPaymentClicked} paymentProduct={paymentProduct} price={price} />
         </div>
       </div>
     );
@@ -180,6 +177,7 @@ const CheckoutPage = () => {
     // props 추가
     return (
       <>
+
         <h3 className="text-lg font-semibold ">결제 정보</h3>
 
         <div className="text-sm mt-8">
@@ -190,9 +188,9 @@ const CheckoutPage = () => {
               <div>1,605 P</div>
             </div>
             <div className="flex mt-1.5">
-              <Input sizeClass="h-10 px-4 py-3" className="flex-1"/>
+              <Input sizeClass="h-10 px-4 py-3" className="flex-1" />
               <button
-                onClick={() => {}}
+                onClick={() => { }}
                 className="text-neutral-700 dark:text-neutral-200 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 rounded-2xl px-4 ml-3 font-medium text-sm bg-neutral-200/70 dark:bg-neutral-700 dark:hover:bg-neutral-800 w-24 flex justify-center items-center transition-colors"
               >
                 사용
@@ -226,7 +224,7 @@ const CheckoutPage = () => {
         </div>
 
         {/* 결제하기 버튼 */}
-        <ButtonPrimary className="mt-8 w-full">결제하기</ButtonPrimary>
+        <ButtonPrimary className="mt-8 w-full" onClick={() => handlePayment(true)}>결제하기</ButtonPrimary>
         <div className="mt-5 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-center">
           <p className="block relative pl-5">
             <Icon type="exclamation" />
@@ -334,7 +332,7 @@ const CheckoutPage = () => {
 
           <div className="flex-shrink-0 border-t lg:border-t-0 lg:border-l border-slate-200 dark:border-slate-700 my-10 lg:my-0 lg:mx-10 xl:mx-14 2xl:mx-16 "></div>
 
-          <div className="w-full lg:w-[36%]">
+          <div className="w-full lg:w-[50%]">
             <h3 className="text-lg font-semibold ">주문자 정보</h3>
 
             <div className="flex-1 mt-8">{renderLeft()}</div>

@@ -5,15 +5,16 @@ import Input from '@/shared/Input/Input';
 import { LoginFormDataType } from '@/types/formDataType';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react'
 import toast from 'react-hot-toast';
-import LoginToast from './LoginToast';
+import Toast from './Toast';
 
 function LoginForm() {
 
   const query = useSearchParams();
   const callBackUrl = query.get('callbackUrl');
+  const router = useRouter();
 
   // 이메일 정규식
   const emailRegEx = /^[A-Za-z0-9]([-_.]?[A-Za-z0-9])*@[A-Za-z0-9]([-_.]?[A-Za-z0-9])*\.[A-Za-z]{2,3}$/;
@@ -56,16 +57,18 @@ function LoginForm() {
 
     try {
       const result = await signIn('credentials', {
-        loginEmail: loginData.loginEmail,
+        userEmail: loginData.loginEmail,
         password: loginData.password,
         redirect: false,
         callbackUrl: callBackUrl ? callBackUrl : '/'
       });
-      console.log(result);
+      // console.log(result);
       if (result?.status !== 200) {
         toast.custom((t) => (
-          <LoginToast message='존재하지않음' />
+          <Toast message='아이디 및 비밀번호를 확인 후 다시 시도해주세요.' />
         ));
+      } else {
+        router.push('/');
       }
     } catch (error) {
       console.log(error);

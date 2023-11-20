@@ -16,10 +16,9 @@ import RenderProduct from './RenderProduct';
 // 1. 전체 선택을 누르면 배송비가 올라가지만 브랜드 선택을 눌러서는 배송비가 올라가지 않음
 // 개별 상품만 눌러도 배송비가 올라가지 않음 올라가도록 해야됨
 // 2. 상품 수량 변경이 현재 되지않음
-// cartBrandProducts 상태가 변경되지 않아서 그런듯 
+// cartBrandProducts 상태가 변경되지 않아서 그런듯
 // 3. 상품 원래 체크 되어있지 않은 상품을 체크하고 수량을 변경하면 체크가 풀림
 // 체크 여부는 cartBrandProducts 상태에 따라 결정되어야하는데 현재는 따로 체크 상태를 관리하고 있어서 문제
-
 
 /**
  * 장바구니 상품 출력
@@ -38,7 +37,9 @@ export default function CartList() {
     discountTotalString: '',
     totalPriceString: '',
   });
-  const [checkedItems, setCheckedItems] = useState<Record<number, boolean>>({});
+  const [isBrandChecked, setIsBrandChecked] = useState<Record<string, boolean>>(
+    {}
+  );
   const [isAllChecked, setIsAllChecked] = useState(false);
 
   /** 체크된 상품 주문 정보 */
@@ -49,40 +50,41 @@ export default function CartList() {
     let totalPrice = 0;
     const freeShippingThreshold = 50000;
     const deliveryFeePerBrand = 3000;
-
+  
     if (cartBrandProducts) {
       Object.values(cartBrandProducts).forEach((brandItems) => {
         let brandTotalPrice = 0;
-        let isBrandChecked = false;
-
+        let brandHasCheckedItem = false; // 브랜드 내 체크된 상품이 있는지 확인
+  
         brandItems.forEach((item) => {
-          if (checkedItems[item.productDetailId]) {
-            isBrandChecked = true;
+          if (item.isChecked) {
+            brandHasCheckedItem = true; // 체크된 상품이 있으면 true로 설정
             const originalPrice = item.price * item.count;
             originalTotalPrice += originalPrice;
-
+  
             const discountAmount = item.discountedPrice
               ? originalPrice - item.discountedPrice * item.count
               : 0;
             discountTotal += discountAmount;
-
+  
             const priceToUse = item.discountedPrice
               ? item.discountedPrice
               : item.price;
             totalPrice += priceToUse * item.count;
-
+  
             brandTotalPrice += priceToUse * item.count;
           }
         });
-
-        if (isBrandChecked && brandTotalPrice < freeShippingThreshold) {
+  
+        // 브랜드별로 체크된 상품이 있고, 그 총액이 무료 배송 기준 미만일 때만 배송비 추가
+        if (brandHasCheckedItem && brandTotalPrice < freeShippingThreshold) {
           deliveryFee += deliveryFeePerBrand;
         }
       });
-
+  
       totalPrice += deliveryFee;
     }
-
+  
     return { originalTotalPrice, deliveryFee, discountTotal, totalPrice };
   };
 
@@ -122,10 +124,8 @@ export default function CartList() {
         );
         if (!res.ok) throw new Error(res.statusText);
 
-        // console.log(cartProducts);
         const cartProducts = await res.json();
         const discountedCartProducts = applyDiscounts(cartProducts);
-        // console.log(discountedCartProducts);
         /**
          * 브랜드별 상품 그룹핑
          */
@@ -161,70 +161,78 @@ export default function CartList() {
       }),
     });
     // console.log('cartBrandProducts', cartBrandProducts)
-  }, [checkedItems, cartBrandProducts]);
+  }, [isAllChecked, isBrandChecked, cartBrandProducts]);
 
   /** 개별 체크박스 상태 변경 핸들러 */
   const handleItemCheck = (checked: boolean, productDetailId: number) => {
-    const newCheckedItems = { ...checkedItems, [productDetailId]: checked };
-    setCheckedItems(newCheckedItems);
+    setCartBrandProducts((prevState) => {
+      const newState = { ...prevState };
 
-    /** 모든 개별 체크박스가 체크되었는지 확인하여 전체 선택 체크박스 상태 갱신 */
-    setIsAllChecked(Object.values(newCheckedItems).every(Boolean));
-  };
+      for (const brand in newState) {
+        newState[brand] = newState[brand].map((product) =>
+          product.productDetailId === productDetailId
+            ? { ...product, isChecked: checked }
+            : product
+        );
+      }
 
-  /** 전체 선택 체크박스 상태 변경 핸들러 */
-  const handleAllCheck = (checked: boolean) => {
-    const newCheckedItems: Record<number, boolean> = {};
-    if (cartBrandProducts) {
-      Object.values(cartBrandProducts).forEach((brandItems) => {
-        brandItems.forEach((product) => {
-          newCheckedItems[product.productDetailId] = checked;
-        });
-      });
-    }
-    setCheckedItems(newCheckedItems);
-    setIsAllChecked(checked);
+      return newState;
+    });
   };
 
   /** 브랜드별 체크박스 상태 변경 핸들러 */
   const handleBrandCheck = (checked: boolean, brandName: string) => {
-    const newCheckedItems: Record<number, boolean> = { ...checkedItems };
+    setCartBrandProducts((prevState) => {
+      const newState = { ...prevState };
 
-    if (cartBrandProducts && cartBrandProducts[brandName]) {
-      cartBrandProducts[brandName].forEach((product) => {
-        newCheckedItems[product.productDetailId] = checked;
+      if (newState[brandName]) {
+        newState[brandName] = newState[brandName].map((product) => ({
+          ...product,
+          isChecked: checked,
+        }));
+      }
+
+      return newState;
+    });
+    setIsBrandChecked(prev => ({ ...prev, [brandName]: checked }));
+  };
+  
+  /** 전체 선택 체크박스 상태 변경 핸들러 */
+  const handleAllCheck = (checked: boolean) => {
+    setCartBrandProducts((prevState) => {
+      const newState = { ...prevState };
+
+      Object.keys(newState).forEach((brandName) => {
+        newState[brandName] = newState[brandName].map((product) => ({
+          ...product,
+          isChecked: checked,
+        }));
       });
-    }
+      return newState;
+    });
 
-    setCheckedItems(newCheckedItems);
-
-    /** 전체 선택 체크박스 상태 업데이트 */
-    const allChecked = cartBrandProducts
-      ? Object.keys(cartBrandProducts).every((brand) =>
-          cartBrandProducts[brand].every(
-            (product) => newCheckedItems[product.productDetailId]
-          )
-        )
-      : false;
-    setIsAllChecked(allChecked);
+    setIsAllChecked(checked);
   };
 
   /**  개별 체크박스 상태에 따라 전체 선택 체크박스 상태 갱신*/
   useEffect(() => {
-    const initialCheckedState: Record<number, boolean> = {};
     if (cartBrandProducts) {
-      Object.values(cartBrandProducts).forEach((brandItems) => {
-        brandItems.forEach((product) => {
-          initialCheckedState[product.productDetailId] = product.isChecked;
-        });
+      // 브랜드별 체크 상태 업데이트
+      const newIsBrandChecked: Record<string, boolean> = {};
+      Object.keys(cartBrandProducts).forEach((brandName) => {
+        newIsBrandChecked[brandName] = cartBrandProducts[brandName].every(
+          (product) => product.isChecked
+        );
       });
+      setIsBrandChecked(newIsBrandChecked);
+
+      // 전체 선택 체크박스 상태 업데이트
+      const allChecked = Object.values(cartBrandProducts)
+        .flat()
+        .every((product) => product.isChecked);
+      setIsAllChecked(allChecked);
     }
-    setCheckedItems(initialCheckedState); // 개별 체크박스 상태 초기화
-    /**
-     * initialCheckedState의 모든 값이 true이면 전체 선택 체크박스도 true로 설정
-     * every() 메서드는 배열 안의 모든 요소가 주어진 판별 함수를 통과하는지 테스트
-     */
-    setIsAllChecked(Object.values(initialCheckedState).every(Boolean));
+    
   }, [cartBrandProducts]);
 
   return (
@@ -249,9 +257,7 @@ export default function CartList() {
                 label={brandName}
                 labelClassName="break-keep text-base font-semibold"
                 className="mb-4 flex items-center"
-                isChecked={items.every(
-                  (item) => checkedItems[item.productDetailId]
-                )}
+                isChecked={isBrandChecked[brandName]}
                 onChange={(checked) => handleBrandCheck(checked, brandName)}
               />
               {items.map((item) => (
@@ -264,7 +270,7 @@ export default function CartList() {
                   onCountChange={(newCount) =>
                     handleCountChange(item.productDetailId, newCount)
                   }
-                  isChecked={checkedItems[item.productDetailId]}
+                  isChecked={item.isChecked}
                 />
               ))}
             </div>
