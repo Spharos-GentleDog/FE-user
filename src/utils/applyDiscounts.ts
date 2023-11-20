@@ -24,7 +24,13 @@ export const applyDiscounts = (products: GeneralProductType[]) => {
         discountAmount
       };
     }
-    return product; // 할인율이 없는 경우, 상품 정보 변경 없이 반환
+    else{
+      const discountedPrice = product.price
+      return {
+        ...product,
+        discountedPrice,
+      } // 할인율이 없는 경우, 상품 정보 변경 없이 반환
+    };
   });
 };
 
