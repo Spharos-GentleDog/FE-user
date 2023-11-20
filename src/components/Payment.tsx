@@ -46,11 +46,11 @@ function Payment({
         if (paymentClicked) {
             const getData = async () => {
                 const paymentWidget = paymentWidgetRef.current;
-
+                console.log(paymentProduct)
                 try {
                     await paymentWidget?.requestPayment({
                         orderId: nanoid(),
-                        orderName: "토스 티셔츠 외 2건",
+                        orderName: `${paymentProduct[0].productName} 외 ${paymentProduct.length - 1}건`,
                         customerName: "김토스",
                         customerEmail: "customer123@gmail.com",
                         totalAmount: price,
