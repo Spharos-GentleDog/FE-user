@@ -3,7 +3,7 @@
 import Label from '@/components/Label/Label';
 import Prices from '@/components/Prices';
 import { Product, PRODUCTS } from '@/data/data';
-import { useState } from 'react';
+import { createContext, useState } from 'react';
 import ButtonPrimary from '@/shared/Button/ButtonPrimary';
 import Input from '@/shared/Input/Input';
 import ContactInfo from './ContactInfo';
@@ -14,6 +14,7 @@ import Icon from '@/components/Icon';
 import Payment from '@/components/Payment';
 import { PaymentByProductList } from '@/types/payment/payment';
 import { paymentProductList } from '@/data/paymentProductList';
+import { useSession } from 'next-auth/react';
 
 const CheckoutPage = () => {
   /**
@@ -119,14 +120,22 @@ const CheckoutPage = () => {
       </div>
     );
   };
+
+  const session = useSession();
   const [paymentProduct, setPaymentProduct] = useState<PaymentByProductList[]>([]); // 결제할 상품들
   const [paymentClicked, setPaymentClicked] = useState(false);
   const [price, setPrice] = useState(9999);
 
   const handlePayment = (data: boolean) => {
-    setPaymentClicked(data);
-    setPrice(100000)
-    localStorage.setItem('paymentProduct', JSON.stringify(paymentProductList));
+    if (session.status === 'authenticated') {
+      setPaymentClicked(data);
+      setPrice(100000)
+      setPaymentProduct(paymentProductList)
+      localStorage.setItem('paymentProduct', JSON.stringify(paymentProductList));
+    } else {
+      // todo: 비회원 결제 하기 위한 페이지로 이동
+      alert('로그인이 필요합니다.')
+    }
   }
 
   // todo: 모달창으로 띄우고 기능 구현
