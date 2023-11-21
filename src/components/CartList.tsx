@@ -8,8 +8,6 @@ import { groupProductsByBrand } from "@/utils/groupProductsByBrand";
 import { useEffect, useState } from "react";
 import Icon from "./Icon";
 import RenderProduct from "./RenderProduct";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import Button from "@/shared/Button/Button";
 
 /**
  * 장바구니 상품 출력
@@ -123,7 +121,7 @@ export default function CartList() {
         const cartBrandProduct = groupProductsByBrand(discountedCartProducts);
         setCartBrandProducts(cartBrandProduct as CartBrandProductsType);
       } catch (e) {
-        console.error("Failed to fetch acrt products", e);
+        console.error("Failed to fetch cart products", e);
       }
     }
     loadCartProducts();
