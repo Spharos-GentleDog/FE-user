@@ -1,27 +1,29 @@
 "use client";
 
+import ShippingAddress from "@/app/checkout/ShippingAddress";
+import Label from "@/components/Label/Label";
+import { paymentProductList } from "@/data/paymentProductList";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
-import Checkbox from "@/shared/Checkbox/Checkbox";
-import { CartBrandProductsType, CartProductType } from "@/types/productType";
+import Input from "@/shared/Input/Input";
+import { PaymentByProductList } from "@/types/payment/payment";
+import { CheckoutBrandProductsType } from "@/types/productType";
 import { applyDiscounts } from "@/utils/applyDiscounts";
 import { groupProductsByBrand } from "@/utils/groupProductsByBrand";
-import { useEffect, useState } from "react";
-import Icon from "./Icon";
-import Label from "@/components/Label/Label";
-import RenderProduct from "./RenderProduct";
-import Input from "@/shared/Input/Input";
-import ShippingAddress from "@/app/checkout/ShippingAddress";
-import Payment from "./Payment";
 import { useSession } from "next-auth/react";
-import { PaymentByProductList } from "@/types/payment/payment";
-import { paymentProductList } from "@/data/paymentProductList";
+import { useEffect, useState } from "react";
+import Payment from "./Payment";
+import RenderProduct2 from "./RenderProduct2";
+import Icon from "./Icon";
+
+// todo: 현재 체크된 상품 이외에 상품이 표시되거나 하는 문제가 있지만 실제 데이터를 연결할 경우
+// 장바구니에서 상품의 아이디를 받아와서 패칭을 진행하기 때문에 isChecked가 true인 상품만 출력됨
 
 /**
  * 장바구니 상품 출력
  */
 export default function CheckoutList() {
-  const [cartBrandProducts, setCartBrandProducts] =
-    useState<CartBrandProductsType>();
+  const [checkoutBrandProducts, setCheckoutBrandProducts] =
+    useState<CheckoutBrandProductsType>();
   const [checkoutInfo, setCheckoutInfo] = useState<{
     originalTotalPriceString: string;
     deliveryFeeString: string;
@@ -40,27 +42,48 @@ export default function CheckoutList() {
   const [paymentClicked, setPaymentClicked] = useState(false);
   const [price, setPrice] = useState(9999);
 
-//   todo: 브랜드 별 금액 출력
-  const renderBrandPay = () => {
+  /** 브랜드별 상품 총액 계산 */
+  const calculateBrandTotal = (
+    brandName: string,
+    checkoutBrandProducts: CheckoutBrandProductsType
+  ) => {
+    const brandProducts = checkoutBrandProducts[brandName] || [];
+    const total = brandProducts.reduce(
+      (acc, product) => acc + product.discountedPrice * product.count,
+      0
+    );
+    return total;
+  };
+
+  /**
+   * 브랜드 별 금액 출력
+   */
+  const renderBrandPay = (brandName: string) => {
+    const brandTotal = calculateBrandTotal(brandName, checkoutBrandProducts as CheckoutBrandProductsType);
+    const formattedTotal = brandTotal.toLocaleString("ko-KR", {
+      style: "currency",
+      currency: "KRW",
+    });
     return (
       <div className="text-sm flex justify-end items-end">
         <div className="w-full max-w-[150px] lg:max-w-[200px]">
           <div className="flex justify-between py-2.5">
             <span>상품 가격</span>
             <span className="font-semibold text-slate-900 dark:text-slate-200">
-              249,000
+              {formattedTotal}
             </span>
           </div>
           <div className="flex justify-between py-2.5">
             <span>배송비</span>
             <span className="font-semibold text-slate-900 dark:text-slate-200">
-              50,000
+              {brandTotal < 50000 ? "3,000" : "0"}
             </span>
           </div>
         </div>
       </div>
     );
   };
+  //   todo: 브랜드 별 금액 출력
 
   /**
    * 스크롤 이동
@@ -72,6 +95,9 @@ export default function CheckoutList() {
     }, 80);
   };
 
+  /**
+   * 결제하기 버튼 클릭
+   */
   const handlePayment = (data: boolean) => {
     if (session.status === "authenticated") {
       setPaymentClicked(data);
@@ -87,6 +113,9 @@ export default function CheckoutList() {
     }
   };
 
+  /**
+   * 주문자 정보, 결제 수단 출력
+   */
   const renderLeft = () => {
     return (
       <div className="space-y-8">
@@ -119,8 +148,8 @@ export default function CheckoutList() {
     const freeShippingThreshold = 50000;
     const deliveryFeePerBrand = 3000;
 
-    if (cartBrandProducts) {
-      Object.values(cartBrandProducts).forEach((brandItems) => {
+    if (checkoutBrandProducts) {
+      Object.values(checkoutBrandProducts).forEach((brandItems) => {
         let brandTotalPrice = 0;
         let brandHasCheckedItem = false; // 브랜드 내 체크된 상품이 있는지 확인
 
@@ -173,15 +202,19 @@ export default function CheckoutList() {
         );
         if (!res.ok) throw new Error(res.statusText);
 
-        const cartProducts = await res.json();
-        const discountedCartProducts = applyDiscounts(cartProducts);
+        const checkoutProducts = await res.json();
+        const discountedCheckoutProducts = applyDiscounts(checkoutProducts);
         /**
          * 브랜드별 상품 그룹핑
          */
-        const cartBrandProduct = groupProductsByBrand(discountedCartProducts);
-        setCartBrandProducts(cartBrandProduct as CartBrandProductsType);
+        const checkoutBrandProduct = groupProductsByBrand(
+          discountedCheckoutProducts
+        );
+        setCheckoutBrandProducts(
+          checkoutBrandProduct as CheckoutBrandProductsType
+        );
       } catch (e) {
-        console.error("Failed to fetch acrt products", e);
+        console.error("Failed to fetch checkout products", e);
       }
     }
     loadCartProducts();
@@ -189,47 +222,48 @@ export default function CheckoutList() {
 
   // 주문 정보 출력
   useEffect(() => {
-    const { originalTotalPrice, deliveryFee, discountTotal, totalPrice } =
-      calculateCheckoutInfo();
-    setCheckoutInfo({
-      originalTotalPriceString: originalTotalPrice.toLocaleString("ko-KR", {
-        style: "currency",
-        currency: "KRW",
-      }),
-      deliveryFeeString: deliveryFee.toLocaleString("ko-KR", {
-        style: "currency",
-        currency: "KRW",
-      }),
-      discountTotalString: discountTotal.toLocaleString("ko-KR", {
-        style: "currency",
-        currency: "KRW",
-      }),
-      totalPriceString: totalPrice.toLocaleString("ko-KR", {
-        style: "currency",
-        currency: "KRW",
-      }),
-    });
-    // console.log('cartBrandProducts', cartBrandProducts)
-  }, []);
+    if (checkoutBrandProducts) {
+      const { originalTotalPrice, deliveryFee, discountTotal, totalPrice } =
+        calculateCheckoutInfo();
+      setCheckoutInfo({
+        originalTotalPriceString: originalTotalPrice.toLocaleString("ko-KR", {
+          style: "currency",
+          currency: "KRW",
+        }),
+        deliveryFeeString: deliveryFee.toLocaleString("ko-KR", {
+          style: "currency",
+          currency: "KRW",
+        }),
+        discountTotalString: discountTotal.toLocaleString("ko-KR", {
+          style: "currency",
+          currency: "KRW",
+        }),
+        totalPriceString: totalPrice.toLocaleString("ko-KR", {
+          style: "currency",
+          currency: "KRW",
+        }),
+      });
+    }
+  }, [checkoutBrandProducts]);
 
   return (
     <>
-      <div className="w-full md:w-[60%] xl:w-[55%] ">
-        {cartBrandProducts &&
-          Object.entries(cartBrandProducts).map(([brandName, items]) => (
+      <div className="w-full md:w-[45%] xl:w-[50%] ">
+        {checkoutBrandProducts &&
+          Object.entries(checkoutBrandProducts).map(([brandName, items]) => (
             <div
               key={`cart-${brandName}`}
               className="border-[1px] p-4 mb-2 divide-y divide-slate-200 dark:divide-slate-700"
             >
-                <div>{brandName}</div>
+              <div className="text-lg font-semibold pb-2">{brandName}</div>
               {items.map((item) => (
-                  <RenderProduct
+                <RenderProduct2
                   key={`cart-${item.productDetailId}`}
                   item={item}
                   isChecked={item.isChecked}
-                  />
-                  ))}
-                  <div className="p-4">{renderBrandPay()}</div>   
+                />
+              ))}
+              <div className="p-4">{renderBrandPay(brandName)}</div>
             </div>
           ))}
       </div>

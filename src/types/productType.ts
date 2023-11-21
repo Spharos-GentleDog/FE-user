@@ -84,3 +84,26 @@ export interface CartProductType {
 export interface CartBrandProductsType {
   [brand: string]: CartProductType[];
 }
+
+export interface CheckoutProductType {
+  key: string;
+  productId: number;
+  productDetailId: number;
+  productName: string;
+  price: number;
+  imgUrl: string;
+  brandName: string;
+  color: string;
+  size: string;
+  count: number;
+  isChecked: boolean;
+  productStock: number;
+  discountRate: number;
+  discountType: number;
+  discountAmount: number;
+  discountedPrice: number;
+}
+
+export interface CheckoutBrandProductsType {
+  [brand: string]: CheckoutProductType[];
+}

@@ -121,7 +121,7 @@ export default function CartList() {
         const cartBrandProduct = groupProductsByBrand(discountedCartProducts);
         setCartBrandProducts(cartBrandProduct as CartBrandProductsType);
       } catch (e) {
-        console.error("Failed to fetch acrt products", e);
+        console.error("Failed to fetch cart products", e);
       }
     }
     loadCartProducts();
