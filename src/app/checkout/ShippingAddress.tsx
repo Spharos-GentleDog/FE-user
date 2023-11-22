@@ -1,13 +1,16 @@
-"use client";
+'use client';
 
-import Label from "@/components/Label/Label";
-import React, { FC, useState } from "react";
-import ButtonPrimary from "@/shared/Button/ButtonPrimary";
-import ButtonSecondary from "@/shared/Button/ButtonSecondary";
-import Input from "@/shared/Input/Input";
-import Radio from "@/shared/Radio/Radio";
-import Select from "@/shared/Select/Select";
-import ModalAddress from "@/components/ModalAddress";
+import Label from '@/components/Label/Label';
+import React, { FC, useEffect, useState } from 'react';
+import ButtonPrimary from '@/shared/Button/ButtonPrimary';
+import ButtonSecondary from '@/shared/Button/ButtonSecondary';
+import Input from '@/shared/Input/Input';
+import Radio from '@/shared/Radio/Radio';
+import Select from '@/shared/Select/Select';
+import ModalAddress from '@/components/ModalAddress';
+import { useSession } from 'next-auth/react';
+import { on } from 'events';
+import { AddressType } from '@/types/userType';
 
 interface Props {
   onOpenActive: () => void;
@@ -18,6 +21,14 @@ interface Props {
  * 출력되는 정보 추가
  * 지도 이미지 아이콘 변경
  * 모달 내용 수정
+ * addressId: number;
+  userAddress: string;
+  recipientName: string;
+  recipientPhoneNumber: string;
+  addressName: string;
+  entrancePassword: string;
+  addressRequestMessage: string;
+  isDefault: boolean;
  */
 
 /**
@@ -25,6 +36,67 @@ interface Props {
  * @param onOpenActive 클릭 시 실행 모달 열기, 스크롤 이동
  */
 const ShippingAddress: FC<Props> = ({ onOpenActive }) => {
+  const [address, setAddress] = React.useState<AddressType>();
+  const session = useSession();
+  const token = session?.data?.user.accessToken;
+  console.log('token', token);
+  const [defaultAddress, setDefaultAddress] = useState<AddressType>();
+
+  // useEffect가 문제가 되는 것 같음
+  // useEffect(() => {
+    async function loadDefaultAddress() {
+      try {
+        const res = await fetch(
+          'https://gentledog-back.duckdns.org/api/v1/user/address/default',
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              userEmail: 'jeongs9203@naver.com',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log('res', res);
+        const data = await res.json();
+        // console.log('data', data);
+        setDefaultAddress(data.result);
+      } catch (e) {
+        console.error('Failed to fetch defaultAddress', e);
+      }
+    }
+  //   loadDefaultAddress();
+  // }, []);
+
+  async function loadAddress() {
+    try {
+      const res = await fetch(
+        'https://gentledog-back.duckdns.org/api/v1/user/address',
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            userEmail: 'jeongs9203@naver.com',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await res.json();
+      // console.log(data);
+      setAddress(data.result);
+      if (res.status === 200) {
+        setIsModalAddress(true);
+        onOpenActive();
+      }
+    } catch (e) {
+      console.error('Failed to fetch address', e);
+    }
+  }
+
+  const handleOpenModal = async () => {
+    await loadAddress();
+  };
+
   const [isModalAddress, setIsModalAddress] = useState(false);
   const renderShippingAddress = () => {
     return (
@@ -77,7 +149,7 @@ const ShippingAddress: FC<Props> = ({ onOpenActive }) => {
 
           <div className="sm:ml-8">
             <h3 className=" text-slate-700 dark:text-slate-300 flex ">
-              <span className="uppercase">배송지 주소</span>
+              <span className="uppercase">배송 정보</span>
               <svg
                 fill="none"
                 viewBox="0 0 24 24"
@@ -92,26 +164,39 @@ const ShippingAddress: FC<Props> = ({ onOpenActive }) => {
                 />
               </svg>
             </h3>
-            <div className="font-semibold mt-1 text-sm">
-              {/* 현재 배송지 */}
-              <span className="">{`부산광역시 해운대구 APEC로 17 (우동)`}</span>
-            </div>
+            {defaultAddress && (
+              <div className="flex-col font-semibold mt-1 text-sm">
+                <span className="flex">{defaultAddress?.addressAlias}</span>
+                <span className="flex">{defaultAddress?.recipientName}</span>
+                <span className="flex">{defaultAddress?.userAddress}</span>
+                <span className="flex">
+                  {defaultAddress?.recipientPhoneNumber}
+                </span>
+                <span className="flex">{`공동현관 비밀번호: ${defaultAddress?.entrancePassword}`}</span>
+                <span className="flex">{`요청사항: ${defaultAddress?.addressRequestMessage}`}</span>
+              </div>
+            )}
           </div>
           {/* 클릭시 모달이 열리고 스크롤 이동 */}
           <button
             className="break-keep py-2 px-4 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 mt-5 sm:mt-0 sm:ml-auto text-sm font-medium rounded-lg"
-            onClick={() => {
-              setIsModalAddress(true);
-              onOpenActive();
-            }}
+            onClick={handleOpenModal}
           >
             변경
           </button>
+          <button
+          onClick={loadDefaultAddress}>
+            변경2
+          </button>
         </div>
-        <ModalAddress
-          show={isModalAddress}
-          onCloseModalAddress={() => setIsModalAddress(false)}
-        />
+
+        {isModalAddress && address && (
+          <ModalAddress
+            show={isModalAddress}
+            onCloseModalAddress={() => setIsModalAddress(false)}
+            data={address}
+          />
+        )}
       </div>
     );
   };

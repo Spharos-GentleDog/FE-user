@@ -1,24 +1,26 @@
 import { Dialog, Transition } from '@/app/headlessui';
 import ButtonClose from '@/shared/ButtonClose/ButtonClose';
-import React, { Fragment } from 'react'
+import React, { Fragment } from 'react';
 import AddressForm from './AddressForm';
+import { AddressType } from '@/types/userType';
 
 export interface ModalAddressProps {
-    show: boolean;
-    onCloseModalAddress: () => void;
-  }
+  show: boolean;
+  onCloseModalAddress: () => void;
+  data: AddressType;
+}
 
 /**
  * todo: 사용자의 배송지 주소를 불러오는 데이터 패칭
  * 배송지 추가 버튼을 눌렀을 때 배송지를 추가하는 폼 제작, 수정을 눌렀을 때 수정하는 폼과 같이 사용하면 될 듯
  * 주소지를 선택하면 배송지 정보가 출력되도록 로직 작성
- * 
+ *
  */
 
-  /**
-   * 주소 모달 배경
-   */
-function ModalAddress({show, onCloseModalAddress} : ModalAddressProps) {
+/**
+ * 주소 모달 배경
+ */
+function ModalAddress({ show, onCloseModalAddress, data }: ModalAddressProps) {
   return (
     <Transition appear show={show} as={Fragment}>
       <Dialog
@@ -59,7 +61,10 @@ function ModalAddress({show, onCloseModalAddress} : ModalAddressProps) {
               >
                 <div className="flex-1 overflow-y-auto hiddenScrollbar">
                   {/* todo: address 디자인 작업 컴포넌트 넣기*/}
-                    <AddressForm onCloseModalAddress={onCloseModalAddress}/>
+                  <AddressForm
+                    onCloseModalAddress={onCloseModalAddress}
+                    data={data}
+                  />
                 </div>
               </div>
             </div>
@@ -67,7 +72,7 @@ function ModalAddress({show, onCloseModalAddress} : ModalAddressProps) {
         </div>
       </Dialog>
     </Transition>
-  )
+  );
 }
 
-export default ModalAddress
+export default ModalAddress;

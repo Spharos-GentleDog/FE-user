@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import ButtonPrimary from "@/shared/Button/ButtonPrimary";
-import Checkbox from "@/shared/Checkbox/Checkbox";
-import { CartBrandProductsType, CartProductType } from "@/types/productType";
-import { applyDiscounts } from "@/utils/applyDiscounts";
-import { groupProductsByBrand } from "@/utils/groupProductsByBrand";
-import { useEffect, useState } from "react";
-import Icon from "./Icon";
-import RenderProduct from "./RenderProduct";
+import ButtonPrimary from '@/shared/Button/ButtonPrimary';
+import Checkbox from '@/shared/Checkbox/Checkbox';
+import { CartBrandProductsType, CartProductType } from '@/types/productType';
+import { applyDiscounts } from '@/utils/applyDiscounts';
+import { groupProductsByBrand } from '@/utils/groupProductsByBrand';
+import { useEffect, useState } from 'react';
+import Icon from './Icon';
+import RenderProduct from './RenderProduct';
 
 /**
  * 장바구니 상품 출력
@@ -21,10 +21,10 @@ export default function CartList() {
     discountTotalString: string;
     totalPriceString: string;
   }>({
-    originalTotalPriceString: "",
-    deliveryFeeString: "",
-    discountTotalString: "",
-    totalPriceString: "",
+    originalTotalPriceString: '',
+    deliveryFeeString: '',
+    discountTotalString: '',
+    totalPriceString: '',
   });
   const [isBrandChecked, setIsBrandChecked] = useState<Record<string, boolean>>(
     {}
@@ -108,8 +108,8 @@ export default function CartList() {
          * 장바구니 상품 정보
          */
         const res = await fetch(
-          "https://6535d1a2c620ba9358ecaf38.mockapi.io/CartProductType",
-          { cache: "no-cache" }
+          'https://6535d1a2c620ba9358ecaf38.mockapi.io/CartProductType',
+          { cache: 'no-cache' }
         );
         if (!res.ok) throw new Error(res.statusText);
 
@@ -121,7 +121,7 @@ export default function CartList() {
         const cartBrandProduct = groupProductsByBrand(discountedCartProducts);
         setCartBrandProducts(cartBrandProduct as CartBrandProductsType);
       } catch (e) {
-        console.error("Failed to fetch cart products", e);
+        console.error('Failed to fetch cart products', e);
       }
     }
     loadCartProducts();
@@ -132,21 +132,21 @@ export default function CartList() {
     const { originalTotalPrice, deliveryFee, discountTotal, totalPrice } =
       calculateCheckoutInfo();
     setCheckoutInfo({
-      originalTotalPriceString: originalTotalPrice.toLocaleString("ko-KR", {
-        style: "currency",
-        currency: "KRW",
+      originalTotalPriceString: originalTotalPrice.toLocaleString('ko-KR', {
+        style: 'currency',
+        currency: 'KRW',
       }),
-      deliveryFeeString: deliveryFee.toLocaleString("ko-KR", {
-        style: "currency",
-        currency: "KRW",
+      deliveryFeeString: deliveryFee.toLocaleString('ko-KR', {
+        style: 'currency',
+        currency: 'KRW',
       }),
-      discountTotalString: discountTotal.toLocaleString("ko-KR", {
-        style: "currency",
-        currency: "KRW",
+      discountTotalString: discountTotal.toLocaleString('ko-KR', {
+        style: 'currency',
+        currency: 'KRW',
       }),
-      totalPriceString: totalPrice.toLocaleString("ko-KR", {
-        style: "currency",
-        currency: "KRW",
+      totalPriceString: totalPrice.toLocaleString('ko-KR', {
+        style: 'currency',
+        currency: 'KRW',
       }),
     });
     // console.log('cartBrandProducts', cartBrandProducts)
@@ -259,7 +259,9 @@ export default function CartList() {
               cartBrandProducts && handleCheckedDelete(cartBrandProducts)
             }
           >
-            <div className="font-semibold text-base text-blue-500 dark:text-slate-200">선택 삭제</div>
+            <div className="font-semibold text-base text-blue-500 dark:text-slate-200">
+              선택 삭제
+            </div>
           </button>
         </div>
         {cartBrandProducts &&
@@ -314,7 +316,7 @@ export default function CartList() {
             <div className="flex justify-between py-4">
               <span>할인</span>
               <span className="font-semibold text-slate-900 dark:text-slate-200">
-                {checkoutInfo.discountTotalString !== "₩0"
+                {checkoutInfo.discountTotalString !== '₩0'
                   ? `- ${checkoutInfo.discountTotalString}`
                   : checkoutInfo.discountTotalString}
               </span>

@@ -46,7 +46,7 @@ function Payment({
         if (paymentClicked) {
             const getData = async () => {
                 const paymentWidget = paymentWidgetRef.current;
-                console.log(paymentProduct)
+                // console.log(paymentProduct)
                 try {
                     await paymentWidget?.requestPayment({
                         orderId: nanoid(),
