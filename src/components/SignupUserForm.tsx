@@ -2,13 +2,17 @@ import React, { useState } from 'react'
 import ButtonSecondary from '@/shared/Button/ButtonSecondary'
 import Input from '@/shared/Input/Input'
 import Select from '@/shared/Select/Select'
+import coolsms from 'coolsms-node-sdk'
+
 
 function SignupUserForm(
     { setSignup,
         signup,
         signupError,
         setSignupError,
+        authEmailConfirm,
         setAuthEmailConfirm,
+        authPhoneConfirm,
         setAuthPhoneConfirm,
         refs,
     }:
@@ -17,7 +21,9 @@ function SignupUserForm(
             signup: any,
             signupError: any,
             setSignupError: React.Dispatch<React.SetStateAction<any>>
+            authEmailConfirm: boolean,
             setAuthEmailConfirm: React.Dispatch<React.SetStateAction<boolean>>
+            authPhoneConfirm: boolean,
             setAuthPhoneConfirm: React.Dispatch<React.SetStateAction<boolean>>
             refs: any
         }) {
@@ -44,7 +50,6 @@ function SignupUserForm(
     // 인증 관리
     const [authEmail, setAuthEmail] = useState<boolean>(false);
     const [authPhone, setAuthPhone] = useState<boolean>(false);
-    const [authEmailClick, setAuthEmailClick] = useState<boolean>(false);
     const [authPhoneClick, setAuthPhoneClick] = useState<boolean>(false);
 
     // 이메일 인증
@@ -122,11 +127,61 @@ function SignupUserForm(
         }
     }
 
+    // cors 
+    const messageService = new coolsms("NCSMAKYXI7OJI1SK", "V69IIMIHQSOTKLMJ4XHMHCIWHUT43FKR");
+    const [randomNumber, setRandomNumber] = useState<number>(0);
     // 휴대폰 인증
     const handlePhoneAuth = async () => {
+        setRandomNumber(Math.floor(1000 + Math.random() * 9000));
 
+        if (signup.phoneNumber === '') {
+            setSignupError({
+                ...signupError,
+                phoneNumber: '휴대폰번호를 입력해주세요.'
+            })
+            return;
+        }
+
+        try {
+            const result = await messageService.sendOne({
+                to: signup.phoneNumber,
+                from: '01049126545',
+                text: `[젠틀독] 인증번호 [${randomNumber}]를 입력해주세요.`,
+                autoTypeDetect: false
+            })
+                .then((result: any) => {
+                    console.log(result);
+                    setAuthPhone(true);
+                })
+                .catch((err: any) => {
+                    console.log(err);
+                });
+        } catch (error) {
+            console.log(error);
+        }
     }
 
+    const handleAuthPhoneCheck = async () => {
+        if (signup.authPhone === '') {
+            setSignupError({
+                ...signupError,
+                authNumber: '인증번호를 입력해주세요.'
+            })
+            return;
+        } else if (signup.authPhone !== randomNumber) {
+            setSignupError({
+                ...signupError,
+                authNumber: '인증번호가 일치하지 않습니다.'
+            })
+            return;
+        }
+
+        if (signup.authPhone === randomNumber) {
+
+            setAuthPhone(false);
+            setAuthPhoneConfirm(true);
+        }
+    }
     // 나이 및 휴대폰번호 숫자만 입력
     const [intputAge, setIntputAge] = useState<string>('');
     const [intputPhoneNumber, setIntputPhoneNumber] = useState<string>('');
@@ -158,16 +213,31 @@ function SignupUserForm(
                         ref={refs.emailRef}
                         onChange={handleChange}
                     />
-                    <div className='absolute -right-0 '>
-                        <ButtonSecondary
-                            fontSize='text-[10px]'
-                            sizeClass='py-2 px-3'
-                            translate='top-[5px]'
-                            onClick={handleEmailAuth}
-                        >
-                            이메일 인증
-                        </ButtonSecondary>
-                    </div>
+                    {
+                        authEmailConfirm ?
+                            <div className='absolute -right-0 '>
+                                <ButtonSecondary
+                                    fontSize='text-[10px]'
+                                    sizeClass='py-2 px-3'
+                                    translate='top-[5px]'
+                                    onClick={handleEmailAuth}
+                                    disabled
+                                >
+                                    인증 완료
+                                </ButtonSecondary>
+                            </div>
+                            :
+                            <div className='absolute -right-0 '>
+                                <ButtonSecondary
+                                    fontSize='text-[10px]'
+                                    sizeClass='py-2 px-3'
+                                    translate='top-[5px]'
+                                    onClick={handleEmailAuth}
+                                >
+                                    이메일 인증
+                                </ButtonSecondary>
+                            </div>
+                    }
                 </div>
                 <span className='animate-errorTxt text-xs ml-4'>{signupError.email}</span>
             </label>
@@ -319,8 +389,8 @@ function SignupUserForm(
                                     className='mt-1 border-[#000000]'
                                     type='text'
                                     placeholder='인증번호 6자리'
-                                    id='authEmail'
-                                    name='authEmail'
+                                    id='authPhone'
+                                    name='authPhone'
                                     onChange={handleChange}
                                 />
                                 <div className='absolute -right-1'>
@@ -328,7 +398,8 @@ function SignupUserForm(
                                         fontSize='text-[10px]'
                                         sizeClass='py-2 px-3'
                                         translate='top-[5px]'
-                                        onClick={() => setAuthPhoneClick(true)}
+                                        // onClick={() => setAuthPhoneClick(true)}
+                                        onClick={handleAuthPhoneCheck}
                                     >
                                         인증확인
                                     </ButtonSecondary>

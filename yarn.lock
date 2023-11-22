@@ -1987,7 +1987,7 @@ cookie@^0.5.0:
 
 coolsms-node-sdk@^2.0.1:
   version "2.0.1"
-  resolved "https://registry.npmjs.org/coolsms-node-sdk/-/coolsms-node-sdk-2.0.1.tgz"
+  resolved "https://registry.yarnpkg.com/coolsms-node-sdk/-/coolsms-node-sdk-2.0.1.tgz#f27aa61022759d71b72095910d8d63f510dbf0da"
   integrity sha512-tO654T73NUepz06MxeY6Rf1Dufm4+WAxT0VUs4r+zue4n5mv+lCzc5yXD2EnRHpftXzdufuK8SYB9YTRpE/3CQ==
   dependencies:
     cross-fetch "^3.1.5"

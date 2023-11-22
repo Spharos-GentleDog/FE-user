@@ -115,7 +115,7 @@ function LoginForm() {
           className='mt-1'
           onChange={handleOnChange}
         />
-        <div>{logInError.loginEmail}</div>
+        <span className='animate-errorTxt text-xs ml-4'>{logInError.loginEmail}</span>
       </label>
       <label className='block'>
         <span className='flex justify-between items-center text-base font-bold text-neutral-800 dark:text-neutral-200'>
@@ -131,7 +131,7 @@ function LoginForm() {
           defaultValue=''
           onChange={handleOnChange}
         />
-        <div>{logInError.password}</div>
+        <span className='animate-errorTxt text-xs ml-4'>{logInError.password}</span>
       </label>
       <ButtonPrimary onClick={handleLoginFetch}>로그인</ButtonPrimary>
     </div>

@@ -4,19 +4,13 @@ import React, { useEffect } from "react";
 import ButtonClose from "@/shared/ButtonClose/ButtonClose";
 import Logo from "@/shared/Logo/Logo";
 import { Disclosure } from "@/app/headlessui";
-import { NavItemType } from "./NavigationItem";
 import { NAVIGATION_DEMO_2 } from "@/data/navigation";
-import ButtonPrimary from "@/shared/Button/ButtonPrimary";
-import SocialsList from "@/shared/SocialsList/SocialsList";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
-import SwitchDarkMode from "@/shared/SwitchDarkMode/SwitchDarkMode";
 import Link from "next/link";
 import { useThemeMode } from "@/hooks/useThemeMode";
-import { get } from "http";
 import { ChildCategory, ParentCategoryType } from "@/types/product/category";
 
 export interface NavMobileProps {
-  data?: NavItemType[];
   onClickClose?: () => void;
 }
 
@@ -26,54 +20,37 @@ export interface NavMobileProps {
  * @returns 
  */
 const NavMobile: React.FC<NavMobileProps> = ({
-  data = NAVIGATION_DEMO_2,
   onClickClose,
 }) => {
   /**
    * 하위 카테고리를 렌더링합니다.
    */
   const _renderMenuChild = (
-    item: NavItemType,
+    item: ChildCategory,
     itemClass = "pl-3 text-neutral-900 dark:text-neutral-200 font-medium "
   ) => {
     return (
       <ul className="nav-mobile-sub-menu break-keep pl-6 pb-1 text-base">
-        {item.children?.map((i, index) => (
-          <Disclosure key={index} as="li">
+        {item.result?.map((i, index) => (
+          <Disclosure as="li" key={index}>
             <Link
               href={{
-                pathname: i.href || undefined,
+                pathname: `/collection?categoryId=${i.childCategoryId}` || undefined,
               }}
               className={`flex text-sm rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 mt-0.5 pr-4 ${itemClass}`}
             >
               <span
-                className={`py-2.5 ${!i.children ? "block w-full" : ""}`}
+                className={`py-2.5 ${!item.isSuccess ? "block w-full" : ""}`}
                 onClick={onClickClose}
               >
-                {i.name}
+                {i.childCategoryName}
               </span>
-              {i.children && (
-                <span
-                  className="flex items-center flex-grow"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <Disclosure.Button
-                    as="span"
-                    className="flex justify-end flex-grow"
-                  >
-                    <ChevronDownIcon
-                      className="ml-2 h-4 w-4 text-slate-500"
-                      aria-hidden="true"
-                    />
-                  </Disclosure.Button>
-                </span>
-              )}
             </Link>
-            {i.children && (
+            {item.isSuccess && (
               <Disclosure.Panel>
                 {_renderMenuChild(
-                  i,
-                  "pl-3 text-slate-600 dark:text-slate-400 "
+                  i as unknown as ChildCategory,
+                  "pl-3 text-slate-600 dark:text-slate-400",
                 )}
               </Disclosure.Panel>
             )}
@@ -86,7 +63,7 @@ const NavMobile: React.FC<NavMobileProps> = ({
   /**
    * 상위 카테고리를 렌더링합니다.
    */
-  const _renderItem = (item: NavItemType, index: number) => {
+  const _renderItem = (item: ParentCategoryType, index: number) => {
     return (
       <Disclosure
         key={index}
@@ -96,16 +73,17 @@ const NavMobile: React.FC<NavMobileProps> = ({
         <Link
           className="flex w-full items-center py-2.5 px-4 font-medium uppercase tracking-wide text-sm hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
           href={{
-            pathname: `/collection` || undefined,
+            pathname: `/collection?categoryId=${item.parentCategoryId}` || undefined,
           }}
         >
           <span
-            className={!item.children ? "block w-full" : ""}
+            // className="block w-full"
+            className={categoryData[index]?.isSuccess ? "block w-full" : ""}
             onClick={onClickClose}
           >
-            {item.name}
+            {item.parentCategoryName}
           </span>
-          {item.children && (
+          {categoryData[index]?.isSuccess && (
             <span
               className="block flex-grow"
               onClick={(e) => e.preventDefault()}
@@ -122,8 +100,8 @@ const NavMobile: React.FC<NavMobileProps> = ({
             </span>
           )}
         </Link>
-        {item.children && (
-          <Disclosure.Panel>{_renderMenuChild(item)}</Disclosure.Panel>
+        {categoryData[index]?.isSuccess && (
+          <Disclosure.Panel>{_renderMenuChild(categoryData[index])}</Disclosure.Panel>
         )}
       </Disclosure>
     );
@@ -179,7 +157,7 @@ const NavMobile: React.FC<NavMobileProps> = ({
   const { _toogleDarkMode } = useThemeMode();
 
   const [parentCategoryData, setParentCategoryData] = React.useState<ParentCategoryType[]>([]);
-  const [categoryData, setCategoryData] = React.useState<ChildCategory[]>([]);
+  const [categoryData, setCategoryData] = React.useState<any[]>([]);
 
   useEffect(() => {
     const getData = async () => {
@@ -192,28 +170,30 @@ const NavMobile: React.FC<NavMobileProps> = ({
         });
 
         const data = await res.json();
-
         setParentCategoryData(data.result.parentCategoryDtoList);
+
+        if (data.isSuccess) {
+          const child = data.result.parentCategoryDtoList.map(async (item: ParentCategoryType) => {
+            const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/read-child-category?parentCategoryId=${item.parentCategoryId}`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            })
+            return res.json();
+          });
+
+          const result = await Promise.all(child);
+          setCategoryData(result);
+        }
 
       } catch (error) {
         console.log('Error Fetch : ', error);
       }
     }
 
-    getData().then(async () => {
-      try {
-        const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/read-parent-category`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
+    getData();
 
-        const data = await res.json();
-      } catch (error) {
-        console.log('Error Fetch : ', error);
-      }
-    })
   }, []);
 
   return (
@@ -231,7 +211,7 @@ const NavMobile: React.FC<NavMobileProps> = ({
         <div className="mt-5">{renderSearchForm()}</div>
       </div>
       <ul className="flex flex-col py-6 px-2 space-y-1">
-        {data.map(_renderItem)}
+        {parentCategoryData.map(_renderItem)}
       </ul>
     </div>
   );
