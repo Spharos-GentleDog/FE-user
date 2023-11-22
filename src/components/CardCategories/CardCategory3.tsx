@@ -46,11 +46,18 @@ const CardCategory3: FC<CardCategory3Props> = ({
       >
         <div>
           <div className="absolute inset-5 sm:inset-8">
-            <Image
-              alt=""
-              src={featuredImage || ""}
-              className="absolute end-0 w-1/2 max-w-[260px] h-full object-contain drop-shadow-xl"
-            />
+            {
+              featuredImage && typeof featuredImage === "string" ? (
+                <Image
+                  alt=""
+                  src={featuredImage}
+                  className="absolute end-0 w-1/2 max-w-[260px] h-full object-contain drop-shadow-xl"
+                  width={260}
+                  height={260}
+                  priority
+                />
+              ) : null
+            }
           </div>
         </div>
         <span className="opacity-0 group-hover:opacity-40 absolute inset-0 bg-black/10 transition-opacity"></span>

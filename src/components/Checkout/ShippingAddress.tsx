@@ -35,15 +35,17 @@ interface Props {
  * 배송지 주소 모달로 변경
  * @param onOpenActive 클릭 시 실행 모달 열기, 스크롤 이동
  */
-const ShippingAddress: FC<Props> = ({ onOpenActive }) => {
+const ShippingAddress = ({ onOpenActive }: Props) => {
   const [address, setAddress] = React.useState<AddressType>();
   const session = useSession();
   const token = session?.data?.user.accessToken;
   console.log('token', token);
   const [defaultAddress, setDefaultAddress] = useState<AddressType>();
 
-  // useEffect가 문제가 되는 것 같음
-  // useEffect(() => {
+  
+  useEffect(() => {
+    if(address) return;
+    if(!token) return;
     async function loadDefaultAddress() {
       try {
         const res = await fetch(
@@ -65,8 +67,8 @@ const ShippingAddress: FC<Props> = ({ onOpenActive }) => {
         console.error('Failed to fetch defaultAddress', e);
       }
     }
-  //   loadDefaultAddress();
-  // }, []);
+    loadDefaultAddress();
+  },[]);
 
   async function loadAddress() {
     try {
@@ -183,10 +185,6 @@ const ShippingAddress: FC<Props> = ({ onOpenActive }) => {
             onClick={handleOpenModal}
           >
             변경
-          </button>
-          <button
-          onClick={loadDefaultAddress}>
-            변경2
           </button>
         </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import ShippingAddress from "@/app/checkout/ShippingAddress";
+import ShippingAddress from "@/components/Checkout/ShippingAddress";
 import Label from "@/components/Label/Label";
 import { paymentProductList } from "@/data/paymentProductList";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";

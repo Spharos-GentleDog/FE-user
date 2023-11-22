@@ -3,9 +3,25 @@ import Link from "next/link";
 import Logo from "@/shared/Logo/Logo";
 import LoginOauth from "@/components/LoginOauth";
 import LoginForm from "@/components/LoginForm";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { options } from "../api/auth/[...nextauth]/options";
 
+const PageLogin = async () => {
 
-const PageLogin = () => {
+  const session = await getServerSession(options)
+  console.log("session", session)
+  if (session) {
+    return (
+      redirect("/")
+    )
+  }
+  // if(!session?.user.usersName) {
+  //   return (
+  //     redirect("/")
+  //   )
+  // }
+
   return (
     <div className={`nc-PageLogin`} data-nc-id="PageLogin">
       <div className="container mb-24 lg:mb-32">

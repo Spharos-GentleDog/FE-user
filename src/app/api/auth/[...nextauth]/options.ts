@@ -67,73 +67,7 @@ export const options: NextAuthOptions = {
     ],
 
     callbacks: {
-        // async signIn({ user, account, profile }) {
-        //     try {
-        //         const response = await fetch(`${process.env.BASE_API_URL}/api/v1/auth/oauthInfo`, {
-        //             method: 'POST',
-        //             headers: {
-        //                 'Content-Type': 'application/json'
-        //             },
-        //             body: JSON.stringify({
-        //                 email: user?.email,
-        //                 name: user?.name,
-        //                 phoneNumber: user?.image,
-        //                 oauthName: account?.provider
-        //             })
-        //         })
-
-        //     } catch (e: any) {
-        //         throw new Error(e.massage)
-        //     }
-        //     // // 회원 정보가 있는지 확인
-        //     // const response = await fetch(`${process.env.BASE_API_URL}/api/v1/auth/oauthInfo`, {
-        //     //     method: 'POST',
-        //     //     headers: {
-        //     //         'Content-Type': 'application/json'
-        //     //     },
-        //     //     body: JSON.stringify({
-        //     //         name: user?.name,
-        //     //         phoneNumber: user?.image
-        //     //     })
-        //     // })
-        //     // const json = await response.json();
-
-        //     // if (response.ok) {
-        //     //     // 회원 정보가 있는 경우
-        //     //     try {
-        //     //         await fetch(`${process.env.BASE_API_URL}/api/v1/auth/peristalsis`, {
-        //     //             method: 'POST',
-        //     //             headers: {
-        //     //                 'Content-Type': 'application/json'
-        //     //             },
-        //     //             body: JSON.stringify({
-        //     //                 id: json.id,
-        //     //                 oauthName: account?.provider,
-        //     //             })
-        //     //         })
-        //     //     } catch (e: any) {
-        //     //         throw new Error(e.massage)
-        //     //     }
-        //     // } else {
-        //     //     // 회원 정보가 없는 경우
-        //     //     try {
-        //     //         await fetch(`${process.env.BASE_API_URL}/api/v1/auth/signupOauth`, {
-        //     //             method: 'POST',
-        //     //             headers: {
-        //     //                 'Content-Type': 'application/json'
-        //     //             },
-        //     //             body: JSON.stringify({
-        //     //                 email: user?.email,
-        //     //                 name: user?.name,
-        //     //                 phoneNumber: user?.image,
-        //     //             })
-        //     //         })
-        //     //     } catch (e: any) {
-        //     //         throw new Error(e.massage)
-        //     //     }
-        //     // }
-        //     return true
-        // },
+        
 
         async jwt({ token, user }) {
             return { ...token, ...user }

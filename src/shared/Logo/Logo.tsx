@@ -43,7 +43,8 @@ const Logo: React.FC<LogoProps> = ({
             className={`block h-8 sm:h-10 w-auto ${footimgDark ? "dark:hidden" : ""}`}
             src={footimg}
             alt="Logo"
-            sizes="200px"
+            height={200}
+            width={200}
             priority
           />
         ) : (
@@ -54,7 +55,8 @@ const Logo: React.FC<LogoProps> = ({
             className={`hidden h-8 sm:h-10 w-auto dark:block`}
             src={footimgDark}
             alt="Logo-Light"
-            sizes="200px"
+            height={200}
+            width={200}
             priority
           />
         )}
@@ -68,7 +70,8 @@ const Logo: React.FC<LogoProps> = ({
             className={`block ${className} w-auto ${LogoNameDark ? "dark:hidden" : ""}`}
             src={LogoName}
             alt="Logo"
-            sizes="200px"
+            width={200}
+            height={200}
             priority
           />
         ) : (
@@ -79,7 +82,8 @@ const Logo: React.FC<LogoProps> = ({
             className={`hidden ${className} w-auto dark:block`}
             src={LogoNameDark}
             alt="Logo-Light"
-            sizes="200px"
+            width={200}
+            height={200}
             priority
           />
         )}
@@ -93,7 +97,8 @@ const Logo: React.FC<LogoProps> = ({
             className={`block ${className} sm:h-10 w-auto ${imgDark ? "dark:hidden" : ""}`}
             src={img}
             alt="Logo"
-            sizes="200px"
+            width={200}
+            height={200}
             priority
           />
         ) : (
@@ -104,7 +109,8 @@ const Logo: React.FC<LogoProps> = ({
             className={`hidden ${className} sm:h-10 w-auto dark:block`}
             src={imgDark}
             alt="Logo-Light"
-            sizes="200px"
+            width={200}
+            height={200}
             priority
           />
         )}

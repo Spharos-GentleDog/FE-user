@@ -1,11 +1,19 @@
-
 import CheckoutList from "@/components/CheckoutList";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
+import { options } from "../api/auth/[...nextauth]/options";
+import { redirect } from "next/navigation";
 
-const CheckoutPage = () => {
+const CheckoutPage = async () => {
 
+  const session = await getServerSession(options)
+  console.log("session", session)
 
-
+  if (!session?.user.usersName) {
+    return (
+      redirect("/login?callBackUrl=checkout")
+    )
+  }
 
   return (
     <div className="nc-CheckoutPage">
