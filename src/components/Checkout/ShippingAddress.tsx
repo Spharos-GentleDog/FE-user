@@ -11,6 +11,7 @@ import ModalAddress from '@/components/ModalAddress';
 import { useSession } from 'next-auth/react';
 import { on } from 'events';
 import { AddressType } from '@/types/userType';
+import Icon from '../Icon';
 
 interface Props {
   onOpenActive: () => void;
@@ -39,13 +40,13 @@ const ShippingAddress = ({ onOpenActive }: Props) => {
   const [address, setAddress] = React.useState<AddressType>();
   const session = useSession();
   const token = session?.data?.user.accessToken;
-  console.log('token', token);
+  const userEmail = session?.data?.user.userEmail;
+  // console.log('token', token);
   const [defaultAddress, setDefaultAddress] = useState<AddressType>();
 
-  
   useEffect(() => {
-    if(address) return;
-    if(!token) return;
+    if (address) return;
+    if (!token) return;
     async function loadDefaultAddress() {
       try {
         const res = await fetch(
@@ -54,12 +55,12 @@ const ShippingAddress = ({ onOpenActive }: Props) => {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
-              userEmail: 'jeongs9203@naver.com',
+              userEmail: userEmail,
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        console.log('res', res);
+        // console.log('res', res);
         const data = await res.json();
         // console.log('data', data);
         setDefaultAddress(data.result);
@@ -68,7 +69,7 @@ const ShippingAddress = ({ onOpenActive }: Props) => {
       }
     }
     loadDefaultAddress();
-  },[]);
+  }, []);
 
   async function loadAddress() {
     try {
@@ -78,13 +79,13 @@ const ShippingAddress = ({ onOpenActive }: Props) => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            userEmail: 'jeongs9203@naver.com',
+            userEmail: userEmail,
             Authorization: `Bearer ${token}`,
           },
         }
       );
       const data = await res.json();
-      // console.log(data);
+      console.log('data', data);
       setAddress(data.result);
       if (res.status === 200) {
         setIsModalAddress(true);
@@ -104,52 +105,7 @@ const ShippingAddress = ({ onOpenActive }: Props) => {
     return (
       <div className="border border-slate-200 dark:border-slate-700 rounded-xl ">
         <div className="p-6 flex flex-col sm:flex-row items-start">
-          <span className="hidden sm:block">
-            <svg
-              className="w-6 h-6 text-slate-700 dark:text-slate-400 mt-0.5"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12.1401 15.0701V13.11C12.1401 10.59 14.1801 8.54004 16.7101 8.54004H18.6701"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M5.62012 8.55005H7.58014C10.1001 8.55005 12.1501 10.59 12.1501 13.12V13.7701V17.25"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M7.14008 6.75L5.34009 8.55L7.14008 10.35"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M16.8601 6.75L18.6601 8.55L16.8601 10.35"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M9 22H15C20 22 22 20 22 15V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22Z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </span>
-
-          <div className="sm:ml-8">
+          <div className="sm:ml-4">
             <h3 className=" text-slate-700 dark:text-slate-300 flex ">
               <span className="uppercase">배송 정보</span>
               <svg
@@ -167,15 +123,33 @@ const ShippingAddress = ({ onOpenActive }: Props) => {
               </svg>
             </h3>
             {defaultAddress && (
-              <div className="flex-col font-semibold mt-1 text-sm">
-                <span className="flex">{defaultAddress?.addressAlias}</span>
-                <span className="flex">{defaultAddress?.recipientName}</span>
-                <span className="flex">{defaultAddress?.userAddress}</span>
-                <span className="flex">
-                  {defaultAddress?.recipientPhoneNumber}
-                </span>
-                <span className="flex">{`공동현관 비밀번호: ${defaultAddress?.entrancePassword}`}</span>
-                <span className="flex">{`요청사항: ${defaultAddress?.addressRequestMessage}`}</span>
+              <div className="flex-col font-semibold mt-1 text-sm divide-y-2">
+                <div className="flex gap-1">
+                  <Icon type="account" />
+                  <span className="">{defaultAddress?.addressAlias}</span>
+                </div>
+                <div className="flex gap-1">
+                  <Icon type="account" />
+                  <span className="">{defaultAddress?.recipientName}</span>
+                </div>
+                <div className="flex gap-1">
+                  <Icon type="map" />
+                  <span className="">{defaultAddress?.userAddress}</span>
+                </div>
+                <div className="flex gap-1">
+                  <Icon type="phone" />
+                  <span className="">
+                    {defaultAddress?.recipientPhoneNumber}
+                  </span>
+                </div>
+                <div className="flex gap-1">
+                  <Icon type="lockopen" />
+                  <span className="">{`공동현관 비밀번호: ${defaultAddress?.entrancePassword}`}</span>
+                </div>
+                <div className="flex gap-1">
+                  <Icon type="message" />
+                  <span className="">{`요청사항: ${defaultAddress?.addressRequestMessage}`}</span>
+                </div>
               </div>
             )}
           </div>
@@ -191,8 +165,11 @@ const ShippingAddress = ({ onOpenActive }: Props) => {
         {isModalAddress && address && (
           <ModalAddress
             show={isModalAddress}
+            // show={true}
             onCloseModalAddress={() => setIsModalAddress(false)}
             data={address}
+            loadAddress={loadAddress}
+            setAddress={setAddress}
           />
         )}
       </div>
