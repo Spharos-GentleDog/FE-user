@@ -1,25 +1,19 @@
-
-import Icon from "@/components/Icon";
-import Label from "@/components/Label/Label";
-import Payment from "@/components/Payment";
-import Prices from "@/components/Prices";
-import { Product } from "@/data/data";
-import { paymentProductList } from "@/data/paymentProductList";
-import ButtonPrimary from "@/shared/Button/ButtonPrimary";
-import Input from "@/shared/Input/Input";
-import { PaymentByProductList } from "@/types/payment/payment";
-import { useSession } from "next-auth/react";
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import ContactInfo from "./ContactInfo";
-import ShippingAddress from "./ShippingAddress";
 import CheckoutList from "@/components/CheckoutList";
+import { getServerSession } from "next-auth";
+import Link from "next/link";
+import { options } from "../api/auth/[...nextauth]/options";
+import { redirect } from "next/navigation";
 
-const CheckoutPage = () => {
+const CheckoutPage = async () => {
 
+  const session = await getServerSession(options)
+  console.log("session", session)
 
-
+  if (!session?.user.usersName) {
+    return (
+      redirect("/login?callBackUrl=checkout")
+    )
+  }
 
   return (
     <div className="nc-CheckoutPage">

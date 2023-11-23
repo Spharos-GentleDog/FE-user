@@ -11,14 +11,14 @@ export interface DefaultAddressType {
 
 // 주소 타입
 export interface AddressType {
-  addressId: number;
+  id: number;
   userAddress: string;
-  addressName: string;
-  entrancePassword: string;
-  addressRequestMessage: string;
-  recipientName: string;
+  addressAlias: string;
   recipientPhoneNumber: string;
-  isDefault: boolean;
+  recipientName: string;
+  addressRequestMessage: string;
+  entrancePassword: string;
+  defaultAddress: boolean;
 }
 
 // 강아지 정보 타입

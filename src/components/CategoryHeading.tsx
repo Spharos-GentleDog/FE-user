@@ -35,6 +35,7 @@ function CategoryHeading({
     }
 
     useEffect(() => {
+        console.log(process.env.BASE_API_URL)
         const getData = async () => {
             try {
                 const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/read-parent-category`, {
@@ -60,7 +61,7 @@ function CategoryHeading({
                 }
 
             } catch (error) {
-                console.log('Error Fetch : ', error);
+                // console.log('Error Fetch : ', error);
             }
         }
 

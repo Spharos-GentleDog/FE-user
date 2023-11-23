@@ -1,13 +1,13 @@
-import Checkbox from "@/shared/Checkbox/Checkbox";
-import { CartProductType } from "@/types/productType";
-import Image from "next/image";
-import Link from "next/link";
-import Icon from "./Icon";
-import NcInputNumber from "./NcInputNumber";
-import Prices from "./Prices";
-import RenderStatusInstock from "./RenderStatusInstock";
-import RenderStatusSoldout from "./RenderStatusSoldout";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import Checkbox from '@/shared/Checkbox/Checkbox';
+import { CartProductType } from '@/types/productType';
+import Image from 'next/image';
+import Link from 'next/link';
+import Icon from './Icon';
+import NcInputNumber from './NcInputNumber';
+import Prices from './Prices';
+import RenderStatusInstock from './RenderStatusInstock';
+import RenderStatusSoldout from './RenderStatusSoldout';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 /**
  * 장바구니 상품 출력

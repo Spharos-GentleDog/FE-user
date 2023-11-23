@@ -4,7 +4,7 @@ import React from 'react';
 
 
 
-export default async function CartPage() {
+export default function CartPage() {
   return (
     <div className="nc-CartPage">
       <main className="container py-16 md:pb-28 md:pt-20 ">
