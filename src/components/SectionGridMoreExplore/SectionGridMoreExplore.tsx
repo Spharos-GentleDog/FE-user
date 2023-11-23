@@ -3,7 +3,7 @@
 import React, { FC, useState } from "react";
 import CardCategory4 from "@/components/CardCategories/CardCategory4";
 import CategoryHeading from "../CategoryHeading";
-import { ChildCategory } from "@/types/product/category";
+import { ChildCategory, ChildCategoryWithProductCount } from "@/types/product/category";
 
 export interface SectionGridMoreExploreProps {
   className?: string;
@@ -20,23 +20,27 @@ const SectionGridMoreExplore: FC<SectionGridMoreExploreProps> = ({
 }) => {
 
 
-  const renderCard = (item: ChildCategory) => {
+  const renderCard = (item: ChildCategoryWithProductCount, index: number) => {
     return (
       <CardCategory4
-        key={item.categoryId}
-        categoryId={item.categoryId}
-        categoryName={item.categoryName}
-        categoryProductCount={item.categoryProductCount}
+        key={index}
+        categoryId={item.childCategoryId}
+        categoryName={item.childCategoryName}
+        categoryProductCount={item.productCount}
       />
     );
   };
 
-  const [category, setCategory] = useState<ChildCategory[]>([]);
+  const [category, setCategory] = useState<ChildCategoryWithProductCount[]>([]);
   return (
     <div className={`nc-SectionGridMoreExplore relative ${className}`}>
       <CategoryHeading setCategory={setCategory} />
       <div className={`grid gap-4 md:gap-7 ${gridClassName}`}>
-        {category.map((item) => renderCard(item))}
+        {
+          category ?
+            category.map((item, index) => renderCard(item, index))
+            : null
+        }
       </div>
     </div>
   );

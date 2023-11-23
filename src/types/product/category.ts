@@ -12,3 +12,10 @@ export interface ChildCategoryType {
     childCategoryId: number;
     childCategoryName: string;
 }
+
+export interface ChildCategoryWithProductCount {
+    childCategoryId: number;
+    childCategoryName: string;
+    productCount: number;
+
+}
