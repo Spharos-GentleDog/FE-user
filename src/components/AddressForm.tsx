@@ -67,8 +67,7 @@ const handleDeleteAddress = async (addressId: number) => {
       {/* todo: 색상 변경, 데이터 패칭 */}
       <div className="p-4 lg:px-0 space-y-2">
         <CustomNav2 title="배송지 선택" onCloseActive={handlers.closeModal} />
-        {address &&
-          address.map((address) => (
+        {address? address.map((address) => (
             <div
               key={`address-${address?.id}`}
               className="box-border border-gray-400 rounded-sm border-[1.5px] p-4 "
@@ -76,27 +75,27 @@ const handleDeleteAddress = async (addressId: number) => {
               <div className="flex flex-col rounded-none text-slate-700 dark:text-slate-300 ">
                 <div className="flex gap-1">
                   {/* <Icon type="alias" /> */}
-                  <span className="">{address.addressAlias}</span>
+                  <span className="">{address?.addressAlias}</span>
                 </div>
                 <div className="flex gap-1">
                   <Icon type="account" />
-                  <span className="">{address.recipientName}</span>
+                  <span className="">{address?.recipientName}</span>
                 </div>
                 <div className="flex gap-1">
                   <Icon type="map" />
-                  <span className="">{address.userAddress}</span>
+                  <span className="">{address?.userAddress}</span>
                 </div>
                 <div className="flex gap-1">
                   <Icon type="phone" />
-                  <span className="">{address.recipientPhoneNumber}</span>
+                  <span className="">{address?.recipientPhoneNumber}</span>
                 </div>
                 <div className="flex gap-1">
                   <Icon type="lockopen" />
-                  <span className="">{`공동현관 비밀번호: ${address.entrancePassword}`}</span>
+                  <span className="">{`공동현관 비밀번호: ${address?.entrancePassword}`}</span>
                 </div>
                 <div className="flex gap-1">
                   <Icon type="message" />
-                  <span className="">{`요청사항: ${address.addressRequestMessage}`}</span>
+                  <span className="">{`요청사항: ${address?.addressRequestMessage}`}</span>
                 </div>
               </div>
               <div className="flex gap-2 pt-2">
@@ -110,12 +109,12 @@ const handleDeleteAddress = async (addressId: number) => {
                   선택
                 </button>
                 <button className="box-border border-black border-[1px] px-4 py-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-700"
-                onClick={() => handleDeleteAddress(address.id)}>
+                onClick={() => handleDeleteAddress(address?.id)}>
                   삭제
                 </button>
               </div>
             </div>
-          ))}
+          )):""}
         <div className="">
           <button
             className="box-border border-black border-[1px] px-4 py-2 rounded-md w-full hover:bg-neutral-100 dark:hover:bg-neutral-700"
