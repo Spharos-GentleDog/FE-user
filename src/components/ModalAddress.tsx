@@ -1,26 +1,69 @@
+'use client';
 import { Dialog, Transition } from '@/app/headlessui';
-import ButtonClose from '@/shared/ButtonClose/ButtonClose';
-import React, { Fragment } from 'react';
-import AddressForm from './AddressForm';
 import { AddressType } from '@/types/userType';
+import { Fragment, useEffect, useState } from 'react';
+import AddressForm from './AddressForm';
+import CustomNav2 from './Header/CustomNav2';
+import AddressRegister from './AddressRegister';
+import AddressEdit from './AddressEdit';
+import { useSession } from 'next-auth/react';
 
 export interface ModalAddressProps {
   show: boolean;
   onCloseModalAddress: () => void;
   data: AddressType;
+  loadAddress: () => void;
+  setAddress: (address: AddressType) => void;
 }
 
-/**
- * todo: 사용자의 배송지 주소를 불러오는 데이터 패칭
- * 배송지 추가 버튼을 눌렀을 때 배송지를 추가하는 폼 제작, 수정을 눌렀을 때 수정하는 폼과 같이 사용하면 될 듯
- * 주소지를 선택하면 배송지 정보가 출력되도록 로직 작성
- *
- */
+
 
 /**
  * 주소 모달 배경
  */
-function ModalAddress({ show, onCloseModalAddress, data }: ModalAddressProps) {
+export default function ModalAddress({
+  show,
+  onCloseModalAddress,
+  data,
+  setAddress
+}: ModalAddressProps) {
+  const session = useSession();
+  const token = session?.data?.user.accessToken;
+  const userEmail = session?.data?.user.userEmail;
+
+  const [activeAddress, setActiveAddress] = useState<string>('select');
+
+  const addressHandlers = {
+    showSelect: () => setActiveAddress('select'),
+    showRegister: () => setActiveAddress('register'),
+    showEdit: () => setActiveAddress('edit'),
+    closeModal: onCloseModalAddress,
+    reLoadAddress: reLoadAddress,
+  };
+
+  async function reLoadAddress() {
+    try {
+      const res = await fetch(
+        'https://gentledog-back.duckdns.org/api/v1/user/address',
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            userEmail: userEmail,
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const data = await res.json();
+      console.log('data', data);
+      if (res.status === 200) {
+        setAddress(data.result);
+      }
+    } catch (e) {
+      console.error('Failed to fetch address', e);
+    }
+  }
+
   return (
     <Transition appear show={show} as={Fragment}>
       <Dialog
@@ -59,12 +102,20 @@ function ModalAddress({ show, onCloseModalAddress, data }: ModalAddressProps) {
                 className="flex-1 flex overflow-hidden max-h-full lg:px-8 w-full text-left align-middle transition-all transform lg:rounded-2xl bg-white 
               dark:bg-neutral-900 dark:border dark:border-slate-700 dark:text-slate-100 shadow-xl"
               >
-                <div className="flex-1 overflow-y-auto hiddenScrollbar">
+                <div className="AddressList flex-1 overflow-y-auto hiddenScrollbar">
                   {/* todo: address 디자인 작업 컴포넌트 넣기*/}
-                  <AddressForm
-                    onCloseModalAddress={onCloseModalAddress}
-                    data={data}
-                  />
+                  {activeAddress === 'select' && (
+                    <AddressForm
+                      data={data}
+                      handlers={addressHandlers}
+                    />
+                  )}
+                  {activeAddress === 'register' && (
+                    <AddressRegister handlers={addressHandlers} />
+                  )}
+                  {activeAddress === 'edit' && (
+                    <AddressEdit handlers={addressHandlers} />
+                  )}
                 </div>
               </div>
             </div>
@@ -74,5 +125,3 @@ function ModalAddress({ show, onCloseModalAddress, data }: ModalAddressProps) {
     </Transition>
   );
 }
-
-export default ModalAddress;

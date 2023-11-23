@@ -11,6 +11,7 @@ export interface DefaultAddressType {
 
 // 주소 타입
 export interface AddressType {
+  map(arg0: (address: AddressType) => import("react").JSX.Element): import("react").ReactNode;
   id: number;
   userAddress: string;
   addressAlias: string;
