@@ -1,25 +1,30 @@
-'use client';
+"use client";
 
-import Label from '@/components/Label/Label';
-import React, { FC, useState } from 'react';
-import ButtonPrimary from '@/shared/Button/ButtonPrimary';
-import ButtonSecondary from '@/shared/Button/ButtonSecondary';
-import Input from '@/shared/Input/Input';
-import Radio from '@/shared/Radio/Radio';
-import Select from '@/shared/Select/Select';
-import ModalAddress from '@/components/ModalAddress';
+import Label from "@/components/Label/Label";
+import React, { FC, useState } from "react";
+import ButtonPrimary from "@/shared/Button/ButtonPrimary";
+import ButtonSecondary from "@/shared/Button/ButtonSecondary";
+import Input from "@/shared/Input/Input";
+import Radio from "@/shared/Radio/Radio";
+import Select from "@/shared/Select/Select";
+import ModalAddress from "@/components/ModalAddress";
 
 interface Props {
   onOpenActive: () => void;
 }
 
 /**
+ * todo: 대표 배송지 바로 불러오도록 데이터 패칭
+ * 출력되는 정보 추가
+ * 지도 이미지 아이콘 변경
+ * 모달 내용 수정
+ */
+
+/**
  * 배송지 주소 모달로 변경
  * @param onOpenActive 클릭 시 실행 모달 열기, 스크롤 이동
  */
-const ShippingAddress: FC<Props> = ({
-  onOpenActive,
-}) => {
+const ShippingAddress: FC<Props> = ({ onOpenActive }) => {
   const [isModalAddress, setIsModalAddress] = useState(false);
   const renderShippingAddress = () => {
     return (
