@@ -15,19 +15,20 @@ function CategoryHeading({
     const [tabActive, setTabActive] = useState(1);
     const [categoryData, setCategoryData] = useState<ParentCategoryType[]>([]);
 
-    const handleCategoryFetch = async (categoryId: number, categoryName: string) => {
+    const handleCategoryFetch = async (categoryId: number) => {
+        console.log("categoryId : ", categoryId);
         setTabActive(categoryId);
 
         try {
-            const res = await fetch(`https://653230c34d4c2e3f333dbc82.mockapi.io/category?parentCategoryId=${categoryId}`, {
+            const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/read-child-category-count?parentCategoryId=${categoryId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
 
-            const data = await res.json();
-            setCategory(data);
+            const childCategory = await res.json();
+            setCategory(childCategory.result);
         } catch (error) {
             console.log('Error Fetch : ', error);
         }
@@ -43,34 +44,27 @@ function CategoryHeading({
                     }
                 });
 
-                const data = await res.json();
+                const parentCategory = await res.json();
+                setCategoryData(parentCategory.result.parentCategoryDtoList);
 
-                setCategoryData(data.result.parentCategoryDtoList);
+                if (res.status === 200) {
+                    const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/read-child-category-count?parentCategoryId=${parentCategory.result.parentCategoryDtoList[0].parentCategoryId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+
+                    const result = await res.json();
+                    setCategory(result.result);
+                }
 
             } catch (error) {
                 console.log('Error Fetch : ', error);
             }
         }
 
-        // getData().then(() => {
-        //     // todo: 데이터 받아오고 나서 첫번째 카테고리 데이터 받아오기(전체 카테고리)
-        //     fetch(`${process.env.BASE_API_URL}/api/v1/product/read-parent-category`, {
-        //         method: 'GET',
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         }
-        //     }).then(res => res.json()).then(data => setCategory(data.result.parentCategoryDtoList));
-        // });
-
-        getData().then(() => {
-            // todo: 데이터 받아오고 나서 첫번째 카테고리 데이터 받아오기(전체 카테고리)
-            fetch(`https://653230c34d4c2e3f333dbc82.mockapi.io/category`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            }).then(res => res.json()).then(data => setCategory(data));
-        });
+        getData();
     }, []);
 
     return (
@@ -87,9 +81,9 @@ function CategoryHeading({
             >
                 {categoryData?.map((item, index) => (
                     <NavItem2
-                        key={item.parentCategoryId}
+                        key={index}
                         isActive={tabActive === item.parentCategoryId}
-                        onClick={() => handleCategoryFetch(item.parentCategoryId, item.parentCategoryName)}
+                        onClick={() => handleCategoryFetch(item.parentCategoryId)}
                     >
                         <div className="flex items-center justify-center space-x-1.5 sm:space-x-2.5 text-xs sm:text-sm ">
                             {item.parentCategoryName}

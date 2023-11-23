@@ -12,6 +12,7 @@ export interface SignupDataType {
     gender: number
     phoneNumber: string
     authEmail: string
+    authPhone: string
 }
 
 export interface SignupAddressDataType {

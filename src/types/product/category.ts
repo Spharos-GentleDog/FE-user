@@ -4,7 +4,18 @@ export interface ParentCategoryType {
 }
 
 export interface ChildCategory {
-    categoryId: number;
-    categoryName: string;
-    categoryProductCount: number;
+    isSuccess: boolean;
+    result: ChildCategoryType[];
+}
+
+export interface ChildCategoryType {
+    childCategoryId: number;
+    childCategoryName: string;
+}
+
+export interface ChildCategoryWithProductCount {
+    childCategoryId: number;
+    childCategoryName: string;
+    productCount: number;
+
 }

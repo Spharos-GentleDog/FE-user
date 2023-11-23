@@ -74,7 +74,7 @@ const MainNav2Logged: FC<MainNav2LoggedProps> = () => {
           </Link>
         </div>
 
-        <div className="flex-[2] hidden lg:flex justify-center mx-4">
+        <div className="flex-[4] hidden lg:flex justify-center">
           {showSearchForm ? renderSearchForm() : <Navigation />}
         </div>
 

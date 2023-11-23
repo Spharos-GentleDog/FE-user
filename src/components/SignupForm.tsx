@@ -18,6 +18,7 @@ function SignupForm() {
     gender: 0,
     phoneNumber: '',
     authEmail: '',
+    authPhone: '',
   })
 
   // 회원가입 에러 처리
@@ -202,7 +203,9 @@ function SignupForm() {
           setSignupError={setSignupError}
           signup={signup}
           signupError={signupError}
+          authEmailConfirm={authEmailConfirm}
           setAuthEmailConfirm={setAuthEmailConfirm}
+          authPhoneConfirm={authPhoneConfirm}
           setAuthPhoneConfirm={setAuthPhoneConfirm}
           refs={refs}
         />

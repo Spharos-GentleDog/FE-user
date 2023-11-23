@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+
+  webpack5: true,
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false };
+
+    return config;
+  },
+  
   async rewrites() {
     return [
       {
@@ -51,6 +59,8 @@ const nextConfig = {
     NAVER_CLIENT_SECRET: process.env.NAVER_CLIENT_SECRET,
     TOSS_PAYMENTS_SECRET_KEY: process.env.TOSS_PAYMENTS_SECRET_KEY,
     TOSS_PAYMENTS_CLIENT_KEY: process.env.TOSS_PAYMENTS_CLIENT_KEY,
+    COOLSMS_API_KEY: process.env.COOLSMS_API_KEY,
+    COOLSMS_API_SECRET: process.env.COOLSMS_API_SECRET,
   },
   images: {
     domains: ['https://gentledog-bucket.s3.ap-northeast-2.amazonaws.com', 'loremflickr.com', 'https://static.toss.im']

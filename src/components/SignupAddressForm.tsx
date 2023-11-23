@@ -3,7 +3,6 @@
 import Input from '@/shared/Input/Input'
 import React, { useEffect, useState } from 'react'
 import Postcode from './Postcode'
-import { daumAddressType } from '@/types/daumAddressType'
 
 function SignupAddressForm(
     {
