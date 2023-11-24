@@ -11,12 +11,11 @@ import { useSession } from 'next-auth/react';
 export interface ModalAddressProps {
   show: boolean;
   onCloseModalAddress: () => void;
-  data: AddressType;
+  data: AddressType[];
   loadAddress: () => void;
-  setAddress: (address: AddressType) => void;
+  setAddress: (address: AddressType[]) => void;
+  setDefaultAddress: (address: AddressType) => void;
 }
-
-
 
 /**
  * 주소 모달 배경
@@ -25,13 +24,17 @@ export default function ModalAddress({
   show,
   onCloseModalAddress,
   data,
-  setAddress
+  setAddress,
+  setDefaultAddress,
 }: ModalAddressProps) {
   const session = useSession();
   const token = session?.data?.user.accessToken;
   const userEmail = session?.data?.user.userEmail;
 
+  // 초기 화면은 주소 목록
   const [activeAddress, setActiveAddress] = useState<string>('select');
+  // 주소 수정 시 수정할 주소 정보
+  const [editAddress, setEditAddress] = useState<AddressType>();
 
   const addressHandlers = {
     showSelect: () => setActiveAddress('select'),
@@ -39,6 +42,8 @@ export default function ModalAddress({
     showEdit: () => setActiveAddress('edit'),
     closeModal: onCloseModalAddress,
     reLoadAddress: reLoadAddress,
+    setDefaultAddress: setDefaultAddress,
+    setEditAddress: setEditAddress,
   };
 
   async function reLoadAddress() {
@@ -55,7 +60,6 @@ export default function ModalAddress({
         }
       );
       const data = await res.json();
-      console.log('data', data);
       if (res.status === 200) {
         setAddress(data.result);
       }
@@ -105,16 +109,13 @@ export default function ModalAddress({
                 <div className="AddressList flex-1 overflow-y-auto hiddenScrollbar">
                   {/* todo: address 디자인 작업 컴포넌트 넣기*/}
                   {activeAddress === 'select' && (
-                    <AddressForm
-                      data={data}
-                      handlers={addressHandlers}
-                    />
+                    <AddressForm data={data} handlers={addressHandlers} />
                   )}
                   {activeAddress === 'register' && (
                     <AddressRegister handlers={addressHandlers} />
                   )}
-                  {activeAddress === 'edit' && (
-                    <AddressEdit handlers={addressHandlers} />
+                  {activeAddress === 'edit' && editAddress && (
+                    <AddressEdit editAddress={editAddress} handlers={addressHandlers} />
                   )}
                 </div>
               </div>

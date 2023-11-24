@@ -26,7 +26,7 @@ const Checkbox: FC<CheckboxProps> = ({
   className = '',
   sizeClassName = 'w-6 h-6',
   labelClassName = '',
-  isChecked,
+  isChecked=false,
   defaultChecked,
   onChange,
 }) => {

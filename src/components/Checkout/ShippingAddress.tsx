@@ -37,11 +37,10 @@ interface Props {
  * @param onOpenActive 클릭 시 실행 모달 열기, 스크롤 이동
  */
 const ShippingAddress = ({ onOpenActive }: Props) => {
-  const [address, setAddress] = React.useState<AddressType>();
+  const [address, setAddress] = useState<AddressType[]>();
   const session = useSession();
   const token = session?.data?.user.accessToken;
   const userEmail = session?.data?.user.userEmail;
-  // console.log('token', token);
   const [defaultAddress, setDefaultAddress] = useState<AddressType>();
 
   useEffect(() => {
@@ -63,7 +62,7 @@ const ShippingAddress = ({ onOpenActive }: Props) => {
         // console.log('res', res);
         const data = await res.json();
         // console.log('data', data);
-        setDefaultAddress(data.result);
+        setDefaultAddress(data.result as AddressType);
       } catch (e) {
         console.error('Failed to fetch defaultAddress', e);
       }
@@ -85,8 +84,7 @@ const ShippingAddress = ({ onOpenActive }: Props) => {
         }
       );
       const data = await res.json();
-      console.log('data', data);
-      setAddress(data.result);
+      setAddress(data.result as AddressType[]);
       if (res.status === 200) {
         setIsModalAddress(true);
         onOpenActive();
@@ -123,7 +121,10 @@ const ShippingAddress = ({ onOpenActive }: Props) => {
               </svg>
             </h3>
             {defaultAddress && (
-              <div className="flex-col font-semibold mt-1 text-sm divide-y-2">
+              <div
+                key={`address-${defaultAddress?.addressId}`}
+                className="flex-col font-semibold mt-1 text-sm divide-y-2"
+              >
                 <div className="flex gap-1">
                   <Icon type="account" />
                   <span className="">{defaultAddress?.addressAlias}</span>
@@ -170,7 +171,7 @@ const ShippingAddress = ({ onOpenActive }: Props) => {
             data={address}
             loadAddress={loadAddress}
             setAddress={setAddress}
-          />
+            setDefaultAddress={setDefaultAddress}/>
         )}
       </div>
     );
