@@ -22,11 +22,10 @@ const LikeButton: React.FC<LikeButtonProps> = ({
   const userEmail = session?.data?.user.userEmail;
   const [isLiked, setIsLiked] = useState<boolean>();
 
-  // todo: 유저의 찜 상태를 가져오기
+  // 유저의 찜 상태를 가져오기
   useEffect(() => {
     /** 초기 랜더링 */
     async function getWishStatus() {
-      console.log('productId', productId);
       const res = await fetch(
         `https://gentledog-back.duckdns.org/api/v1/wish/wishproductlist/${productId}`,
         {
@@ -39,7 +38,6 @@ const LikeButton: React.FC<LikeButtonProps> = ({
         }
       );
       const data = await res.json();
-      console.log('data', data);
       if (res.ok) {
         // null 값이면 찜 안한 상태
         // null 값이 아니면 찜 한 상태
@@ -58,34 +56,35 @@ const LikeButton: React.FC<LikeButtonProps> = ({
 
   /** 찜하기 */
   async function handleWish() {
-    try {
-      const res = await fetch(
-        'https://gentledog-back.duckdns.org/api/v1/wish/wishproductlist',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            userEmail: userEmail,
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            productId: productId,
-          }),
-        }
-      );
-      const data = await res.json();
-      console.log('data', data);
-      if (res.ok) {
+    if (session.data?.user.accessToken) {
+      try {
+        const res = await fetch(
+          'https://gentledog-back.duckdns.org/api/v1/wish/wishproductlist',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              userEmail: userEmail,
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              productId: productId,
+            }),
+          }
+        );
+        const data = await res.json();
         if (res.ok) {
-          if (data.result === true) {
-            setIsLiked(true);
-          } else {
-            setIsLiked(false);
+          if (res.ok) {
+            if (data.result === true) {
+              setIsLiked(true);
+            } else {
+              setIsLiked(false);
+            }
           }
         }
+      } catch (e) {
+        console.log(e);
       }
-    } catch (e) {
-      console.log(e);
     }
   }
 

@@ -8,11 +8,31 @@ import { groupProductsByBrand } from '@/utils/groupProductsByBrand';
 import { useEffect, useState } from 'react';
 import Icon from './Icon';
 import RenderProduct from './RenderProduct';
+import { useSession } from 'next-auth/react';
+
+// 장바구니 데이터 페칭 로직
+// 1. 장바구니 아이디와 productDetailId를 받아온다, count, isChecked
+// 2. productDetailId를 이용해 상품 정보를 받아온다. 가격 정보도 포함되어 있다.
+// 3. productDetailId를 이용해 장바구니 정보와 상품 정보를 합친다.
+// 4. 이미 브랜드별로 그룹핑된 처음부터 받아왔기 때문에 추가적인 그룹핑은 필요 없다.
+// 5. 가격 정보를 다른 객체로 저장한다.
+// 6. 완성된 데이터 정보를 화면에 출력한다.
+
+// todo: 장바구니 기능 로직
+// 1. 체크 변경 페칭
+// 2. 체크된 상품 일괄 삭제 페칭
+// 3. 개별 상품 삭제 페칭
+// 4. 상품 수량 변경 페칭
+// 5. 상품 옵션 변경 페칭? 있는지 확인해봐야함
 
 /**
  * 장바구니 상품 출력
  */
 export default function CartList() {
+  const session = useSession();
+  const token = session?.data?.user.accessToken;
+  const userEmail = session?.data?.user.userEmail;
+
   const [cartBrandProducts, setCartBrandProducts] =
     useState<CartBrandProductsType>();
   const [checkoutInfo, setCheckoutInfo] = useState<{
@@ -96,36 +116,62 @@ export default function CartList() {
     });
   };
 
-  // 상품 정보 패칭
+  // 장바구니 api 호충 연습
   useEffect(() => {
-    /**
-     * 장바구니 상품 정보 패칭, 할인 적용, 브랜드별 상품 그룹핑
-     * @returns 브랜드 별 상품 정보
-     */
-    async function loadCartProducts() {
+    async function loadCartId() {
       try {
-        /**
-         * 장바구니 상품 정보
-         */
         const res = await fetch(
-          'https://6535d1a2c620ba9358ecaf38.mockapi.io/CartProductType',
-          { cache: 'no-cache' }
+          'https://gentledog-back.duckdns.org/api/v1/wish/cart',
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              userEmail: userEmail,
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         if (!res.ok) throw new Error(res.statusText);
 
-        const cartProducts = await res.json();
-        const discountedCartProducts = applyDiscounts(cartProducts);
-        /**
-         * 브랜드별 상품 그룹핑
-         */
-        const cartBrandProduct = groupProductsByBrand(discountedCartProducts);
-        setCartBrandProducts(cartBrandProduct as CartBrandProductsType);
+        const cartId = await res.json();
+        console.log(cartId.result);
       } catch (e) {
-        console.error('Failed to fetch cart products', e);
+        console.error('Failed to fetch loadCartId', e);
       }
     }
-    loadCartProducts();
+    loadCartId();
   }, []);
+
+  // 상품 정보 패칭
+  // useEffect(() => {
+  //   /**
+  //    * 장바구니 상품 정보 패칭, 할인 적용, 브랜드별 상품 그룹핑
+  //    * @returns 브랜드 별 상품 정보
+  //    */
+  //   async function loadCartProducts() {
+  //     try {
+  //       /**
+  //        * 장바구니 상품 정보
+  //        */
+  //       const res = await fetch(
+  //         'https://6535d1a2c620ba9358ecaf38.mockapi.io/CartProductType',
+  //         { cache: 'no-cache' }
+  //       );
+  //       if (!res.ok) throw new Error(res.statusText);
+
+  //       const cartProducts = await res.json();
+  //       const discountedCartProducts = applyDiscounts(cartProducts);
+  //       /**
+  //        * 브랜드별 상품 그룹핑
+  //        */
+  //       const cartBrandProduct = groupProductsByBrand(discountedCartProducts);
+  //       setCartBrandProducts(cartBrandProduct as CartBrandProductsType);
+  //     } catch (e) {
+  //       console.error('Failed to fetch cart products', e);
+  //     }
+  //   }
+  //   loadCartProducts();
+  // }, []);
 
   // 주문 정보 출력
   useEffect(() => {
