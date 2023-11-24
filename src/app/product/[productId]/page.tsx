@@ -43,6 +43,7 @@ import detail9 from '@/images/products/t9.png';
 import p1 from '@/images/products/p1.png';
 import p2 from '@/images/products/p2.png';
 import p3 from '@/images/products/p3.png';
+import LikeButton from '@/components/LikeButton';
 
 /**
  * 상품 상세 이미지 더미 데이터
@@ -402,7 +403,9 @@ const Product = ({}) => {
             {renderStatus()}
 
             <div className="ml-auto">
-              <LikeSaveBtns />
+              {/* todo: 페칭 필요 */}
+              {/* <LikeSaveBtns productId={52}/> */}
+              <LikeButton productId={52} className="" />
             </div>
           </div>
         </div>

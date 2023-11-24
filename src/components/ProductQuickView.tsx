@@ -328,7 +328,8 @@ const ProductQuickView: FC<ProductQuickViewProps> = ({ className = "" }) => {
             {/* STATUS */}
             {renderStatus()}
             {/* META FAVORITES */}
-            <LikeButton className="absolute end-3 top-3 " />
+            {/* todo: 페칭 필요 */}
+            <LikeButton productId={0} className="absolute end-3 top-3 " />
           </div>
           <div className="hidden lg:grid grid-cols-2 gap-3 mt-3 sm:gap-6 sm:mt-6 xl:gap-5 xl:mt-5">
             {[LIST_IMAGES_DEMO[1], LIST_IMAGES_DEMO[2]].map((item, index) => {
