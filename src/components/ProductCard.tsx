@@ -30,9 +30,10 @@ export interface ProductCardProps {
 const ProductCard: FC<ProductCardProps> = ({
   className = '',
   data,
-  isLiked,
+  isLiked = false,
 }) => {
   const {
+    productId,
     productName,
     productPrice,
     brandName,
@@ -84,8 +85,8 @@ const ProductCard: FC<ProductCardProps> = ({
           <Image
             width={80}
             height={96}
-            src={ProductImage || ""}
-            alt={productName || ""}
+            src={ProductImage || ''}
+            alt={productName || ''}
             className="absolute object-cover object-center"
           />
         </div>
@@ -132,7 +133,10 @@ const ProductCard: FC<ProductCardProps> = ({
       <div
         className={`nc-ProductCard relative flex flex-col bg-transparent ${className}`}
       >
-        <Link href={`/product/${productCode}`} className="absolute inset-0"></Link>
+        <Link
+          href={`/product/${productCode}`}
+          className="absolute inset-0"
+        ></Link>
 
         <div className="relative flex-shrink-0 bg-slate-50 dark:bg-slate-300 rounded-3xl overflow-hidden z-1 group">
           <Link href={`/product/${productCode}`} className="block">
@@ -146,7 +150,11 @@ const ProductCard: FC<ProductCardProps> = ({
             />
           </Link>
           <div className="absolute top-3 end-3 z-10 flex gap-1">
-            <LikeButton liked={isLiked} className="" />
+            {/* todo: 실제 상품 데이터 페칭 시 타입 확인 */}
+            <LikeButton
+              productId={productId as number}
+              className=""
+            />
             <ButtonSecondary
               className="ms-1.5 bg-white hover:!bg-gray-100 hover:text-slate-900 transition-colors shadow-lg"
               fontSize="text-xs"
@@ -157,14 +165,22 @@ const ProductCard: FC<ProductCardProps> = ({
             </ButtonSecondary>
           </div>
           {/* 사이즈가 존재하면 사이즈가 뜨고 아니면 addCart 버튼이 뜸 */}
-          {sizeName ?
-            <RenderSizeList sizeName={sizeName} notifyAddTocart={notifyAddTocart} />
-            : <RenderGroupButtons notifyAddTocart={notifyAddTocart} />
-          }
+          {sizeName ? (
+            <RenderSizeList
+              sizeName={sizeName}
+              notifyAddTocart={notifyAddTocart}
+            />
+          ) : (
+            <RenderGroupButtons notifyAddTocart={notifyAddTocart} />
+          )}
         </div>
 
         <div className="space-y-4 px-2.5 pt-5 pb-2.5">
-          <RenderColor variantActive={variantActive} setVariantActive={setVariantActive} color={color} />
+          <RenderColor
+            variantActive={variantActive}
+            setVariantActive={setVariantActive}
+            color={color}
+          />
           <div>
             <h2 className="nc-ProductCard__title text-base font-semibold transition-colors">
               {productName}
