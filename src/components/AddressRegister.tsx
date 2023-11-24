@@ -6,11 +6,6 @@ import Checkbox from '@/shared/Checkbox/Checkbox';
 import { useSession } from 'next-auth/react';
 import { AddressType } from '@/types/userType';
 
-
-// ~~~~~~~~~~~~~~~!!!!!!!!@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-// 등록버튼 수정@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
 // 핸들러들의 타입 정의
 interface AddressHandlers {
   showSelect: () => void;
@@ -56,7 +51,6 @@ export default function AddressRegister({
         [name]: value,
       }));
     }
-    console.log(formData);
   };
 
   /** 등록 버튼 클릭 시 제출 */

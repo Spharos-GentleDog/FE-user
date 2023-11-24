@@ -1,5 +1,10 @@
+'use client';
+import { AddressType } from '@/types/userType';
 import CustomNav2 from './Header/CustomNav2';
 import Icon from './Icon';
+import { ChangeEvent, useState } from 'react';
+import { useSession } from 'next-auth/react';
+import Checkbox from '@/shared/Checkbox/Checkbox';
 
 // 핸들러들의 타입 정의
 interface AddressHandlers {
@@ -7,16 +12,83 @@ interface AddressHandlers {
   showRegister: () => void;
   showEdit: () => void;
   closeModal: () => void;
+  reLoadAddress: () => void;
 }
-// handlers: AddressHandlers
+
 export default function AddressEdit({
-  handlers
+  handlers,
+  editAddress,
 }: {
   handlers: AddressHandlers;
+  editAddress: AddressType;
 }) {
+  const session = useSession();
+  const token = session?.data?.user.accessToken;
+  const userEmail = session?.data?.user.userEmail;
+
+  const [formData, setFormData] = useState<AddressType>(editAddress);
+
+    /** 입력 시 저장 */
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+      const { name, value, type, checked } = e.target;
+  
+      // 체크박스와 일반 입력 필드를 다르게 처리
+      if (type === 'checkbox') {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [name]: checked,
+        }));
+      } else {
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          [name]: value,
+        }));
+      }
+    };
+
+  /** 수정 버튼 클릭 시 페칭 */
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const fullAddress = formData.userAddress + formData.userDetailAddress;
+    const requestData = {
+      ...formData,
+      userAddress: fullAddress,
+    };
+    console.log('requestData', requestData);
+    try {
+      const res = await fetch(
+        'https://gentledog-back.duckdns.org/api/v1/user/address',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            userEmail: userEmail,
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(requestData),
+        }
+      );
+      const data = await res.json();
+      if (res.status === 200) {
+        console.log('data', data);
+        // handlers.showSelect();
+      }
+    } catch (e) {
+      console.error('Failed to fetch address', e);
+    }
+  }
+
+  /** 클릭 시 수정 */
+    async function handleClick(e: React.FormEvent<HTMLFormElement>) {
+      await handleSubmit(e);
+      handlers.reLoadAddress();
+      handlers.showSelect();
+    }
+
   return (
     <div className="p-4 lg:px-0 space-y-2">
-      {/* <CustomNav2 title="배송지 수정" onCloseActive={handlers.showSelect} />
+      <CustomNav2 title="배송지 수정" onCloseActive={handlers.showSelect} />
       <form onSubmit={handleClick}>
         <div className="flex-col  flex space-y-2">
           <div className="flex ">
@@ -138,7 +210,7 @@ export default function AddressEdit({
             수정
           </button>
         </div>
-      </form> */}
+      </form>
     </div>
   );
 }
