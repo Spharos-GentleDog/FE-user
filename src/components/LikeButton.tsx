@@ -20,15 +20,13 @@ const LikeButton: React.FC<LikeButtonProps> = ({
   const session = useSession();
   const token = session?.data?.user.accessToken;
   const userEmail = session?.data?.user.userEmail;
-  const [isLiked, setIsLiked] = useState<boolean>(false);
-  const [wishProductId, setWishProductId] = useState<number | null>();
+  const [isLiked, setIsLiked] = useState<boolean>();
 
   // todo: 유저의 찜 상태를 가져오기
   useEffect(() => {
     /** 초기 랜더링 */
     async function getWishStatus() {
       console.log('productId', productId);
-      console.log('wishProductId', wishProductId)
       const res = await fetch(
         `https://gentledog-back.duckdns.org/api/v1/wish/wishproductlist/${productId}`,
         {
@@ -46,11 +44,10 @@ const LikeButton: React.FC<LikeButtonProps> = ({
         // null 값이면 찜 안한 상태
         // null 값이 아니면 찜 한 상태
         if (res.ok) {
-          if (data.result.wishProductId === null) {
-            setIsLiked(false);
-          } else {
+          if (data.result === true) {
             setIsLiked(true);
-            setWishProductId(data.result.wishProductId);
+          } else {
+            setIsLiked(false);
           }
         }
       }
@@ -77,52 +74,25 @@ const LikeButton: React.FC<LikeButtonProps> = ({
         }
       );
       const data = await res.json();
+      console.log('data', data);
       if (res.ok) {
-        setIsLiked(true);
-        setWishProductId(data.result.wishProductId);
-      }
-    } catch (e) {
-      console.log(e);
-    } 
-  }
-
-  /** 찜 취소 */
-  async function handleUnWish() {
-    try {
-      const res = await fetch(
-        `https://gentledog-back.duckdns.org/api/v1/wish/wishproductlist/${wishProductId}`,
-        {
-          method: 'Delete',
-          headers: {
-            'Content-Type': 'application/json',
-            userEmail: userEmail,
-            Authorization: `Bearer ${token}`,
-          },
+        if (res.ok) {
+          if (data.result === true) {
+            setIsLiked(true);
+          } else {
+            setIsLiked(false);
+          }
         }
-      );
-      const data = await res.json();
-      if (res.ok) {
-        setIsLiked(false);
-        setWishProductId(null);
       }
     } catch (e) {
       console.log(e);
     }
   }
-
-  /** 현재 상태에 따라 찜하기 버튼 */
-  const handleClickWish = () => {
-    if (isLiked === false) {
-      handleWish();
-    } else {
-      handleUnWish();
-    }
-  };
 
   return (
     <button
       className={`w-9 h-9 flex items-center justify-center rounded-full bg-white dark:bg-slate-900 text-neutral-700 dark:text-slate-200 nc-shadow-lg ${className}`}
-      onClick={handleClickWish}
+      onClick={() => handleWish()}
     >
       {/* todo: 이미지 변경하기 */}
       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
