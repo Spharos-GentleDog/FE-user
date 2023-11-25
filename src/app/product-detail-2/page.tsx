@@ -370,7 +370,7 @@ const ProductDetailPage2 = ({}) => {
             {renderStatus()}
 
             <div className="ml-auto">
-              <LikeSaveBtns />
+              <LikeSaveBtns productId={0}/>
             </div>
           </div>
         </div>

@@ -125,7 +125,8 @@ const ListingImageGallery: FC<Props> = ({ images, onClose, isShowModal }) => {
               >
                 <ArrowSmallLeftIcon className="w-6 h-6" />
               </button>
-              <LikeSaveBtns />
+              {/* todo: 페칭 필요 */}
+              <LikeSaveBtns productId={52}/>
             </div>
 
             <div className="flex min-h-full items-center justify-center sm:p-4 pt-0 text-center">
