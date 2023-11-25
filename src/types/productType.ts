@@ -28,10 +28,10 @@ export interface Product {
   tags: string[];
   link: string;
   variants?: ProductVariant[];
-  variantType?: "color" | "image";
+  variantType?: 'color' | 'image';
   sizes?: string[];
   allOfSizes?: string[];
-  status?: "신제품" | "리미티드 에디션" | "품절" | "50% 할인";
+  status?: '신제품' | '리미티드 에디션' | '품절' | '50% 할인';
   rating?: string;
   numberOfReviews?: number;
   brandName?: string;
@@ -72,6 +72,7 @@ export interface CartProductType {
   brandName: string;
   color: string;
   size: string;
+  // todo: count 지우기
   count: number;
   isChecked: boolean;
   productStock: number;

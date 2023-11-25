@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import Icon from './Icon';
 import RenderProduct from './RenderProduct';
 import { useSession } from 'next-auth/react';
+import { CartType, ProductCartType } from '@/types/cartType';
 
 // 장바구니 데이터 페칭 로직
 // 1. 장바구니 아이디와 productDetailId를 받아온다, count, isChecked
@@ -24,6 +25,7 @@ import { useSession } from 'next-auth/react';
 // 3. 개별 상품 삭제 페칭
 // 4. 상품 수량 변경 페칭
 // 5. 상품 옵션 변경 페칭? 있는지 확인해봐야함
+//@@@@@@@@@@@@@@@@@@@ 패칭을 진행할 때 드랍다운 버튼을 누르면 페칭하도록 하는 방법도 있음
 
 /**
  * 장바구니 상품 출력
@@ -50,6 +52,7 @@ export default function CartList() {
     {}
   );
   const [isAllChecked, setIsAllChecked] = useState(false);
+  const [cartId, setCartId] = useState<ProductCartType[]>();
 
   /** 체크된 상품 주문 정보 */
   const calculateCheckoutInfo = () => {
@@ -116,7 +119,7 @@ export default function CartList() {
     });
   };
 
-  // 장바구니 api 호충 연습
+  // 장바구니 정보 가져오기
   useEffect(() => {
     async function loadCartId() {
       try {
@@ -134,44 +137,46 @@ export default function CartList() {
         if (!res.ok) throw new Error(res.statusText);
 
         const cartId = await res.json();
-        console.log(cartId.result);
+        setCartId(cartId.result.cart);
+        // console.log('cartId', cartId.result.cart);
       } catch (e) {
         console.error('Failed to fetch loadCartId', e);
       }
     }
+
     loadCartId();
   }, []);
 
   // 상품 정보 패칭
-  // useEffect(() => {
-  //   /**
-  //    * 장바구니 상품 정보 패칭, 할인 적용, 브랜드별 상품 그룹핑
-  //    * @returns 브랜드 별 상품 정보
-  //    */
-  //   async function loadCartProducts() {
-  //     try {
-  //       /**
-  //        * 장바구니 상품 정보
-  //        */
-  //       const res = await fetch(
-  //         'https://6535d1a2c620ba9358ecaf38.mockapi.io/CartProductType',
-  //         { cache: 'no-cache' }
-  //       );
-  //       if (!res.ok) throw new Error(res.statusText);
+  useEffect(() => {
+    /**
+     * 장바구니 상품 정보 패칭, 할인 적용, 브랜드별 상품 그룹핑
+     * @returns 브랜드 별 상품 정보
+     */
+    async function loadCartProducts() {
+      try {
+        /**
+         * 장바구니 상품 정보
+         */
+        const res = await fetch(
+          'https://6535d1a2c620ba9358ecaf38.mockapi.io/CartProductType',
+          { cache: 'no-cache' }
+        );
+        if (!res.ok) throw new Error(res.statusText);
 
-  //       const cartProducts = await res.json();
-  //       const discountedCartProducts = applyDiscounts(cartProducts);
-  //       /**
-  //        * 브랜드별 상품 그룹핑
-  //        */
-  //       const cartBrandProduct = groupProductsByBrand(discountedCartProducts);
-  //       setCartBrandProducts(cartBrandProduct as CartBrandProductsType);
-  //     } catch (e) {
-  //       console.error('Failed to fetch cart products', e);
-  //     }
-  //   }
-  //   loadCartProducts();
-  // }, []);
+        const cartProducts = await res.json();
+        const discountedCartProducts = applyDiscounts(cartProducts);
+        /**
+         * 브랜드별 상품 그룹핑
+         */
+        const cartBrandProduct = groupProductsByBrand(discountedCartProducts);
+        setCartBrandProducts(cartBrandProduct as CartBrandProductsType);
+      } catch (e) {
+        console.error('Failed to fetch cart products', e);
+      }
+    }
+    loadCartProducts();
+  }, []);
 
   // 주문 정보 출력
   useEffect(() => {
