@@ -1,6 +1,6 @@
 'use client';
 
-import React, { use, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import Input from "@/shared/Input/Input";
 import Select from "@/shared/Select/Select";
@@ -8,17 +8,19 @@ import Label from "@/components/Label/Label";
 import { useSession } from 'next-auth/react';
 import { UserDataType } from '@/types/selectDataType';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import Toast from './Toast';
 
 function ModifyUser() {
     const session = useSession();
     const router = useRouter();
     const [userInfo, setUserInfo] = useState<UserDataType>();
     const [userModify, setUserModify] = useState<UserDataType>({
-        userEmail: userInfo?.userEmail || "",
-        usersName: userInfo?.usersName || "",
-        userPhoneNumber: userInfo?.userPhoneNumber || "",
-        userAge: userInfo?.userAge || 0,
-        userGender: userInfo?.userGender || 0
+        userEmail: "",
+        usersName: "",
+        userPhoneNumber: "",
+        userAge: 0,
+        userGender: 0
     });
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -48,26 +50,46 @@ function ModifyUser() {
 
         const data = await res.json();
         if (data.code === 200) {
-            alert('회원정보가 수정되었습니다.');
+            toast.custom((t) => (
+                <Toast message='회원 정보가 수정되었습니다.' />
+            ));
             router.push('/');
         }
     }
 
     useEffect(() => {
-        fetch(`${process.env.BASE_API_URL}/api/v1/user/info`, {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${session.data?.user.accessToken}`,
-                "userEmail": `${session.data?.user.userEmail}`
+        const fetchUserInfo = async () => {
+            try {
+                const response = await fetch(`${process.env.BASE_API_URL}/api/v1/user/info`, {
+                    method: 'GET',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${session.data?.user.accessToken}`,
+                        "userEmail": `${session.data?.user.userEmail}`
+                    }
+                })
+
+                const data = await response.json();
+                setUserInfo(data.result);
+
+                if (data.code === 200) {
+                    setUserModify({
+                        userEmail: data.result.userEmail,
+                        usersName: data.result.usersName,
+                        userPhoneNumber: data.result.userPhoneNumber,
+                        userAge: data.result.userAge,
+                        userGender: data.result.userGender
+                    })
+                }
+            } catch (err: any) {
+                // console.error("err", err);
             }
-        })
-            .then((res) => res.json())
-            .then((data) => setUserInfo(data.result))
-            .catch((err) => console.log(err))
-            ;
+        }
+
+        if (session) {
+            fetchUserInfo();
+        }
     }, [session])
-    console.log(userInfo);
     return (
         <div className={`nc-AccountPage `}>
             <div className="space-y-10 sm:space-y-12">
@@ -118,7 +140,7 @@ function ModifyUser() {
                         </div>
                         <div onChange={handleChange}>
                             <Label>성별</Label>
-                            <Select className="mt-1.5" defaultValue={userInfo ? userInfo?.userGender : 0} name='userGender' id='userGender'>
+                            <Select onChange={() => handleChange} className="mt-1.5" value={userModify ? userModify.userGender : 0} name='userGender' id='userGender'>
                                 <option value='0'>모름</option>
                                 <option value="1">남자</option>
                                 <option value="2">여자</option>

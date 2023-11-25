@@ -43,6 +43,7 @@ const NavigationItem: FC<NavigationItemProps> = ({ menuItem }) => {
   };
 
   const [data, setData] = useState<ChildCategoryType[]>([]);
+  const [checked, setChecked] = useState(false);
 
   React.useEffect(() => {
     const getData = async () => {
@@ -55,6 +56,10 @@ const NavigationItem: FC<NavigationItemProps> = ({ menuItem }) => {
         });
         const result = await res.json();
         setData(result.result);
+        if (result.isSuccess) {
+
+          setChecked(true);
+        }
       }
     }
     getData();
@@ -145,17 +150,22 @@ const NavigationItem: FC<NavigationItemProps> = ({ menuItem }) => {
           }}
         >
           {item.parentCategoryName}
-          <ChevronDownIcon
-            className="ml-1 -mr-1 h-4 w-4 text-slate-400"
-            aria-hidden="true"
-          />
+          {
+            checked ?
+              <ChevronDownIcon
+                className="ml-1 -mr-1 h-4 w-4 text-slate-400"
+                aria-hidden="true"
+              />
+              :
+              ""
+          }
         </Link>
       </div>
     );
   };
 
   switch ("dropdown") {
-    case "dropdown":
+    case checked ? "dropdown" : "none":
       return renderDropdownMenu(menuItem);
     default:
       return (

@@ -65,45 +65,47 @@ const NavMobile: React.FC<NavMobileProps> = ({
    */
   const _renderItem = (item: ParentCategoryType, index: number) => {
     return (
-      <Disclosure
-        key={index}
-        as="li"
-        className="break-keep text-slate-900 dark:text-white"
-      >
-        <Link
-          className="flex w-full items-center py-2.5 px-4 font-medium uppercase tracking-wide text-sm hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
-          href={{
-            pathname: `/collection?categoryId=${item.parentCategoryId}` || undefined,
-          }}
+      <div>
+        <Disclosure
+          key={index}
+          as="li"
+          className="break-keep text-slate-900 dark:text-white"
         >
-          <span
-            // className="block w-full"
-            className={categoryData[index]?.isSuccess ? "block w-full" : ""}
-            onClick={onClickClose}
+          <Link
+            className="flex w-full items-center py-2.5 px-4 font-medium uppercase tracking-wide text-sm hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
+            href={{
+              pathname: `/collection?categoryId=${item.parentCategoryId}` || undefined,
+            }}
           >
-            {item.parentCategoryName}
-          </span>
-          {categoryData[index]?.isSuccess && (
             <span
-              className="block flex-grow"
-              onClick={(e) => e.preventDefault()}
+              // className="block w-full"
+              className={categoryData[index]?.isSuccess ? "block w-full" : ""}
+              onClick={onClickClose}
             >
-              <Disclosure.Button
-                as="span"
-                className="flex justify-end flex-grow"
-              >
-                <ChevronDownIcon
-                  className="ml-2 h-4 w-4 text-neutral-500"
-                  aria-hidden="true"
-                />
-              </Disclosure.Button>
+              {item.parentCategoryName}
             </span>
+            {categoryData[index]?.isSuccess && (
+              <span
+                className="block flex-grow"
+                onClick={(e) => e.preventDefault()}
+              >
+                <Disclosure.Button
+                  as="span"
+                  className="flex justify-end flex-grow"
+                >
+                  <ChevronDownIcon
+                    className="ml-2 h-4 w-4 text-neutral-500"
+                    aria-hidden="true"
+                  />
+                </Disclosure.Button>
+              </span>
+            )}
+          </Link>
+          {categoryData[index]?.isSuccess && (
+            <Disclosure.Panel>{_renderMenuChild(categoryData[index])}</Disclosure.Panel>
           )}
-        </Link>
-        {categoryData[index]?.isSuccess && (
-          <Disclosure.Panel>{_renderMenuChild(categoryData[index])}</Disclosure.Panel>
-        )}
-      </Disclosure>
+        </Disclosure>
+      </div>
     );
   };
 
@@ -211,6 +213,42 @@ const NavMobile: React.FC<NavMobileProps> = ({
         <div className="mt-5">{renderSearchForm()}</div>
       </div>
       <ul className="flex flex-col py-6 px-2 space-y-1">
+        <Disclosure
+          as="li"
+          className="break-keep text-slate-900 dark:text-white"
+        >
+          <Link
+            className="flex w-full items-center py-2.5 px-4 font-medium uppercase tracking-wide text-sm hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
+            href={{
+              pathname: `/collection?categoryId=all` || undefined,
+            }}
+          >
+            <span
+              // className="block w-full"
+              onClick={onClickClose}
+            >
+              전체
+            </span>
+          </Link>
+        </Disclosure>
+        <Disclosure
+          as="li"
+          className="break-keep text-slate-900 dark:text-white"
+        >
+          <Link
+            className="flex w-full items-center py-2.5 px-4 font-medium uppercase tracking-wide text-sm hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
+            href={{
+              pathname: `/collection?categoryId=new` || undefined,
+            }}
+          >
+            <span
+              // className="block w-full"
+              onClick={onClickClose}
+            >
+              신상
+            </span>
+          </Link>
+        </Disclosure>
         {parentCategoryData.map(_renderItem)}
       </ul>
     </div>
