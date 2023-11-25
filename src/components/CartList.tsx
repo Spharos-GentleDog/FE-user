@@ -330,7 +330,7 @@ export default function CartList() {
             주문하기
           </ButtonPrimary>
           <div className="mt-5 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-center">
-            <p className="block relative pl-5">
+            <div className="block relative pl-5">
               <Icon type="exclamation" />
               Learn more{` `}
               <a
@@ -353,7 +353,7 @@ export default function CartList() {
                 Shipping
               </a>
               {` `} infomation
-            </p>
+            </div>
           </div>
         </div>
       </div>
