@@ -69,8 +69,8 @@ const MainNav2Logged: FC<MainNav2LoggedProps> = () => {
         </div>
 
         <div className="lg:flex-1 flex items-center">
-          <Link href="/" className='w-[200px] h-auto'>
-            <Logo className="flex-shrink-0" />
+          <Link href="/" className='h-auto'>
+            <Logo className="flex-shrink-0 " />
           </Link>
         </div>
 
