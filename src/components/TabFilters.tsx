@@ -75,7 +75,7 @@ const PRICE_RANGE = [1, 500000];
  * 필터
  * @returns 
  */
-const TabFilters = ({ categoryData }: { categoryData: ParentCategoryType[] }) => {
+const TabFilters = () => {
   const [isOpenMoreFilter, setisOpenMoreFilter] = useState(false);
   //
   const [isOnSale, setIsIsOnSale] = useState(false);
