@@ -53,7 +53,7 @@ const Prices: FC<PricesProps> = ({
           </div>
           :
           <div className={`items-center rounded-lg ${contentClass}`}>
-            <span className="font-bold text-black text-lg lg:text-2xl !leading-none">
+            <span className="font-bold text-black text-lg lg:text-2xl !leading-none dark:text-white">
               {formattedPrice}
             </span>
           </div>
