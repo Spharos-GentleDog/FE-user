@@ -27,6 +27,19 @@ export interface CartType {
   discountedPrice: number;
 }
 
+export interface CartPriceType {
+  originalTotalPrice: number; // 할인전 전체 가격 합계
+  deliveryFee: number;
+  discountTotal: number;
+  totalPrice: number;
+}
+
 export interface BrandCartType {
-  [brand: string]: CartType[];
+  [brand: string]: CartType[] | CartPriceType;
+}
+
+export interface CartStockType {
+  productDetailId: number;
+  salesCount: number;
+  displayStatus: number;
 }

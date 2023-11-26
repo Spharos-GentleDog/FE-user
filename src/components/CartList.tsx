@@ -9,7 +9,23 @@ import { useEffect, useState } from 'react';
 import Icon from './Icon';
 import RenderProduct from './RenderProduct';
 import { useSession } from 'next-auth/react';
-import { CartType, ProductCartType } from '@/types/cartType';
+import { BrandCartType, CartType, ProductCartType } from '@/types/cartType';
+
+// 임시 타입
+interface CartData {
+  [brand: string]: ProductDetail[];
+}
+
+interface ProductDetail {
+  productDetailId: number;
+  count: number;
+  checked: boolean;
+  productInCartId: number;
+}
+
+interface TransformedData {
+  [brand: string]: number[];
+}
 
 // 장바구니 데이터 페칭 로직
 // 1. 장바구니 아이디와 productDetailId를 받아온다, count, isChecked
@@ -52,7 +68,7 @@ export default function CartList() {
     {}
   );
   const [isAllChecked, setIsAllChecked] = useState(false);
-  const [cartId, setCartId] = useState<ProductCartType[]>();
+  const [cartId, setCartId] = useState<BrandCartType>();
 
   /** 체크된 상품 주문 정보 */
   const calculateCheckoutInfo = () => {
@@ -147,6 +163,8 @@ export default function CartList() {
     loadCartId();
   }, []);
 
+  /**  */
+
   // 상품 정보 패칭
   useEffect(() => {
     /**
@@ -155,12 +173,22 @@ export default function CartList() {
      */
     async function loadCartProducts() {
       try {
+        // fetchId as TransformedData = transformData(cartId);
         /**
          * 장바구니 상품 정보
          */
         const res = await fetch(
           'https://6535d1a2c620ba9358ecaf38.mockapi.io/CartProductType',
           { cache: 'no-cache' }
+          // {
+          //   method: 'GET',
+          //   headers: {
+          //     'Content-Type': 'application/json',
+          //     userEmail: userEmail,
+          //     Authorization: `Bearer ${token}`,
+          //   },
+          //   body: JSON.stringify(fetchId);
+          // }
         );
         if (!res.ok) throw new Error(res.statusText);
 
@@ -274,7 +302,7 @@ export default function CartList() {
     }
   }, [cartBrandProducts]);
 
-  /** 체크된 상품들 삭제 */
+  /** 체크된 상품들 삭제 핸들러 */
   const handleCheckedDelete = (cartBrandProducts: CartBrandProductsType) => {
     const checkedProductIds = Object.values(cartBrandProducts)
       .flat()
@@ -287,10 +315,55 @@ export default function CartList() {
 
     console.log(checkedProductIds);
   };
-  /** 개별 상품 삭제 */
+  /** 개별 상품 삭제 헨들러 */
   const handleItemDelete = (productDetailId: number) => {
     // console.log(productDetailId);
   };
+
+  // 페칭 전 정리(임시)
+  function transformData(originalData: CartData): TransformedData {
+    let transformed: TransformedData = {};
+
+    for (const brand in originalData) {
+      if (originalData.hasOwnProperty(brand)) {
+        transformed[brand] = originalData[brand].map(
+          (item) => item.productDetailId
+        );
+      }
+    }
+
+    return transformed;
+  }
+
+  // 사용 예시
+  const originalData: CartData = {
+    brandName1: [
+      {
+        productDetailId: 123,
+        count: 2,
+        checked: true,
+        productInCartId: 456,
+      },
+      {
+        productDetailId: 13,
+        count: 2,
+        checked: true,
+        productInCartId: 456,
+      },
+    ],
+    brandName2: [
+      {
+        productDetailId: 789,
+        count: 5,
+        checked: false,
+        productInCartId: 1011,
+      },
+    ],
+    // ... 기타 등등
+  };
+
+  const newData = transformData(originalData);
+  console.log(JSON.stringify(newData));
 
   return (
     <>
