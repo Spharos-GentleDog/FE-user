@@ -45,25 +45,34 @@ const SectionSliderProductCard: FC<SectionSliderProductCardProps> = ({
 
   useEffect(() => {
     const getData = async () => {
-      if (category === "new") {
+      // if (category === "new") {
 
-        try {
-          const res = await fetch("https://653230c34d4c2e3f333dbc82.mockapi.io/product");
-          const data = await res.json();
-          setProductData(data);
-        } catch (error) {
-          console.log('Error Fetch : ', error);
+      //   try {
+      //     const res = await fetch("https://653230c34d4c2e3f333dbc82.mockapi.io/product");
+      //     const data = await res.json();
+      //     setProductData(data);
+      //   } catch (error) {
+      //     console.log('Error Fetch : ', error);
+      //   }
+      // } else if (category === "best") {
+      //   try {
+      //     const res = await fetch("https://653230c34d4c2e3f333dbc82.mockapi.io/product");
+      //     const data = await res.json();
+      //     setProductData(data);
+      //   } catch (error) {
+      //     console.log('Error Fetch : ', error);
+      //   }
+      // }
+      const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/product-find?categoryType=${category}&CategoryId=11&isDiscount=false&page=1`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
         }
-      } else if (category === "best") {
-        try {
-          const res = await fetch("https://653230c34d4c2e3f333dbc82.mockapi.io/product");
-          const data = await res.json();
-          setProductData(data);
-        } catch (error) {
-          console.log('Error Fetch : ', error);
-        }
-      }
+      })
 
+      const data = await res.json();
+      setProductData(data.result);
+      console.log("data: ", data);
     }
 
     getData().then(() => {

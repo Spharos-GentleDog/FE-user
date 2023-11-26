@@ -1,13 +1,40 @@
-import React, { FC } from "react";
+'use client'
+
+import React, { useEffect, useState } from "react";
 import Pagination from "@/shared/Pagination/Pagination";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import SectionSliderCollections from "@/components/SectionSliderLargeProduct";
 import SectionPromo1 from "@/components/SectionPromo1";
 import ProductCard from "@/components/ProductCard";
-import { PRODUCTS } from "@/data/data";
 import TabFilters from "@/components/TabFilters";
+import { useSearchParams } from "next/navigation";
+import { ProductList } from "@/types/product/productList";
 
-const PageCollection = ({ }) => {
+const PageCollection = () => {
+  const [productDatas, setProductDatas] = useState<ProductList[]>([]); // [
+  const param = useSearchParams();
+  const categoryTypeParam = param.get('categoryType');
+  const categoryIdParam = param.get('categoryId');
+  const isDiscountParam = param.get('isDiscount');
+  const pageParam = param.get('page');
+
+  useEffect(() => {
+    const getData = async () => {
+      const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/product-find?categoryType=${categoryTypeParam}&${categoryIdParam ? `CategoryId=${categoryIdParam}` : ""}&isDiscount=${isDiscountParam}&page=${pageParam}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      const data = await res.json();
+      console.log("data : ", data);
+      setProductDatas(data.result);
+    }
+
+    getData();
+  }, [])
+
+
   return (
     <div className={`nc-PageCollection`}>
       <div className="container py-16 lg:pb-28 lg:pt-20 space-y-16 sm:space-y-20 lg:space-y-28">
@@ -30,9 +57,9 @@ const PageCollection = ({ }) => {
 
             {/* LOOP ITEMS */}
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-8 gap-y-10 mt-8 lg:mt-10">
-              {/* {PRODUCTS.map((item, index) => (
+              {productDatas.map((item, index) => (
                 <ProductCard data={item} key={index} />
-              ))} */}
+              ))}
             </div>
 
             {/* PAGINATION */}
