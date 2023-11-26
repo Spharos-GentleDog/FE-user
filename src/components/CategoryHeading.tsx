@@ -16,7 +16,6 @@ function CategoryHeading({
     const [categoryData, setCategoryData] = useState<ParentCategoryType[]>([]);
 
     const handleCategoryFetch = async (categoryId: number) => {
-        console.log("categoryId : ", categoryId);
         setTabActive(categoryId);
 
         try {

@@ -38,6 +38,7 @@ const NavMobile: React.FC<NavMobileProps> = ({
                 query: {
                   categoryType: 'all',
                   categoryId: i.childCategoryId,
+                  categoryName: i.childCategoryName,
                   isDiscount: false,
                   page: 1
                 }
@@ -82,6 +83,7 @@ const NavMobile: React.FC<NavMobileProps> = ({
             query: {
               categoryType: 'all',
               categoryId: item.parentCategoryId,
+              categoryName: item.parentCategoryName,
               isDiscount: false,
               page: 1
             }
@@ -232,6 +234,7 @@ const NavMobile: React.FC<NavMobileProps> = ({
               pathname: `/collection`,
               query: {
                 categoryType: 'all',
+                categoryName: '전체',
                 isDiscount: false,
                 page: 1
               }
@@ -255,6 +258,7 @@ const NavMobile: React.FC<NavMobileProps> = ({
               pathname: `/collection`,
               query: {
                 categoryType: 'new',
+                categoryName: '신상',
                 isDiscount: false,
                 page: 1
               }

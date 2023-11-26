@@ -20,14 +20,14 @@ function PageHome() {
         </div>
 
         <SectionSliderProductCard
-          category='new'
-          heading='신제품'
+          category='all'
+          heading='HOT 신상'
         />
 
-        <SectionSliderProductCard
+        {/* <SectionSliderProductCard
           category='best'
           heading="베스트 셀러"
-        />
+        /> */}
 
         <SectionGridFeatureItems />
 

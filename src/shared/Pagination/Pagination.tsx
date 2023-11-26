@@ -3,32 +3,29 @@ import React, { FC } from "react";
 import twFocusClass from "@/utils/twFocusClass";
 import Link from "next/link";
 
-const DEMO_PAGINATION: CustomLink[] = [
-  {
-    label: "1",
-    href: "/",
-  },
-  {
-    label: "2",
-    href: "/",
-  },
-  {
-    label: "3",
-    href: "/",
-  },
-  {
-    label: "4",
-    href: "/",
-  },
-];
-
 export interface PaginationProps {
   className?: string;
+  currentPage: number;
+  totalPages: number;
+  categoryTypeParam: string;
+  categoryIdParam: string;
+  isDiscountParam: string;
 }
 
-const Pagination: FC<PaginationProps> = ({ className = "" }) => {
+const Pagination: FC<PaginationProps> = ({ className = "", currentPage, totalPages, categoryTypeParam, categoryIdParam, isDiscountParam }) => {
+
+  const generatePagination = () => {
+    const pages: CustomLink[] = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push({
+        label: i.toString(),
+        href: `/collection?categoryType=${categoryTypeParam}${categoryIdParam ? `&CategoryId=${categoryIdParam}` : ""}&isDiscount=${isDiscountParam}&page=${i}`
+      })
+    }
+    return pages;
+  }
   const renderItem = (pag: CustomLink, index: number) => {
-    if (index === 0) {
+    if (index + 1 === currentPage) {
       return (
         <span
           key={index}
@@ -54,7 +51,7 @@ const Pagination: FC<PaginationProps> = ({ className = "" }) => {
     <nav
       className={`nc-Pagination inline-flex space-x-1 text-base font-medium ${className}`}
     >
-      {DEMO_PAGINATION.map(renderItem)}
+      {generatePagination().map(renderItem)}
     </nav>
   );
 };

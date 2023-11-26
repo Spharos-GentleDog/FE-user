@@ -126,7 +126,14 @@ const NavigationItem: FC<NavigationItemProps> = ({ menuItem }) => {
       <Link
         className="flex items-center font-normal text-neutral-6000 dark:text-neutral-400 py-2 px-4 rounded-md hover:text-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
         href={{
-          pathname: '/collection' || undefined,
+          pathname: `/collection`,
+          query: {
+            categoryType: 'all',
+            categoryId: item.childCategoryId,
+            categoryName: item.childCategoryName,
+            isDiscount: false,
+            page: 1
+          }
         }}
       >
         {item.childCategoryName}
@@ -146,7 +153,14 @@ const NavigationItem: FC<NavigationItemProps> = ({ menuItem }) => {
         <Link
           className="inline-flex items-center text-sm lg:text-[15px] font-medium text-slate-700 dark:text-slate-300 py-2.5 px-2 xl:px-3 rounded-full hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200"
           href={{
-            pathname: '/collection' || undefined,
+            pathname: `/collection`,
+            query: {
+              categoryType: 'all',
+              categoryId: item.parentCategoryId,
+              categoryName: item.parentCategoryName,
+              isDiscount: false,
+              page: 1
+            }
           }}
         >
           {item.parentCategoryName}
