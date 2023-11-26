@@ -7,24 +7,17 @@ export interface ProductCartType {
 }
 
 export interface CartType {
-  productDetailId: number;
-  count: number;
-  checked: boolean;
-  productInCartId: number;
-  key: string;
-  productId: number;
-  productName: string;
-  price: number;
-  imgUrl: string;
   brandName: string;
+  productId: number;
+  productDetailId: number;
+  productName: string;
   color: string;
   size: string;
-  isChecked: boolean;
-  productStock: number;
-  discountRate: number;
-  discountType: number;
-  discountAmount: number;
-  discountedPrice: number;
+  discountRate?: number;
+  productPrice: number;
+  discountedPrice?: number;
+  imgUrl: string;
+  imgName: string;
 }
 
 export interface CartPriceType {
@@ -35,11 +28,41 @@ export interface CartPriceType {
 }
 
 export interface BrandCartType {
-  [brand: string]: CartType[] | CartPriceType;
+  [brand: string]: CartType[];
+}
+
+export interface CartIdType {
+  [brand: string]: ProductCartType[];
 }
 
 export interface CartStockType {
   productDetailId: number;
   salesCount: number;
   displayStatus: number;
+}
+
+export interface BrandProductDto {
+  brandName: string;
+  productDetailDtoList: CartType[];
+}
+
+export interface ProductCartDto {
+  brandName: string;
+  productId: number;
+  productDetailId: number;
+  productName: string;
+  color: string;
+  size: string;
+  discountRate?: number;
+  productPrice: number;
+  discountedPrice?: number;
+  imgUrl: string;
+  imgName: string;
+  count: number;
+  checked: boolean;
+  productInCartId: number;
+}
+
+export interface BrandProductCartDto {
+  [brand: string]: ProductCartDto[];
 }

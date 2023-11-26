@@ -8,12 +8,12 @@ const nextConfig = {
 
     return config;
   },
-  
+
   async rewrites() {
     return [
       {
-        source: "/",
-        destination: "/payment",
+        source: '/',
+        destination: '/payment',
       },
     ];
   },
@@ -24,16 +24,16 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "images.pexels.com",
-        port: "",
-        pathname: "/**",
+        protocol: 'https',
+        hostname: 'images.pexels.com',
+        port: '',
+        pathname: '/**',
       },
       {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-        port: "",
-        pathname: "/**",
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
       },
       {
         protocol: 'https',
@@ -42,7 +42,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'gentledog.s3.ap-northeast-2.amazonaws.com'
+        hostname: 'gentledog.s3.ap-northeast-2.amazonaws.com',
       },
     ],
   },
@@ -63,8 +63,12 @@ const nextConfig = {
     COOLSMS_API_SECRET: process.env.COOLSMS_API_SECRET,
   },
   images: {
-    domains: ['https://gentledog-bucket.s3.ap-northeast-2.amazonaws.com', 'loremflickr.com', 'https://static.toss.im']
-  }
+    domains: [
+      'gentledog.s3.ap-northeast-2.amazonaws.com',
+      'loremflickr.com',
+      'https://static.toss.im',
+    ],
+  },
 };
 
 module.exports = nextConfig;

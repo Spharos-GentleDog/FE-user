@@ -8,6 +8,8 @@ import Prices from './Prices';
 import RenderStatusInstock from './RenderStatusInstock';
 import RenderStatusSoldout from './RenderStatusSoldout';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import { ProductCartDto } from '@/types/cartType';
+import Prices2 from './Prices2';
 
 /**
  * 장바구니 상품 출력
@@ -22,7 +24,7 @@ export default function RenderProduct({
   onItemDelete,
   isChecked,
 }: {
-  item: CartProductType;
+  item: ProductCartDto;
   onItemCheck: (checked: boolean) => void;
   onCountChange?: (count: number) => void;
   onItemDelete?: (id: number) => void;
@@ -40,7 +42,7 @@ export default function RenderProduct({
           label={item.productName}
           labelClassName="text-base font-semibold"
           className="mb-4 flex items-center"
-          isChecked={isChecked}
+          isChecked={item.checked}
           onChange={(checked) => onItemCheck(checked)}
         />
         <button
@@ -112,16 +114,16 @@ export default function RenderProduct({
               </div>
               {/* todo: 재고 수량에 따라 표시 다르게 하기 */}
               <div className="flex mt-auto pt-4 items-end justify-between text-sm">
-                {item.productStock > 0 ? (
+                {/* {productStock > 0 ? (
                   <RenderStatusInstock />
                 ) : (
                   <RenderStatusSoldout />
-                )}
+                )} */}
               </div>
             </div>
             <div className=" flex-1 sm:flex justify-end">
-              <Prices
-                price={item.price}
+              <Prices2
+                price={item.productPrice}
                 discountRate={item.discountRate}
                 discountedPrice={item.discountedPrice}
                 className="mt-0.5"
