@@ -60,7 +60,16 @@ const CardCategory4: FC<any> = ({
         </div>
       </div>
 
-      <Link href={"/collection"}></Link>
+      <Link href={{
+        pathname: `/collection`,
+        query: {
+          categoryType: 'all',
+          categoryId: categoryId,
+          categoryName: categoryName,
+          isDiscount: false,
+          page: 1
+        }
+      }}></Link>
     </div>
   );
 };
