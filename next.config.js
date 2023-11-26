@@ -63,7 +63,7 @@ const nextConfig = {
     COOLSMS_API_SECRET: process.env.COOLSMS_API_SECRET,
   },
   images: {
-    domains: ['https://gentledog-bucket.s3.ap-northeast-2.amazonaws.com', 'loremflickr.com', 'https://static.toss.im']
+    domains: ['gentledog.s3.ap-northeast-2.amazonaws.com', 'loremflickr.com', 'https://static.toss.im']
   }
 };
 
