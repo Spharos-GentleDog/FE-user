@@ -181,8 +181,8 @@ function SignupDogForm() {
                                 <Image
                                     src={preview ? preview : defaultImage}
                                     alt="dogImage"
-                                    width={200}
-                                    height={200}
+                                    width={1920}
+                                    height={1080}
                                     className="w-40 h-40 rounded-full object-cover z-0"
                                 />
                                 {
@@ -265,14 +265,15 @@ function SignupDogForm() {
                     <label className='block mb-5 relative'>
                         <div className='mt-2'>
                             <div className='w-full' onChange={handleChange}>
-                                {
-                                    dogBreeds.map((breed) => (
-                                        <Select id='dogBreed' name='dogBreed' className='border-[#000000]' key={breed.id}>
-                                            <option>견종을 선택해 주세요.</option>
-                                            <option value={breed.id}>{breed.dogBreedKorName}</option>
-                                        </Select>
-                                    ))
-                                }
+                                <Select id='dogBreed' name='dogBreed' className='border-[#000000]'>
+                                    <option>견종을 선택해 주세요.</option>
+                                    {
+                                        dogBreeds &&
+                                        dogBreeds.map((breed) => (
+                                            <option key={breed.id} value={breed.id}>{breed.dogBreedKorName}</option>
+                                        ))
+                                    }
+                                </Select>
                             </div>
                         </div>
                     </label>
