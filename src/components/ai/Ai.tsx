@@ -3,9 +3,11 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import defaultImage from '@/images/upload.png';
+import { useRouter } from 'next/navigation';
 
 function Ai() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const router = useRouter();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedFile(event.target.files ? event.target.files[0] : null);
@@ -35,8 +37,38 @@ function Ai() {
               'Content-Type': 'application/json',
             },
           });
-          const breedId = await res.json();
-          console.log(breedId);
+          const dogId = await res.json();
+
+          if (dogId) {
+            const res = await fetch(`${process.env.BASE_API_URL}/api/v1/review/find-review-dogId`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                dogIds: dogId.result
+              }),
+            });
+            const productId = await res.json();
+
+            if (productId) {
+              const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/ai-product-detail`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  productIds: productId.result.productIdsList
+                }),
+              });
+
+              const productDetail = await res.json();
+              if (productDetail) {
+                localStorage.setItem('aiProductDetail', JSON.stringify(productDetail.result));
+                router.push('/ai/recommend');
+              }
+            }
+          }
         }
       } catch (err) {
         console.log(err);
@@ -73,7 +105,7 @@ function Ai() {
               name='dogImage'
               className='hidden'
               onChange={handleFileChange}
-              accept='image/jpg' // 모든 타입 이미지 파일 허용
+              accept='image/jpg'
             />
           </div>
         </div>
