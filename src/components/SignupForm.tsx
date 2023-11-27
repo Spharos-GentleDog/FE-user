@@ -18,7 +18,7 @@ function SignupForm() {
     gender: 0,
     phoneNumber: '',
     authEmail: '',
-    authPhone: '',
+    authPhone: "",
   })
 
   // 회원가입 에러 처리
@@ -158,15 +158,15 @@ function SignupForm() {
         phoneNumberRef.current.focus();
       }
       return;
-      // } else if (!authPhoneConfirm) {
-      //   setSignupError({
-      //     ...signupError,
-      //     phoneNumber: '휴대폰번호 인증을 해주세요.'
-      //   })
-      //   if (phoneNumberRef.current) {
-      //     phoneNumberRef.current.focus();
-      //   }
-      //   return;
+    } else if (!authPhoneConfirm) {
+      setSignupError({
+        ...signupError,
+        phoneNumber: '휴대폰번호 인증을 해주세요.'
+      })
+      if (phoneNumberRef.current) {
+        phoneNumberRef.current.focus();
+      }
+      return;
     }
 
     try {
