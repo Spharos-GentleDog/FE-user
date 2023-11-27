@@ -1,19 +1,20 @@
-"use client";
+'use client';
 
-import "./styles/index.css";
-import Image from "next/image";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { FC, Fragment, useEffect, useRef } from "react";
-import Modal from "./components/Modal";
-import type { ListingGalleryImage } from "./utils/types";
-import { useLastViewedPhoto } from "./utils/useLastViewedPhoto";
-import { ArrowSmallLeftIcon } from "@heroicons/react/24/outline";
-import { Dialog, Transition } from "@headlessui/react";
-import LikeSaveBtns from "@/components/LikeSaveBtns";
-import { Route } from "next";
+import './styles/index.css';
+import Image from 'next/image';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { FC, Fragment, useEffect, useRef } from 'react';
+import Modal from './components/Modal';
+import type { ListingGalleryImage } from './utils/types';
+import { useLastViewedPhoto } from './utils/useLastViewedPhoto';
+import { ArrowSmallLeftIcon } from '@heroicons/react/24/outline';
+import { Dialog, Transition } from '@headlessui/react';
+import LikeSaveBtns from '@/components/LikeSaveBtns';
+import { Route } from 'next';
+import { thumbnailImgUrl } from '@/types/productType';
 
 export const getNewParam = ({
-  paramName = "photoId",
+  paramName = 'photoId',
   value,
 }: {
   paramName?: string;
@@ -25,7 +26,7 @@ export const getNewParam = ({
 };
 
 interface Props {
-  images: ListingGalleryImage[];
+  images: thumbnailImgUrl[];
   onClose?: () => void;
   isShowModal: boolean;
 }
@@ -35,7 +36,7 @@ interface Props {
  */
 const ListingImageGallery: FC<Props> = ({ images, onClose, isShowModal }) => {
   const searchParams = useSearchParams();
-  const photoId = searchParams?.get("photoId");
+  const photoId = searchParams?.get('photoId');
   const router = useRouter();
   const [lastViewedPhoto, setLastViewedPhoto] = useLastViewedPhoto();
 
@@ -44,7 +45,7 @@ const ListingImageGallery: FC<Props> = ({ images, onClose, isShowModal }) => {
   useEffect(() => {
     // This effect keeps track of the last viewed photo in the modal to keep the index page in sync when the user navigates back
     if (lastViewedPhoto && !photoId) {
-      lastViewedPhotoRef.current?.scrollIntoView({ block: "center" });
+      lastViewedPhotoRef.current?.scrollIntoView({ block: 'center' });
       setLastViewedPhoto(null);
     }
   }, [photoId, lastViewedPhoto, setLastViewedPhoto]);
@@ -66,7 +67,7 @@ const ListingImageGallery: FC<Props> = ({ images, onClose, isShowModal }) => {
               // @ts-ignore
               setLastViewedPhoto(photoId);
               let params = new URLSearchParams(document.location.search);
-              params.delete("photoId");
+              params.delete('photoId');
               router.push(`${thisPathname}/?${params.toString()}` as Route);
             }}
           />
@@ -87,7 +88,7 @@ const ListingImageGallery: FC<Props> = ({ images, onClose, isShowModal }) => {
                 alt="chisfis listing gallery "
                 className="transform rounded-lg brightness-90 transition will-change-auto group-hover:brightness-110 focus:outline-none"
                 style={{
-                  transform: "translate3d(0, 0, 0)",
+                  transform: 'translate3d(0, 0, 0)',
                 }}
                 src={url}
                 width={720}
@@ -126,7 +127,7 @@ const ListingImageGallery: FC<Props> = ({ images, onClose, isShowModal }) => {
                 <ArrowSmallLeftIcon className="w-6 h-6" />
               </button>
               {/* todo: 페칭 필요 */}
-              <LikeSaveBtns productId={52}/>
+              <LikeSaveBtns productId={52} />
             </div>
 
             <div className="flex min-h-full items-center justify-center sm:p-4 pt-0 text-center">

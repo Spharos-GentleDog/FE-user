@@ -5,6 +5,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { use, useEffect, useState } from 'react';
 
+// 3. CSS 수정도 필요하다
+// 4. 대표 상품의 이미지를 출력해야 한다.
+// 5. 변동이 생길 예정
+
 export default function OrderList() {
   const session = useSession();
   const token = session?.data?.user.accessToken;
@@ -15,6 +19,7 @@ export default function OrderList() {
     Record<string, Record<string, Record<string, OrderListType[]>>>
   >({});
 
+  // 데이터 페칭
   useEffect(() => {
     async function fetchOrderList() {
       const response = await fetch(
@@ -68,6 +73,48 @@ export default function OrderList() {
     return groupedByDate;
   };
 
+  // 스크롤 위치에 따라 추가적인 페칭을 진행
+  async function fetchNextOrderList() {
+    if (nextGroup === null) {
+      return;
+    }
+    const response = await fetch(
+      `${process.env.BASE_API_URL}/api/v1/orders/user?groupId=${nextGroup}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          userEmail: userEmail,
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const orderList = await response.json();
+    console.log(orderList);
+    setNextGroup(orderList.result.nextGroupId);
+    const nextGroupedOrders = groupOrders(
+      orderList.result.vendorsOrderSummaryOutResponseDtoList
+    );
+    setGroupedOrders({ ...groupedOrders, ...nextGroupedOrders });
+  }
+
+  // 스크롤 위치를 감지해서 페칭 진행
+  useEffect(() => {
+    const handleScroll = async () => {
+      // 스크롤 위치가 페이지 하단에 도달했는지 확인
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        await fetchNextOrderList(); // 페이지 하단에 도달했을 때 추가 데이터 페칭
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    // 컴포넌트가 언마운트될 때 이벤트 리스너 제거
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
     <>
       {Object.entries(groupedOrders).map(([date, ordersOnDate]) => (
@@ -85,7 +132,7 @@ export default function OrderList() {
                     {orders.map((order) => (
                       <Disclosure key={order.groupId}>
                         <div className="flex flex-col border-[1.5px] rounded-md divide-y-2">
-                          <Disclosure.Button className="h-full flex space-y-6">
+                          <Disclosure.Button className="h-full flex space-y-6 ">
                             <div className="flex">
                               <Image
                                 src="https://gentledog.s3.ap-northeast-2.amazonaws.com/product/10.jpg"

@@ -45,22 +45,6 @@ export interface ProductOptionType {
   size: string;
 }
 
-// 상품 세부 정보 타입
-export interface ProductDetailType {
-  productId: number;
-  productName: string;
-  price: number;
-  imgUrl: string[];
-  explainImgUrl: string[];
-  brandName: string;
-  brandLogoUrl: string;
-  discountRate: number;
-  discountType: number;
-  option: ProductOptionType[];
-  totalFavorite: number;
-  productStock: number;
-}
-
 // 장바구니 상품 정보 타입
 export interface CartProductType {
   key: string;
@@ -143,4 +127,41 @@ export interface orderProductInfoListDtoType {
 
 export interface CheckoutListProps {
   cartBrandProducts: orderProductInfoListDtoType[];
+}
+
+export interface ProductDetailPageOptionsDto {
+  productDetailId: number;
+  discountRate: number;
+  discountType: number;
+  size: string;
+  color: string;
+}
+
+export interface colorDtoList {
+  colorName: string;
+  colorCode: string;
+}
+
+export interface thumbnailImgUrl {
+  imageName: string;
+  imageUrl: string;
+}
+
+export interface explainImgUrl {
+  imageName: string;
+  imageUrl: string;
+}
+
+export interface ProductDetailType {
+  productId: number;
+  productName: string;
+  productPrice: number;
+  brandName: string;
+  brandLogoUrl: string;
+  productDetailPageOptionsDto: ProductDetailPageOptionsDto[];
+  colorDtoList: colorDtoList[];
+  sizeList: string[];
+  totalFavorite: number;
+  thumnailImgUrl: thumbnailImgUrl[];
+  explainImgUrl: explainImgUrl[];
 }
