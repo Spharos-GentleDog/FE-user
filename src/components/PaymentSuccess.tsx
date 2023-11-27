@@ -51,6 +51,8 @@ function PaymentSuccess() {
                 const approverAt = response.data.approvedAt.substring(0, response.data.approvedAt.length - 6)
 
                 if (response.data) {
+                    console.log("payment", localStorage.getItem('paymentProduct') || '{}')
+
                     const res = await fetch(`${process.env.BASE_API_URL}/api/v1/orders/payment`, {
                         method: "POST",
                         headers: {
@@ -73,8 +75,8 @@ function PaymentSuccess() {
                     const result = await res.json()
 
                     if (result.code === 200) {
-                        console.log("deliveryOrdersInRequest : ", deliveryOrdersInRequest)
-                        console.log("vendorsOrderListInRequest : ", vendorsOrderListInRequest)
+                        console.log("deliveryOrdersInRequest : ", localStorage.getItem('deliveryOrdersInRequest') || '{}')
+                        console.log("vendorsOrderListInRequest : ", localStorage.getItem('vendorsOrderListInRequest') || '{}')
 
                         fetch(`${process.env.BASE_API_URL}/api/v1/orders/user`, {
                             method: "POST",
@@ -84,8 +86,8 @@ function PaymentSuccess() {
                                 "userEmail": `${session.data?.user.userEmail}`
                             },
                             body: JSON.stringify({
-                                deliveryOrdersInRequestDto: deliveryOrdersInRequest,
-                                vendorsOrderListInRequestDto: vendorsOrderListInRequest
+                                deliveryOrdersInRequestDto: JSON.parse(localStorage.getItem('deliveryOrdersInRequest') || '{}'),
+                                vendorsOrderListInRequestDto: JSON.parse(localStorage.getItem('vendorsOrderListInRequest') || '{}'),
                             }),
                         })
                             .then(res => res.json())

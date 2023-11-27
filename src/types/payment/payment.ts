@@ -35,7 +35,7 @@ export interface vendorsOrderListInRequest {
     vendorEmail: string,
     brandName: string,
     brandLogoImageUrl: string,
-    userEmail: string,
+    userName: string,
     userPhoneNumber: string,
     ordersRequestMessage: string,
     ordersType: number,
