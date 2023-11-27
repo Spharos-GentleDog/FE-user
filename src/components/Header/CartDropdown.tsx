@@ -3,80 +3,54 @@
 import { Popover, Transition } from '@/app/headlessui';
 import Prices from '@/components/Prices';
 import { Product, PRODUCTS } from '@/data/data';
-import { Fragment } from 'react';
+import { Fragment, use, useEffect, useState } from 'react';
 import ButtonPrimary from '@/shared/Button/ButtonPrimary';
 import ButtonSecondary from '@/shared/Button/ButtonSecondary';
 import Image from 'next/image';
 import Link from 'next/link';
 import Icon from '../Icon';
+import RenderProduct3 from '../RenderProduct3';
+import { useSession } from 'next-auth/react';
+import { CartType, ProductCartType } from '@/types/cartType';
 
 /**
- * 카트 드롭다운
+ * 드롭다운 장바구니
  */
 export default function CartDropdown() {
-  /**
-   * 상품 렌더링
-   * todo: param 수정 필요
-   * @param item
-   * @param index
-   * @param close
-   * @returns
-   */
-  const renderProduct = (item: Product, index: number, close: () => void) => {
-    const { name, price, image } = item;
-    return (
-      <div key={index} className="flex py-5 last:pb-0">
-        <div className="relative h-24 w-20 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
-          <Image
-            fill
-            src={image}
-            alt={name}
-            className="h-full w-full object-contain object-center"
-          />
-          {/* todo: 상품 디테일 이동 링크 수정*/}
-          <Link
-            onClick={close}
-            className="absolute inset-0"
-            href={'/product-detail'}
-          />
-        </div>
+  const session = useSession();
+  const token = session?.data?.user.accessToken;
+  const userEmail = session?.data?.user.userEmail;
+  const [cartId, setCartId] = useState<ProductCartType[]>();
 
-        <div className="ml-4 flex flex-1 flex-col">
-          <div>
-            <div className="flex justify-between ">
-              <div>
-                <h3 className="text-base font-medium ">
-                  {/* todo: 상품 디테일 이동 링크 수정*/}
-                  <Link onClick={close} href={'/product-detail'}>
-                    {name}
-                  </Link>
-                </h3>
-                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                  <span>{`Natural`}</span>
-                  <span className="mx-2 border-l border-slate-200 dark:border-slate-700 h-4"></span>
-                  <span>{'XL'}</span>
-                </p>
-              </div>
-              <Prices price={price} className="mt-0.5" />
-            </div>
-          </div>
-          <div className="flex flex-1 items-end justify-between text-sm">
-            <p className="text-gray-500 dark:text-slate-400">{`Qty 1`}</p>
+  // 장바구니 정보 가져오기
+  useEffect(() => {
+    async function loadCartId() {
+      try {
+        const res = await fetch(
+          'https://gentledog-back.duckdns.org/api/v1/wish/cart',
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              userEmail: userEmail,
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (!res.ok) throw new Error(res.statusText);
 
-            {/* 제거 버튼 */}
-            <div className="flex">
-              <button
-                type="button"
-                className="font-medium text-primary-6000 dark:text-primary-500 "
-              >
-                제거
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
+        const cartId = await res.json();
+        setCartId(cartId.result.cart);
+        // console.log('cartId', cartId.result.cart);
+      } catch (e) {
+        console.error('Failed to fetch loadCartId', e);
+      }
+    }
+
+    loadCartId();
+  }, []);
+
+  /** 체크된 장바구니 물품들의 수량 */
 
   return (
     <Popover className="relative">
@@ -87,9 +61,11 @@ export default function CartDropdown() {
                 ${open ? '' : 'text-opacity-90'}
                  group w-10 h-10 sm:w-12 sm:h-12 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full inline-flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 relative`}
           >
-            {/* todo: 상품의 개수 표시 */}
             <div className="w-3.5 h-3.5 flex items-center justify-center bg-primary-500 absolute top-1.5 right-1.5 rounded-full text-[10px] leading-none text-white font-medium">
-              <span className="mt-[1px]">3</span>
+              <span className="mt-[1px]">
+                {/* todo: 상품의 개수 표시 실제 페칭 핖요 */}
+                {cartId && Object.keys(cartId).length}
+              </span>
             </div>
             <Icon type="cart" />
 
@@ -112,7 +88,14 @@ export default function CartDropdown() {
                     <div className="divide-y divide-slate-100 dark:divide-slate-700">
                       {/* todo: 장바구니에 들어간 제품들 패칭 */}
                       {[PRODUCTS[0], PRODUCTS[1], PRODUCTS[2]].map(
-                        (item, index) => renderProduct(item, index, close)
+                        (item, index) => (
+                          <RenderProduct3
+                            key={index}
+                            item={item}
+                            index={index}
+                            close={close}
+                          />
+                        )
                       )}
                     </div>
                   </div>

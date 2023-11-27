@@ -12,7 +12,7 @@ import Link from 'next/link';
 import Icon from '../Icon';
 import { useSession } from 'next-auth/react';
 
-export interface MainNav2LoggedProps { }
+export interface MainNav2LoggedProps {}
 
 /**
  *
@@ -26,9 +26,7 @@ const MainNav2Logged: FC<MainNav2LoggedProps> = () => {
 
   /** 돋보기 아이콘 랜더링 */
   const renderMagnifyingGlassIcon = () => {
-    return (
-      <Icon type='magnifyingGlass' />
-    );
+    return <Icon type="magnifyingGlass" />;
   };
 
   /** 검색 폼을 렌더링합니다. */
@@ -69,8 +67,10 @@ const MainNav2Logged: FC<MainNav2LoggedProps> = () => {
         </div>
 
         <div className="lg:flex-1 flex items-center">
+
           <Link href="/" className='h-auto'>
             <Logo className="flex-shrink-0 " />
+
           </Link>
         </div>
 
@@ -89,18 +89,19 @@ const MainNav2Logged: FC<MainNav2LoggedProps> = () => {
           )}
           {
             // 로그인 상태 판단
-            session.status === "unauthenticated" ?
+            session.status === 'unauthenticated' ? (
               <>
-                <Link href='/login' className='px-3'>
+                <Link href="/login" className="px-3">
                   <Icon type="user" />
                 </Link>
                 <CartDropdown />
               </>
-              :
+            ) : (
               <>
                 <AvatarDropdown />
                 <CartDropdown />
               </>
+            )
           }
         </div>
       </div>

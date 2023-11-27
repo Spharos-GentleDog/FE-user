@@ -1,11 +1,14 @@
-"use client";
+'use client';
 
-import { Popover, Transition } from "@/app/headlessui";
-import { ChevronDownIcon } from "@heroicons/react/24/solid";
-import React, { FC, Fragment, useState } from "react";
-import { Route } from "@/routers/types";
-import Link from "next/link";
-import { ChildCategoryType, ParentCategoryType } from "@/types/product/category";
+import { Popover, Transition } from '@/app/headlessui';
+import { ChevronDownIcon } from '@heroicons/react/24/solid';
+import React, { FC, Fragment, useState } from 'react';
+import { Route } from '@/routers/types';
+import Link from 'next/link';
+import {
+  ChildCategoryType,
+  ParentCategoryType,
+} from '@/types/product/category';
 
 export interface NavItemType {
   id: string;
@@ -13,7 +16,7 @@ export interface NavItemType {
   href: Route;
   targetBlank?: boolean;
   children?: NavItemType[];
-  type?: "dropdown" | "megaMenu" | "none";
+  type?: 'dropdown' | 'megaMenu' | 'none';
   isNew?: boolean;
 }
 
@@ -48,12 +51,15 @@ const NavigationItem: FC<NavigationItemProps> = ({ menuItem }) => {
   React.useEffect(() => {
     const getData = async () => {
       if (menuItem) {
-        const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/read-child-category?parentCategoryId=${menuItem.parentCategoryId}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
+        const res = await fetch(
+          `${process.env.BASE_API_URL}/api/v1/product/read-child-category?parentCategoryId=${menuItem.parentCategoryId}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
           }
-        });
+        );
         const result = await res.json();
         setData(result.result);
         if (result.isSuccess) {
@@ -61,23 +67,29 @@ const NavigationItem: FC<NavigationItemProps> = ({ menuItem }) => {
           setChecked(true);
         }
       }
-    }
+    };
     getData();
   }, []);
   // ===================== MENU DROPDOW =====================
   /**
-   * 
-   * @param 메뉴 드랍다운을 렌더링합니다. 
-   * @returns 
+   *
+   * @param 메뉴 드랍다운을 렌더링합니다.
+   * @returns
    */
   const renderDropdownMenu = (menuDropdown: ParentCategoryType) => {
-    const isHover = menuCurrentHovers.includes(menuDropdown.parentCategoryId.toString());
+    const isHover = menuCurrentHovers.includes(
+      menuDropdown.parentCategoryId.toString()
+    );
     return (
       <Popover
         as="li"
         className="menu-item menu-dropdown relative"
-        onMouseEnter={() => onMouseEnterMenu(menuDropdown.parentCategoryId.toString())}
-        onMouseLeave={() => onMouseLeaveMenu(menuDropdown.parentCategoryId.toString())}
+        onMouseEnter={() =>
+          onMouseEnterMenu(menuDropdown.parentCategoryId.toString())
+        }
+        onMouseLeave={() =>
+          onMouseLeaveMenu(menuDropdown.parentCategoryId.toString())
+        }
       >
         {() => (
           <>
@@ -104,7 +116,7 @@ const NavigationItem: FC<NavigationItemProps> = ({ menuItem }) => {
                       <li key={index} className="px-2">
                         {renderDropdownMenuNavlink(i)}
                       </li>
-                    )
+                    );
                   })}
                 </ul>
               </Popover.Panel>
@@ -115,11 +127,10 @@ const NavigationItem: FC<NavigationItemProps> = ({ menuItem }) => {
     );
   };
 
-
   /**
    * 하위 카테고리
-   * @param item 
-   * @returns 
+   * @param item
+   * @returns
    */
   const renderDropdownMenuNavlink = (item: ChildCategoryType) => {
     return (
@@ -144,8 +155,8 @@ const NavigationItem: FC<NavigationItemProps> = ({ menuItem }) => {
   // ===================== MENU MAIN MENU =====================
   /**
    * 상위 카테고리
-   * @param item 
-   * @returns 
+   * @param item
+   * @returns
    */
   const renderMainItem = (item: ParentCategoryType) => {
     return (
@@ -178,12 +189,15 @@ const NavigationItem: FC<NavigationItemProps> = ({ menuItem }) => {
     );
   };
 
+
   switch ("dropdown") {
     case checked ? "dropdown" : "none":
       return renderDropdownMenu(menuItem);
     default:
       return (
-        <li className="menu-item flex-shrink-0">{renderMainItem(menuItem)}</li>
+        <li className="menu-item flex-shrink-0 break-keep">
+          {renderMainItem(menuItem)}
+        </li>
       );
   }
 };

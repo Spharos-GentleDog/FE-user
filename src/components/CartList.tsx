@@ -8,13 +8,28 @@ import { groupProductsByBrand } from '@/utils/groupProductsByBrand';
 import { useEffect, useState } from 'react';
 import Icon from './Icon';
 import RenderProduct from './RenderProduct';
+import { useSession } from 'next-auth/react';
+import {
+  BrandCartType,
+  BrandProductCartDto,
+  BrandProductDto,
+  CartIdType,
+  CartType,
+  ProductCartType,
+} from '@/types/cartType';
+
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 브랜드 체크 박스 수정@@@@@@@@@@@@@@@@@
 
 /**
  * 장바구니 상품 출력
  */
 export default function CartList() {
+  const session = useSession();
+  const token = session?.data?.user.accessToken;
+  const userEmail = session?.data?.user.userEmail;
+
   const [cartBrandProducts, setCartBrandProducts] =
-    useState<CartBrandProductsType>();
+    useState<BrandProductCartDto>();
   const [checkoutInfo, setCheckoutInfo] = useState<{
     originalTotalPriceString: string;
     deliveryFeeString: string;
@@ -30,6 +45,8 @@ export default function CartList() {
     {}
   );
   const [isAllChecked, setIsAllChecked] = useState(false);
+  const [cartId, setCartId] = useState<CartIdType>();
+  const [cartProducts, setCartProducts] = useState<BrandCartType>();
 
   /** 체크된 상품 주문 정보 */
   const calculateCheckoutInfo = () => {
@@ -38,6 +55,7 @@ export default function CartList() {
     let discountTotal = 0;
     let totalPrice = 0;
     const freeShippingThreshold = 50000;
+    3;
     const deliveryFeePerBrand = 3000;
 
     if (cartBrandProducts) {
@@ -46,9 +64,9 @@ export default function CartList() {
         let brandHasCheckedItem = false; // 브랜드 내 체크된 상품이 있는지 확인
 
         brandItems.forEach((item) => {
-          if (item.isChecked) {
+          if (item.checked) {
             brandHasCheckedItem = true; // 체크된 상품이 있으면 true로 설정
-            const originalPrice = item.price * item.count;
+            const originalPrice = item.productPrice * item.count;
             originalTotalPrice += originalPrice;
 
             const discountAmount = item.discountedPrice
@@ -58,7 +76,7 @@ export default function CartList() {
 
             const priceToUse = item.discountedPrice
               ? item.discountedPrice
-              : item.price;
+              : item.productPrice;
             totalPrice += priceToUse * item.count;
 
             brandTotalPrice += priceToUse * item.count;
@@ -96,6 +114,36 @@ export default function CartList() {
     });
   };
 
+  // 장바구니 정보 가져오기
+  useEffect(() => {
+    async function loadCartId() {
+      try {
+        const res = await fetch(
+          'https://gentledog-back.duckdns.org/api/v1/wish/cart',
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              userEmail: userEmail,
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        if (!res.ok) throw new Error(res.statusText);
+
+        const cartId = await res.json();
+        setCartId(cartId.result.cart);
+        // console.log('cartId', cartId.result.cart);
+      } catch (e) {
+        console.error('Failed to fetch loadCartId', e);
+      }
+    }
+
+    loadCartId();
+  }, []);
+
+  /**  */
+
   // 상품 정보 패칭
   useEffect(() => {
     /**
@@ -104,28 +152,47 @@ export default function CartList() {
      */
     async function loadCartProducts() {
       try {
+        const fetchId = formatCartDataForProduct(cartId as CartIdType);
+        console.log('fetchId', fetchId);
         /**
          * 장바구니 상품 정보
          */
         const res = await fetch(
-          'https://6535d1a2c620ba9358ecaf38.mockapi.io/CartProductType',
-          { cache: 'no-cache' }
+          'https://gentledog-back.duckdns.org/api/v1/product/find-product-detail',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              userEmail: userEmail,
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(fetchId),
+          }
         );
         if (!res.ok) throw new Error(res.statusText);
 
         const cartProducts = await res.json();
-        const discountedCartProducts = applyDiscounts(cartProducts);
-        /**
-         * 브랜드별 상품 그룹핑
-         */
-        const cartBrandProduct = groupProductsByBrand(discountedCartProducts);
-        setCartBrandProducts(cartBrandProduct as CartBrandProductsType);
+        const formated = formatProducts(
+          cartProducts.result.productDetailBrandDtoList
+        );
+        // console.log('cartProducts', cartProducts);
+        setCartProducts(formated);
+        // console.log('formated', formated);
       } catch (e) {
         console.error('Failed to fetch cart products', e);
       }
     }
     loadCartProducts();
-  }, []);
+  }, [cartId]);
+
+  // 장바구니 정보와 상품 정보 합치기
+  useEffect(() => {
+    if (cartProducts && cartId) {
+      const combinedData = combineBrandData(cartProducts, cartId);
+      setCartBrandProducts(combinedData);
+      // console.log('combinedData', combinedData);
+    }
+  }, [cartProducts]);
 
   // 주문 정보 출력
   useEffect(() => {
@@ -153,37 +220,110 @@ export default function CartList() {
   }, [isAllChecked, isBrandChecked, cartBrandProducts]);
 
   /** 개별 체크박스 상태 변경 핸들러 */
-  const handleItemCheck = (checked: boolean, productDetailId: number) => {
-    setCartBrandProducts((prevState) => {
-      const newState = { ...prevState };
-
-      for (const brand in newState) {
-        newState[brand] = newState[brand].map((product) =>
-          product.productDetailId === productDetailId
-            ? { ...product, isChecked: checked }
-            : product
+  const handleItemCheck = (
+    checked: boolean,
+    productDetailId: number,
+    productInCartId: number
+  ) => {
+    // 현재 체크 상태의 반대를 백에 전송하는 fetch를 진행하고 이후 setCartBrandProducts를 업데이트
+    async function checkboxfetch() {
+      try {
+        // console.log('productInCartId', productInCartId);
+        // console.log('checked', checked);
+        const res = await fetch(
+          'https://gentledog-back.duckdns.org/api/v1/wish/cart/checked',
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              userEmail: userEmail,
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              changedCheckedList: [
+                {
+                  productInCartId: productInCartId,
+                  checked: checked,
+                },
+              ],
+            }),
+          }
         );
-      }
+        if (!res.ok) throw new Error(res.statusText);
 
-      return newState;
-    });
+        const checkbox = await res.json();
+        // console.log('checkbox', checkbox);
+        setCartBrandProducts((prevState) => {
+          const newState = { ...prevState };
+
+          for (const brand in newState) {
+            newState[brand] = newState[brand].map((product) =>
+              product.productDetailId === productDetailId
+                ? { ...product, checked: checked }
+                : product
+            );
+          }
+
+          return newState;
+        });
+      } catch (e) {
+        console.error('Failed to fetch loadCartId', e);
+      }
+    }
+    checkboxfetch();
   };
 
   /** 브랜드별 체크박스 상태 변경 핸들러 */
-  const handleBrandCheck = (checked: boolean, brandName: string) => {
-    setCartBrandProducts((prevState) => {
-      const newState = { ...prevState };
+  const handleBrandCheck = (
+    checked: boolean,
+    brandName: string,
+    cartBrandProducts: BrandProductCartDto
+  ) => {
+    console.log('handleBrandCheck called', brandName); // 함수 호출 확인
+    // 변경할 상품의 productInCartId 리스트 생성
+    const changedCheckedList = cartBrandProducts[brandName].map((product) => ({
+      productInCartId: product.productInCartId,
+      checked: checked,
+    }));
+    console.log('changedCheckedList', changedCheckedList);
+    async function brandcheckboxfetch() {
+      try {
+        const res = await fetch(
+          'https://gentledog-back.duckdns.org/api/v1/wish/cart/checked',
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              userEmail: userEmail,
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ changedCheckedList }),
+          }
+        );
+        if (!res.ok) throw new Error(res.statusText);
 
-      if (newState[brandName]) {
-        newState[brandName] = newState[brandName].map((product) => ({
-          ...product,
-          isChecked: checked,
-        }));
+        const checkbox = await res.json();
+        console.log('checkbox', checkbox);
+
+        // 상태 업데이트
+        setCartBrandProducts((prevState) => {
+          const newState = { ...prevState };
+
+          if (newState[brandName]) {
+            newState[brandName] = newState[brandName].map((product) => ({
+              ...product,
+              checked: checked,
+            }));
+          }
+
+          return newState;
+        });
+        setIsBrandChecked((prev) => ({ ...prev, [brandName]: checked }));
+      } catch (e) {
+        console.error('Failed to update checkbox state', e);
       }
-
-      return newState;
-    });
-    setIsBrandChecked((prev) => ({ ...prev, [brandName]: checked }));
+    }
+    brandcheckboxfetch();
   };
 
   /** 전체 선택 체크박스 상태 변경 핸들러 */
@@ -194,7 +334,7 @@ export default function CartList() {
       Object.keys(newState).forEach((brandName) => {
         newState[brandName] = newState[brandName].map((product) => ({
           ...product,
-          isChecked: checked,
+          checked: checked,
         }));
       });
       return newState;
@@ -204,26 +344,26 @@ export default function CartList() {
   };
 
   /**  개별 체크박스 상태에 따라 전체 선택 체크박스 상태 갱신*/
-  useEffect(() => {
-    if (cartBrandProducts) {
-      // 브랜드별 체크 상태 업데이트
-      const newIsBrandChecked: Record<string, boolean> = {};
-      Object.keys(cartBrandProducts).forEach((brandName) => {
-        newIsBrandChecked[brandName] = cartBrandProducts[brandName].every(
-          (product) => product.isChecked
-        );
-      });
-      setIsBrandChecked(newIsBrandChecked);
+  // useEffect(() => {
+  //   if (cartBrandProducts) {
+  //     // 브랜드별 체크 상태 업데이트
+  //     const newIsBrandChecked: Record<string, boolean> = {};
+  //     Object.keys(cartBrandProducts).forEach((brandName) => {
+  //       newIsBrandChecked[brandName] = cartBrandProducts[brandName].every(
+  //         (product) => product.checked
+  //       );
+  //     });
+  //     setIsBrandChecked(newIsBrandChecked);
 
-      // 전체 선택 체크박스 상태 업데이트
-      const allChecked = Object.values(cartBrandProducts)
-        .flat()
-        .every((product) => product.isChecked);
-      setIsAllChecked(allChecked);
-    }
-  }, [cartBrandProducts]);
+  //     // 전체 선택 체크박스 상태 업데이트
+  //     const allChecked = Object.values(cartBrandProducts)
+  //       .flat()
+  //       .every((product) => product.checked);
+  //     setIsAllChecked(allChecked);
+  //   }
+  // }, [cartBrandProducts]);
 
-  /** 체크된 상품들 삭제 */
+  /** 체크된 상품들 삭제 핸들러 */
   const handleCheckedDelete = (cartBrandProducts: CartBrandProductsType) => {
     const checkedProductIds = Object.values(cartBrandProducts)
       .flat()
@@ -236,10 +376,72 @@ export default function CartList() {
 
     console.log(checkedProductIds);
   };
-  /** 개별 상품 삭제 */
+
+  /** 개별 상품 삭제 헨들러 */
   const handleItemDelete = (productDetailId: number) => {
     // console.log(productDetailId);
   };
+
+  // 페칭 전 정리(임시)
+  function formatCartDataForProduct(cartIdData: CartIdType): {
+    requestProductsList: Array<{
+      brandName: string;
+      productDetailIds: number[];
+    }>;
+  } {
+    const requestProductsList = Object.entries(cartIdData).map(
+      ([brandName, products]) => ({
+        brandName,
+        productDetailIds: products.map((product) => product.productDetailId),
+      })
+    );
+
+    return { requestProductsList };
+  }
+
+  // 상품 데이터 변경
+  function formatProducts(inputData: BrandProductDto[]): BrandCartType {
+    const transformed: BrandCartType = {};
+
+    inputData.forEach((item) => {
+      transformed[item.brandName] = item.productDetailDtoList.map((product) => {
+        // discountRate가 null이면 discountRate와 discountedPrice를 제외
+        const { discountRate, discountedPrice, ...productWithoutDiscount } =
+          product;
+        return discountRate === null ? productWithoutDiscount : product;
+      });
+    });
+
+    return transformed;
+  }
+
+  // 장바구니와 상품 데이터 합치기
+  function combineBrandData(
+    brandCartData: BrandCartType,
+    cartIdData: CartIdType
+  ): BrandProductCartDto {
+    const combinedData: BrandProductCartDto = {};
+
+    for (const brand in brandCartData) {
+      combinedData[brand] = brandCartData[brand].map((cartItem) => {
+        const productCartItem = cartIdData[brand]?.find(
+          (productCartItem) =>
+            productCartItem.productDetailId === cartItem.productDetailId
+        );
+
+        return {
+          ...cartItem, // CartType에서 제공하는 상품 상세 정보
+          count: productCartItem ? productCartItem.count : 0, // ProductCartType에서 제공하는 장바구니 정보
+          checked: productCartItem ? productCartItem.checked : false,
+          productInCartId: productCartItem
+            ? productCartItem.productInCartId
+            : 0,
+        };
+      });
+    }
+
+    return combinedData;
+  }
 
   return (
     <>
@@ -253,7 +455,8 @@ export default function CartList() {
             isChecked={isAllChecked}
             onChange={(checked) => handleAllCheck(checked)}
           />
-          <button
+          {/* todo: 선택 삭제 */}
+          {/* <button
             className="flex"
             onClick={() =>
               cartBrandProducts && handleCheckedDelete(cartBrandProducts)
@@ -262,7 +465,7 @@ export default function CartList() {
             <div className="font-semibold text-base text-blue-500 dark:text-slate-200">
               선택 삭제
             </div>
-          </button>
+          </button> */}
         </div>
         {cartBrandProducts &&
           Object.entries(cartBrandProducts).map(([brandName, items]) => (
@@ -276,15 +479,21 @@ export default function CartList() {
                 labelClassName="break-keep text-base font-semibold"
                 className="mb-4 flex items-center"
                 isChecked={isBrandChecked[brandName]}
-                onChange={(checked) => handleBrandCheck(checked, brandName)}
+                onChange={(checked) =>
+                  handleBrandCheck(checked, brandName, cartBrandProducts)
+                }
               />
               {items.map((item) => (
                 <RenderProduct
                   key={`cart-${item.productDetailId}`}
                   item={item}
-                  isChecked={item.isChecked}
+                  isChecked={item.checked}
                   onItemCheck={(checked) =>
-                    handleItemCheck(checked, item.productDetailId)
+                    handleItemCheck(
+                      checked,
+                      item.productDetailId,
+                      item.productInCartId
+                    )
                   }
                   onCountChange={(newCount) =>
                     handleCountChange(item.productDetailId, newCount)
