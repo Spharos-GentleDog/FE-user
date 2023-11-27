@@ -108,3 +108,39 @@ export interface CheckoutProductType {
 export interface CheckoutBrandProductsType {
   [brand: string]: CheckoutProductType[];
 }
+
+export interface CheckoutPriceType {
+  deliveryFee: number;
+  discountTotal: number;
+  originalTotalPrice: number;
+  totalPrice: number;
+}
+
+export interface OrderProductInfoType {
+  brandName: string;
+  productId: number;
+  productDetailId: number;
+  productName: string;
+  color: string;
+  size: string;
+  discountRate?: number;
+  productPrice: number;
+  discountedPrice: number;
+  count: number;
+  imgUrl: string;
+  imgName: string;
+  productCode: string;
+  vendorEmail: string;
+}
+
+export interface orderProductInfoListDtoType {
+  brandName: string;
+  brandTotalPrice: number;
+  brandDeliveryFee: number;
+  vendorEmail: string;
+  orderProductInfoDto: OrderProductInfoType[];
+}
+
+export interface CheckoutListProps {
+  cartBrandProducts: orderProductInfoListDtoType[];
+}

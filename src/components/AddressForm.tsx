@@ -109,14 +109,18 @@ export default function AddressForm({
                   <Icon type="phone" />
                   <span className="">{address?.recipientPhoneNumber}</span>
                 </div>
-                <div className="flex gap-1">
-                  <Icon type="lockopen" />
-                  <span className="">{`공동현관 비밀번호: ${address?.entrancePassword}`}</span>
-                </div>
-                <div className="flex gap-1">
-                  <Icon type="message" />
-                  <span className="">{`요청사항: ${address?.addressRequestMessage}`}</span>
-                </div>
+                {address?.entrancePassword !== '' && (
+                  <div className="flex gap-1">
+                    <Icon type="lockopen" />
+                    <span className="">{`공동현관 비밀번호: ${address.entrancePassword}`}</span>
+                  </div>
+                )}
+                {address?.addressRequestMessage !== '' && (
+                  <div className="flex gap-1">
+                    <Icon type="message" />
+                    <span className="">{`요청사항: ${address.addressRequestMessage}`}</span>
+                  </div>
+                )}
               </div>
               <div className="flex gap-2 pt-2">
                 <button

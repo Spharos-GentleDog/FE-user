@@ -15,33 +15,23 @@ import Icon from '../Icon';
 
 interface Props {
   onOpenActive: () => void;
+  defaultAddress: AddressType;
+  setDefaultAddress: React.Dispatch<React.SetStateAction<AddressType>>;
 }
-
-/**
- * todo: 대표 배송지 바로 불러오도록 데이터 패칭
- * 출력되는 정보 추가
- * 지도 이미지 아이콘 변경
- * 모달 내용 수정
- * addressId: number;
-  userAddress: string;
-  recipientName: string;
-  recipientPhoneNumber: string;
-  addressName: string;
-  entrancePassword: string;
-  addressRequestMessage: string;
-  isDefault: boolean;
- */
 
 /**
  * 배송지 주소 모달로 변경
  * @param onOpenActive 클릭 시 실행 모달 열기, 스크롤 이동
  */
-const ShippingAddress = ({ onOpenActive }: Props) => {
+const ShippingAddress: React.FC<Props> = ({
+  defaultAddress,
+  setDefaultAddress,
+  onOpenActive,
+}) => {
   const [address, setAddress] = useState<AddressType[]>();
   const session = useSession();
   const token = session?.data?.user.accessToken;
   const userEmail = session?.data?.user.userEmail;
-  const [defaultAddress, setDefaultAddress] = useState<AddressType>();
 
   useEffect(() => {
     if (address) return;
@@ -143,14 +133,18 @@ const ShippingAddress = ({ onOpenActive }: Props) => {
                     {defaultAddress?.recipientPhoneNumber}
                   </span>
                 </div>
-                <div className="flex gap-1">
-                  <Icon type="lockopen" />
-                  <span className="">{`공동현관 비밀번호: ${defaultAddress?.entrancePassword}`}</span>
-                </div>
-                <div className="flex gap-1">
-                  <Icon type="message" />
-                  <span className="">{`요청사항: ${defaultAddress?.addressRequestMessage}`}</span>
-                </div>
+                {defaultAddress?.entrancePassword !== '' && (
+                  <div className="flex gap-1">
+                    <Icon type="lockopen" />
+                    <span className="">{`공동현관 비밀번호: ${defaultAddress.entrancePassword}`}</span>
+                  </div>
+                )}
+                {defaultAddress?.addressRequestMessage !== '' && (
+                  <div className="flex gap-1">
+                    <Icon type="message" />
+                    <span className="">{`요청사항: ${defaultAddress.addressRequestMessage}`}</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -171,7 +165,8 @@ const ShippingAddress = ({ onOpenActive }: Props) => {
             data={address}
             loadAddress={loadAddress}
             setAddress={setAddress}
-            setDefaultAddress={setDefaultAddress}/>
+            setDefaultAddress={setDefaultAddress}
+          />
         )}
       </div>
     );

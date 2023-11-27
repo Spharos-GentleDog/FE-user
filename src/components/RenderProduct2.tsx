@@ -1,13 +1,14 @@
-import Checkbox from "@/shared/Checkbox/Checkbox";
-import { CartProductType } from "@/types/productType";
-import Image from "next/image";
-import Link from "next/link";
-import Icon from "./Icon";
-import NcInputNumber from "./NcInputNumber";
-import Prices from "./Prices";
-import RenderStatusInstock from "./RenderStatusInstock";
-import RenderStatusSoldout from "./RenderStatusSoldout";
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import Checkbox from '@/shared/Checkbox/Checkbox';
+import { CartProductType, OrderProductInfoType } from '@/types/productType';
+import Image from 'next/image';
+import Link from 'next/link';
+import Icon from './Icon';
+import NcInputNumber from './NcInputNumber';
+import Prices from './Prices';
+import RenderStatusInstock from './RenderStatusInstock';
+import RenderStatusSoldout from './RenderStatusSoldout';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import Prices2 from './Prices2';
 
 /**
  * 장바구니 상품 출력
@@ -20,27 +21,25 @@ export default function RenderProduct2({
   onItemCheck,
   onCountChange,
   onItemDelete,
-  isChecked,
 }: {
-  item: CartProductType;
+  item: OrderProductInfoType;
   onItemCheck?: (checked: boolean) => void;
   onCountChange?: (count: number) => void;
   onItemDelete?: (id: number) => void;
   newCount?: number;
-  isChecked: boolean;
 }) {
   return (
     <div
       key={`cart-${item.productDetailId}`}
       className=" py-6 sm:py-4 xl:py-8 first:pt-0 last:pb-0 last:mb-8"
     >
-        <div className="px-4 pb-2 text-lg font-medium">{item.productName}</div>
+      <div className="px-4 pb-2 text-lg font-medium">{item.productName}</div>
       <div className="relative flex px-4">
         <div className="relative h-36 w-24 sm:w-32 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
           <Image
             fill
             src={item.imgUrl}
-            alt={item.productName}
+            alt={item.imgName}
             sizes="300px"
             className="h-full w-full object-contain object-center"
           />
@@ -68,7 +67,7 @@ export default function RenderProduct2({
                 </div>
 
                 <div className="mt-3 flex justify-between w-full relative">
-                  {item.count} 
+                  {item.count}
                 </div>
               </div>
 
@@ -82,8 +81,8 @@ export default function RenderProduct2({
               </div> */}
             </div>
             <div className=" flex-1 sm:flex justify-end">
-              <Prices
-                price={item.price}
+              <Prices2
+                price={item.productPrice}
                 discountRate={item.discountRate}
                 discountedPrice={item.discountedPrice}
                 className="mt-0.5"
