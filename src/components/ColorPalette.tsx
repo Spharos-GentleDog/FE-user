@@ -38,6 +38,7 @@ function ColorPalette(
                                 fontSize='text-[13px]'
                                 sizeClass='py-2 px-3'
                                 onClick={() => setIsView(false)}
+
                             >
                                 확인
                             </ButtonSecondary>

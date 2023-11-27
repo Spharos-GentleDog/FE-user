@@ -33,3 +33,9 @@ export interface SignupDogDataType {
     dogNeckGirth: number
     dogBreastGirth: number
 }
+
+export interface DogBreedsType {
+    id: number
+    dogBreedKorName: string
+    dogBreedEngName: string
+}

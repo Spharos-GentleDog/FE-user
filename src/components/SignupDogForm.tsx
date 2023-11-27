@@ -4,7 +4,7 @@ import Input from '@/shared/Input/Input'
 import Select from '@/shared/Select/Select'
 import React, { useEffect, useState } from 'react'
 import ColorPalette from './ColorPalette'
-import { SignupDogDataType } from '@/types/formDataType'
+import { DogBreedsType, SignupDogDataType } from '@/types/formDataType'
 import ButtonPrimary from '@/shared/Button/ButtonPrimary'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -142,6 +142,20 @@ function SignupDogForm() {
         }
     }
 
+    const [dogBreeds, setDogBreeds] = useState<DogBreedsType[]>([]);
+    useEffect(() => {
+        const getDatas = async () => {
+            const res = await fetch(`${process.env.BASE_API_URL}/api/v1/user/dog/breeds`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            const result = await res.json();
+            setDogBreeds(result.result);
+        }
+        getDatas();
+    }, [])
 
     useEffect((): void => {
         if (file !== null) {
@@ -251,13 +265,14 @@ function SignupDogForm() {
                     <label className='block mb-5 relative'>
                         <div className='mt-2'>
                             <div className='w-full' onChange={handleChange}>
-                                <Select id='dogBreed' name='dogBreed' className='border-[#000000]'>
-                                    <option value="0">견종을 선택해 주세요.</option>
-                                    <option value="1">모름</option>
-                                    <option value="2">종류1</option>
-                                    <option value="3">종류2</option>
-                                    <option value="4">종류3</option>
-                                </Select>
+                                {
+                                    dogBreeds.map((breed) => (
+                                        <Select id='dogBreed' name='dogBreed' className='border-[#000000]' key={breed.id}>
+                                            <option>견종을 선택해 주세요.</option>
+                                            <option value={breed.id}>{breed.dogBreedKorName}</option>
+                                        </Select>
+                                    ))
+                                }
                             </div>
                         </div>
                     </label>
