@@ -88,21 +88,22 @@ const SectionHero2: FC<SectionHero2Props> = ({ className = "" }) => {
           svgSize="w-6 h-6"
           onClickNext={handleClickNext}
         />
-  
-          <div className="object-cover h-[400px] sm:w-screen md:h-[600px] bg-black" >
-            <Image
-              objectFit="cover"
-              layout="fill"
-              sizes="100%"
-              src={item}
-              alt={`Image ${indexActive + 1}`}
-            />
-          </div>
+
+        <div className="object-cover h-[200px] sm:w-screen sm:h-[300px] md:h-[350px] bg-black" >
+          <Image
+            objectPosition="center"
+            layout="fill"
+            loading="eager"
+            sizes="100%"
+            src={item}
+            alt={`Image ${indexActive + 1}`}
+          />
         </div>
-     
+      </div>
+
     );
   };
-  
+
 
   return <>{renderItem()}</>;
 };
