@@ -153,7 +153,7 @@ export default function CartList() {
     async function loadCartProducts() {
       try {
         const fetchId = formatCartDataForProduct(cartId as CartIdType);
-        console.log('fetchId', fetchId);
+        // console.log('fetchId', fetchId);
         /**
          * 장바구니 상품 정보
          */
