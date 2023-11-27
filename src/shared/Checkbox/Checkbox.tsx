@@ -26,7 +26,7 @@ const Checkbox: FC<CheckboxProps> = ({
   className = '',
   sizeClassName = 'w-6 h-6',
   labelClassName = '',
-  isChecked=false,
+  isChecked = false,
   defaultChecked,
   onChange,
 }) => {
@@ -46,9 +46,8 @@ const Checkbox: FC<CheckboxProps> = ({
           className="pl-2.5 sm:pl-3.5 flex flex-col flex-1 justify-center"
         >
           <span
-            className={`text-slate-900 dark:text-slate-100 ${labelClassName} ${
-              !!subLabel ? '-mt-0.5' : ''
-            }`}
+            className={`text-slate-900 dark:text-slate-100 ${labelClassName} ${!!subLabel ? '-mt-0.5' : ''
+              }`}
           >
             {label}
           </span>

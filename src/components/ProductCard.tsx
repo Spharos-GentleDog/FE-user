@@ -37,12 +37,12 @@ const ProductCard: FC<ProductCardProps> = ({
     productName,
     productPrice,
     brandName,
-    sizeName,
-    color,
-    ProductImage = defaultImage,
-    productCode,
-    productTotalRating,
-    productReviewCount,
+    sizes,
+    colors,
+    mainImageUrl = defaultImage,
+    totalFavorite,
+    discounts,
+    salesStatus
   } = data || {};
 
   const [variantActive, setVariantActive] = useState(0);
@@ -72,7 +72,7 @@ const ProductCard: FC<ProductCardProps> = ({
       ),
       {
         position: 'top-right',
-        id: String(productCode) || 'product-detail',
+        id: String(productId) || 'product-detail',
         duration: 3000,
       }
     );
@@ -81,11 +81,11 @@ const ProductCard: FC<ProductCardProps> = ({
   const renderProductCartOnNotify = ({ sizeName }: { sizeName?: string }) => {
     return (
       <div className="flex ">
-        <div className="h-24 w-20 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
+        <div className="h-[120px] w-20 flex-shrink-0 overflow-hidden rounded-xl bg-slate-100">
           <Image
             width={80}
             height={96}
-            src={ProductImage || ''}
+            src={mainImageUrl || ''}
             alt={productName || ''}
             className="absolute object-cover object-center"
           />
@@ -98,7 +98,7 @@ const ProductCard: FC<ProductCardProps> = ({
                 <h3 className="text-base font-medium ">{productName}</h3>
                 <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   <span>
-                    {color ? color[variantActive].colorName : `Natural`}
+                    {colors ? colors[variantActive].colorName : `Natural`}
                   </span>
                   <span className="mx-2 border-s border-slate-200 dark:border-slate-700 h-4"></span>
                   <span>{sizeName || 'FREE'}</span>
@@ -134,15 +134,15 @@ const ProductCard: FC<ProductCardProps> = ({
         className={`nc-ProductCard relative flex flex-col bg-transparent ${className}`}
       >
         <Link
-          href={`/product/${productCode}`}
+          href={`/product/${productId}`}
           className="absolute inset-0"
         ></Link>
 
         <div className="relative flex-shrink-0 bg-slate-50 dark:bg-slate-300 rounded-3xl overflow-hidden z-1 group">
-          <Link href={`/product/${productCode}`} className="block">
+          <Link href={`/product/${productId}`} className="block">
             <NcImage
               containerClassName="flex aspect-w-11 aspect-h-12 w-full h-0"
-              src={ProductImage}
+              src={mainImageUrl}
               className="object-cover w-full h-full drop-shadow-xl"
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 40vw"
@@ -165,9 +165,9 @@ const ProductCard: FC<ProductCardProps> = ({
             </ButtonSecondary>
           </div>
           {/* 사이즈가 존재하면 사이즈가 뜨고 아니면 addCart 버튼이 뜸 */}
-          {sizeName ? (
+          {sizes ? (
             <RenderSizeList
-              sizeName={sizeName}
+              sizeName={sizes}
               notifyAddTocart={notifyAddTocart}
             />
           ) : (
@@ -179,7 +179,7 @@ const ProductCard: FC<ProductCardProps> = ({
           <RenderColor
             variantActive={variantActive}
             setVariantActive={setVariantActive}
-            color={color}
+            color={colors}
           />
           <div>
             <h2 className="nc-ProductCard__title text-base font-semibold transition-colors">
@@ -195,7 +195,7 @@ const ProductCard: FC<ProductCardProps> = ({
             <div className="flex items-center mb-0.5">
               <StarIcon className="w-5 h-5 pb-[1px] text-amber-400" />
               <span className="text-sm ms-1 text-slate-500 dark:text-slate-400">
-                {productTotalRating || ''} ({productReviewCount || 0} 후기)
+                {totalFavorite}
               </span>
             </div>
           </div>

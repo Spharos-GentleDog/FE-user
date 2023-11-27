@@ -44,11 +44,20 @@ const Prices: FC<PricesProps> = ({
           </div>
         </>
       )}
-      <div className={`items-center rounded-lg ${contentClass}`}>
-        <span className="font-bold text-red-600 text-lg lg:text-2xl !leading-none">
-          {formattedDiscountedPrice}
-        </span>
-      </div>
+      {
+        discountRate ?
+          <div className={`items-center rounded-lg ${contentClass}`}>
+            <span className="font-bold text-red-600 text-lg lg:text-2xl !leading-none">
+              {formattedDiscountedPrice}
+            </span>
+          </div>
+          :
+          <div className={`items-center rounded-lg ${contentClass}`}>
+            <span className="font-bold text-black text-lg lg:text-2xl !leading-none dark:text-white">
+              {formattedPrice}
+            </span>
+          </div>
+      }
     </div>
   );
 };

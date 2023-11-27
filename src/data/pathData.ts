@@ -26,5 +26,9 @@ export const PathData: PathdataType[] = [
         path: '/checkout',
         title: '주문',
 
+    },
+    {
+        path: '/collection',
+        title: '상품',
     }
 ]

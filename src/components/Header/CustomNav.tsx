@@ -4,6 +4,8 @@ import React from 'react';
 import Icon from '../Icon';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import MenuBar from '@/shared/MenuBar/MenuBar';
+import CartDropdown from './CartDropdown';
 
 const CustomNav = ({ title }: { title: string }) => {
     const pathname = usePathname();
@@ -15,8 +17,19 @@ const CustomNav = ({ title }: { title: string }) => {
                     <div className="flex items-center" onClick={router.back}>
                         <Icon type='back' />
                     </div>
-                    <div className="flex items-center text-xl font-bold mx-auto pr-3">
+                    <div className='flex items-center'>
+                        <MenuBar />
+                    </div>
+                    <div className="flex items-center text-xl font-bold mx-auto">
                         {title}
+                    </div>
+                    <div className='flex items-center pr-3'>
+                        <Link href='/'>
+                            <Icon type='home' />
+                        </Link>
+                    </div>
+                    <div className='flex items-center'>
+                        <CartDropdown />
                     </div>
                 </div>
             </div>

@@ -16,7 +16,6 @@ function CategoryHeading({
     const [categoryData, setCategoryData] = useState<ParentCategoryType[]>([]);
 
     const handleCategoryFetch = async (categoryId: number) => {
-        console.log("categoryId : ", categoryId);
         setTabActive(categoryId);
 
         try {
@@ -35,7 +34,6 @@ function CategoryHeading({
     }
 
     useEffect(() => {
-        console.log(process.env.BASE_API_URL)
         const getData = async () => {
             try {
                 const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/read-parent-category`, {

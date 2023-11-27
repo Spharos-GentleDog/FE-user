@@ -26,6 +26,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
   useEffect(() => {
     /** 초기 랜더링 */
     async function getWishStatus() {
+
       const res = await fetch(
         `https://gentledog-back.duckdns.org/api/v1/wish/wishproductlist/${productId}`,
         {
@@ -38,6 +39,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
         }
       );
       const data = await res.json();
+
       if (res.ok) {
         // null 값이면 찜 안한 상태
         // null 값이 아니면 찜 한 상태

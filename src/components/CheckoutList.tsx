@@ -36,9 +36,7 @@ export default function CheckoutList() {
     totalPriceString: "",
   });
   const session = useSession();
-  const [paymentProduct, setPaymentProduct] = useState<PaymentByProductList[]>(
-    []
-  ); // 결제할 상품들
+  const [paymentProduct, setPaymentProduct] = useState<PaymentByProductList[]>([]); // 결제할 상품들
   const [paymentClicked, setPaymentClicked] = useState(false);
   const [price, setPrice] = useState(9999);
 
@@ -101,12 +99,9 @@ export default function CheckoutList() {
   const handlePayment = (data: boolean) => {
     if (session.status === "authenticated") {
       setPaymentClicked(data);
-      setPrice(100000);
+      setPrice(242000);
       setPaymentProduct(paymentProductList);
-      localStorage.setItem(
-        "paymentProduct",
-        JSON.stringify(paymentProductList)
-      );
+      localStorage.setItem("paymentProduct", JSON.stringify(paymentProductList));
     } else {
       // todo: 비회원 결제 하기 위한 페이지로 이동
       alert("로그인이 필요합니다.");
@@ -132,13 +127,13 @@ export default function CheckoutList() {
             paymentClicked={paymentClicked}
             setPaymentClicked={setPaymentClicked}
             paymentProduct={paymentProduct}
+            // price={parseInt(checkoutInfo.totalPriceString.replace(/[₩,]/g, ""))}
             price={price}
           />
         </div>
       </div>
     );
   };
-
   /** 체크된 상품 주문 정보 */
   const calculateCheckoutInfo = () => {
     let originalTotalPrice = 0;
@@ -284,7 +279,7 @@ export default function CheckoutList() {
               <div className="flex mt-1.5">
                 <Input sizeClass="h-10 px-4 py-3" className="flex-1" />
                 <button
-                  onClick={() => {}}
+                  onClick={() => { }}
                   className="text-neutral-700 dark:text-neutral-200 border border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 rounded-2xl px-4 ml-3 font-medium text-sm bg-neutral-200/70 dark:bg-neutral-700 dark:hover:bg-neutral-800 w-24 flex justify-center items-center transition-colors"
                 >
                   사용

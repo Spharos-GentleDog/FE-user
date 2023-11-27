@@ -44,9 +44,26 @@ function Payment({
 
     useEffect(() => {
         if (paymentClicked) {
+            // const productCodes = paymentProduct.map((product: { productCode: number }) => product.productCode);
+            // const queryParams = JSON.stringify(productCodes);
+            // console.log(queryParams)
+
+            // const inventoryCheck = async () => {
+            //     const res = await fetch(`/api/inventor?productCode=${queryParams}`, {
+            //         method: "GET",
+            //         headers: {
+            //             "Content-Type": "application/json",~V
+            //         },
+            //     });
+            //     const result = await res.json();
+            //     if (result.result === true) {
+            //         return true
+            //     }
+            // }
+
+
             const getData = async () => {
                 const paymentWidget = paymentWidgetRef.current;
-                // console.log(paymentProduct)
                 try {
                     await paymentWidget?.requestPayment({
                         orderId: nanoid(),

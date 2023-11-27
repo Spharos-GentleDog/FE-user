@@ -1,27 +1,25 @@
 'use client'
+import { deliveryOrdersInRequest, vendorsOrderListInRequest } from '@/data/paymentProductList';
 import ButtonPrimary from '@/shared/Button/ButtonPrimary';
 import { Payment } from '@/types/payment/payment';
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
 function PaymentSuccess() {
+    const session = useSession()
     const param = useSearchParams()
     const [data, setData] = useState<Payment>()
     const paymentKey = param.get('paymentKey')
     const orderId = param.get('orderId')
     const amount = param.get('amount')
-
-    if (typeof window !== 'undefined') {
-        const paymentProduct = localStorage.getItem('paymentProduct')
-    }
-
-
+    const [orederNumber, setOrderNumber] = useState<string>("")
     useEffect(() => {
         const getData = async () => {
             try {
-                const response = await axios.post<Payment>('https://api.tosspayments.com/v1/payments/confirm', {
+                const response = await axios.post('https://api.tosspayments.com/v1/payments/confirm', {
                     paymentKey: paymentKey,
                     orderId: orderId,
                     amount: amount,
@@ -33,14 +31,77 @@ function PaymentSuccess() {
                 });
 
                 setData(response.data);
-                console.log(response.data)
+
+                let method = "";
+                if (response.data.method === "간편결제") {
+                    if (response.data.easyPay.provider === "토스페이") {
+                        method = "TOSS_PAY"
+                    } else if (response.data.easyPay.provider === "네이버페이") {
+                        method = "NAVER_PAY"
+                    } else if (response.data.easyPay.provider === "카카오페이") {
+                        method = "KAKAO_PAY"
+                    }
+                } else {
+                    if (response.data.method === "카드") {
+                        method = "CARD"
+                    }
+                }
+
+                const requestedAt = response.data.requestedAt.substring(0, response.data.requestedAt.length - 6)
+                const approverAt = response.data.approvedAt.substring(0, response.data.approvedAt.length - 6)
+
+                if (response.data) {
+                    const res = await fetch(`${process.env.BASE_API_URL}/api/v1/orders/payment`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            paymentKey: response.data.paymentKey,
+                            paymentMethod: method,
+                            paymentStatus: response.data.status,
+                            paymentTotalAmount: response.data.totalAmount,
+                            isPartial: response.data.isPartialCancelable,
+                            receipt_url: response.data.receipt.url,
+                            balanceAmount: response.data.balanceAmount,
+                            requestedAt: requestedAt,
+                            approvedAt: approverAt,
+                            usedPoint: 0,
+                            productPaymentList: JSON.parse(localStorage.getItem('paymentProduct') || '{}')
+                        }),
+                    })
+                    const result = await res.json()
+
+                    if (result.code === 200) {
+                        console.log("deliveryOrdersInRequest : ", deliveryOrdersInRequest)
+                        console.log("vendorsOrderListInRequest : ", vendorsOrderListInRequest)
+
+                        fetch(`${process.env.BASE_API_URL}/api/v1/orders/user`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${session.data?.user.accessToken}`,
+                                "userEmail": `${session.data?.user.userEmail}`
+                            },
+                            body: JSON.stringify({
+                                deliveryOrdersInRequestDto: deliveryOrdersInRequest,
+                                vendorsOrderListInRequestDto: vendorsOrderListInRequest
+                            }),
+                        })
+                            .then(res => res.json())
+                            .then(data => {
+                                console.log("data", data)
+                                setOrderNumber(data.result.orderNumber)
+                            })
+                    }
+                }
             } catch (err: any) {
-                console.error("err", err.response.data);
+                // console.error("err", err);
             }
 
         }
 
-        getData();
+        getData()
     }, [])
 
 
@@ -55,7 +116,7 @@ function PaymentSuccess() {
                                 <tr className="border-b">
                                     <td className="py-2 px-4 font-semibold align-top">주문번호</td>
                                     <td className="py-2 px-4">
-                                        2165464656156446465
+                                        {orederNumber}
                                     </td>
                                 </tr>
                                 <tr className="border-b">

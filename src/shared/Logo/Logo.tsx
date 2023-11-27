@@ -4,6 +4,7 @@ import logoDarkImg from '@/images/logo-dark.svg'
 import logoFootImg from '@/images/footprint.svg'
 import logoFootDarkImg from '@/images/footprint-dark.svg'
 import logoNameImg from '@/images/logo-name.svg'
+import logoNameDarkImg from '@/images/logo-name-dark.svg'
 import Image from "next/image";
 
 export interface LogoProps {
@@ -33,7 +34,7 @@ const Logo: React.FC<LogoProps> = ({
   isFootprint = false,
   isLogoName = false,
   LogoName = logoNameImg,
-  LogoNameDark = logoNameImg,
+  LogoNameDark = logoNameDarkImg,
 }) => {
   if (isFootprint) {
     return (

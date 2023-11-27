@@ -8,38 +8,44 @@ import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import TabFilters from "@/components/TabFilters";
 import { Transition } from "@/app/headlessui";
+import { ParentCategoryType } from "@/types/product/category";
 
 export interface HeaderFilterSectionProps {
   className?: string;
+  categoryData: ParentCategoryType[];
+  tabActive: number;
+  setTabActive: any;
 }
 
 const HeaderFilterSection: FC<HeaderFilterSectionProps> = ({
   className = "mb-12",
+  categoryData,
+  tabActive,
+  setTabActive,
 }) => {
   const [isOpen, setIsOpen] = useState(true);
-  const [tabActive, setTabActive] = useState("All items");
 
   return (
     <div className={`flex flex-col relative ${className}`}>
       <Heading
-      desc='Ciseco의 트렌드 제품'
+        desc='GENTLEDOG의 모든 상품을 만나보세요.'
       >
-        {`핫 트랜드`}
-        </Heading>
+        {`상품`}
+      </Heading>
       <div className="flex flex-col lg:flex-row lg:items-center justify-between space-y-6 lg:space-y-0 lg:space-x-2 ">
         <Nav
           className="sm:space-x-2"
           containerClassName="relative flex w-full overflow-x-auto text-sm md:text-base hiddenScrollbar"
         >
           {/* todo: 카테고리 데이터 패칭 */}
-          {["전체", "여성용", "남성용", "아동용", "보석"].map(
+          {categoryData.map(
             (item, index) => (
               <NavItem
                 key={index}
-                isActive={tabActive === item}
-                onClick={() => setTabActive(item)}
+                isActive={tabActive === item.parentCategoryId}
+                onClick={() => setTabActive(item.parentCategoryId)}
               >
-                {item}
+                {item.parentCategoryName}
               </NavItem>
             )
           )}
@@ -98,7 +104,7 @@ const HeaderFilterSection: FC<HeaderFilterSectionProps> = ({
         leaveTo="opacity-0"
       >
         <div className="w-full border-b border-neutral-200 dark:border-neutral-700 my-8"></div>
-        <TabFilters />
+        {/* <TabFilters categoryData={categoryData} /> */}
       </Transition>
     </div>
   );

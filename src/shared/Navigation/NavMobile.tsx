@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 import ButtonClose from "@/shared/ButtonClose/ButtonClose";
 import Logo from "@/shared/Logo/Logo";
 import { Disclosure } from "@/app/headlessui";
-import { NAVIGATION_DEMO_2 } from "@/data/navigation";
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { useThemeMode } from "@/hooks/useThemeMode";
@@ -35,7 +34,14 @@ const NavMobile: React.FC<NavMobileProps> = ({
           <Disclosure as="li" key={index}>
             <Link
               href={{
-                pathname: `/collection?categoryId=${i.childCategoryId}` || undefined,
+                pathname: `/collection`,
+                query: {
+                  categoryType: 'all',
+                  categoryId: i.childCategoryId,
+                  categoryName: i.childCategoryName,
+                  isDiscount: false,
+                  page: 1
+                }
               }}
               className={`flex text-sm rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 mt-0.5 pr-4 ${itemClass}`}
             >
@@ -73,7 +79,14 @@ const NavMobile: React.FC<NavMobileProps> = ({
         <Link
           className="flex w-full items-center py-2.5 px-4 font-medium uppercase tracking-wide text-sm hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
           href={{
-            pathname: `/collection?categoryId=${item.parentCategoryId}` || undefined,
+            pathname: `/collection`,
+            query: {
+              categoryType: 'all',
+              categoryId: item.parentCategoryId,
+              categoryName: item.parentCategoryName,
+              isDiscount: false,
+              page: 1
+            }
           }}
         >
           <span
@@ -211,6 +224,54 @@ const NavMobile: React.FC<NavMobileProps> = ({
         <div className="mt-5">{renderSearchForm()}</div>
       </div>
       <ul className="flex flex-col py-6 px-2 space-y-1">
+        <Disclosure
+          as="li"
+          className="break-keep text-slate-900 dark:text-white"
+        >
+          <Link
+            className="flex w-full items-center py-2.5 px-4 font-medium uppercase tracking-wide text-sm hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
+            href={{
+              pathname: `/collection`,
+              query: {
+                categoryType: 'all',
+                categoryName: '전체',
+                isDiscount: false,
+                page: 1
+              }
+            }}
+          >
+            <span
+              // className="block w-full"
+              onClick={onClickClose}
+            >
+              전체
+            </span>
+          </Link>
+        </Disclosure>
+        <Disclosure
+          as="li"
+          className="break-keep text-slate-900 dark:text-white"
+        >
+          <Link
+            className="flex w-full items-center py-2.5 px-4 font-medium uppercase tracking-wide text-sm hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
+            href={{
+              pathname: `/collection`,
+              query: {
+                categoryType: 'new',
+                categoryName: '신상',
+                isDiscount: false,
+                page: 1
+              }
+            }}
+          >
+            <span
+              // className="block w-full"
+              onClick={onClickClose}
+            >
+              신상
+            </span>
+          </Link>
+        </Disclosure>
         {parentCategoryData.map(_renderItem)}
       </ul>
     </div>

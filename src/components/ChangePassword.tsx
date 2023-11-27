@@ -4,9 +4,13 @@ import React from "react";
 import ButtonPrimary from "@/shared/Button/ButtonPrimary";
 import Input from "@/shared/Input/Input";
 import { useSession } from "next-auth/react";
+import Toast from "./Toast";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 function ChangePassword() {
     const session = useSession();
+    const router = useRouter();
     const [userPass, setUserPass] = React.useState({
         currentPass: "",
         newPass: "",
@@ -22,21 +26,29 @@ function ChangePassword() {
     };
 
     const handleChangePasswordFetch = async () => {
+        console.log(userPass);
         const res = await fetch(`${process.env.BASE_API_URL}/api/v1/user/password`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${session.data?.user.token}`,
+                "Authorization": `Bearer ${session.data?.user.accessToken}`,
+                "userEmail": `${session.data?.user.userEmail}`,
             },
             body: JSON.stringify({
-                currentPass: userPass.currentPass,
-                newPass: userPass.newPass,
+                password: userPass.newPass,
             }),
         });
 
         const data = await res.json();
-        if (data.code === 200) {
-            alert("비밀번호가 변경되었습니다.");
+        if (data.isSuccess === true) {
+            toast.custom((t) => (
+                <Toast message='비밀번호가 변경되었습니다.' />
+            ));
+            router.push("/");
+        } else {
+            toast.custom((t) => (
+                <Toast message={data.message} />
+            ));
         }
     }
     return (
