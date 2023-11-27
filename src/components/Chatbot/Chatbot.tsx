@@ -23,7 +23,7 @@ return (
     width: '60px',
     height: '60px',
     borderRadius: '50%',
-    backgroundColor: '#fff',
+    backgroundColor: '#000',
     color: '#fff',
     border: 'none',
     cursor: 'pointer',
@@ -33,6 +33,7 @@ return (
   }}
   onClick={handleChatOpen}
 >
+ChatBot
 </button>
 
   {chatOpen && (
@@ -48,7 +49,7 @@ return (
     }}>
       <button onClick={handleChatClose}>Close</button>
       <iframe
-        src="https://www.chatbase.co/chatbot-iframe/hh-22NT06X4Pc2rzhE69z"
+        src="https://www.chatbase.co/chatbot-iframe/1ZCJ-uuW2LLgaXWVyc8RT"
         style={{
           width: '100%',
           height: '100%',
