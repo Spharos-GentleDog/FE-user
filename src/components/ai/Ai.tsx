@@ -14,22 +14,23 @@ function Ai() {
   const handleFileUpload = async () => {
     if (selectedFile) {
 
-      console.log(selectedFile);
+      // formData 생성
       const formData = new FormData();
       formData.append('img', selectedFile);
-      console.log(formData);
 
+      console.log('formData: ', formData.get('img'))
       try {
 
         const res = await fetch(`http://gentledog-back.duckdns.org:5000/image_predict`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
           body: formData,
         });
         const result = await res.json();
-        console.log(result);
+        console.log(result.result1);
+
+        if (result) {
+
+        }
       } catch (err) {
         console.log(err);
       }

@@ -7,6 +7,9 @@ export interface Payment {
     receipt: string
     requestedAt: string
     approvedAt: string
+    easyPay: {
+        provider: string
+    }
 }
 
 export interface receipt {

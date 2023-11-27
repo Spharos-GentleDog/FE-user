@@ -1,7 +1,7 @@
 'use client'
 import { deliveryOrdersInRequest, vendorsOrderListInRequest } from '@/data/paymentProductList';
 import ButtonPrimary from '@/shared/Button/ButtonPrimary';
-import { Payment } from '@/types/payment/payment';
+import { DeliveryOrdersInRequest, Payment } from '@/types/payment/payment';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -16,6 +16,8 @@ function PaymentSuccess() {
     const orderId = param.get('orderId')
     const amount = param.get('amount')
     const [orederNumber, setOrderNumber] = useState<string>("")
+
+    const [deliveryOrders, setDeliveryOrders] = useState<DeliveryOrdersInRequest>()
     useEffect(() => {
         const getData = async () => {
             try {
@@ -75,8 +77,9 @@ function PaymentSuccess() {
                     const result = await res.json()
 
                     if (result.code === 200) {
-                        console.log("deliveryOrdersInRequest : ", localStorage.getItem('deliveryOrdersInRequest') || '{}')
-                        console.log("vendorsOrderListInRequest : ", localStorage.getItem('vendorsOrderListInRequest') || '{}')
+                        //     console.log("deliveryOrdersInRequest : ", localStorage.getItem('deliveryOrdersInRequest') || '{}')
+                        //     console.log("vendorsOrderListInRequest : ", localStorage.getItem('vendorsOrderListInRequest') || '{}')
+                        setDeliveryOrders(JSON.parse(localStorage.getItem('deliveryOrdersInRequest') || '{}'))
 
                         fetch(`${process.env.BASE_API_URL}/api/v1/orders/user`, {
                             method: "POST",
@@ -124,23 +127,23 @@ function PaymentSuccess() {
                                 <tr className="border-b">
                                     <td className="py-2 px-4 font-semibold align-top">배송지</td>
                                     <td className="py-2 px-4">
-                                        <div className='flex'>소정완</div>
-                                        <div className='flex'>01012345678</div>
-                                        <div className='flex'>부산광역시 해운대구</div>
-                                        <div className='flex'>5202</div>
-                                        <div className='flex'>경비실에 두세요</div>
+                                        <div className='flex'>{deliveryOrders?.recipientName}</div>
+                                        <div className='flex'>{deliveryOrders?.recipientPhoneNumber}</div>
+                                        <div className='flex'>{deliveryOrders?.recipientAddress}</div>
+                                        <div className='flex'>{deliveryOrders?.entrancePassword}</div>
+                                        <div className='flex'>{deliveryOrders?.deliveryRequestMessage}</div>
                                     </td>
                                 </tr>
                                 <tr className="border-b">
                                     <td className="py-2 px-4 font-semibold align-top">결제 수단</td>
                                     <td className="py-2 px-4">
-                                        <div className='flex'>네이버페이</div>
+                                        <div className='flex'>{data?.method}{data?.easyPay.provider ? "(" + data.easyPay.provider + ")" : ""}</div>
                                         <div className='flex'></div>
                                     </td>
                                 </tr>
                                 <tr className="border-b">
                                     <td className="py-2 px-4 font-semibold align-top">총 결제금액</td>
-                                    <td className="py-2 px-4">15730000원</td>
+                                    <td className="py-2 px-4">{data?.totalAmount.toLocaleString()}원</td>
                                 </tr>
                             </tbody>
                         </table>

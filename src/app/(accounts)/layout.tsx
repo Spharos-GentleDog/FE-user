@@ -23,11 +23,11 @@ const pages: {
       link: "/account-password",
     },
     {
-      name: "주소록",
+      name: "배송지",
       link: "/account-address",
     },
     {
-      name: "Save lists",
+      name: "반려견 정보",
       link: "/account-savelists",
     },
     {

@@ -1,13 +1,11 @@
 'use client';
 
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import LikeButton from './LikeButton';
 import Prices from './Prices';
 import { ArrowsPointingOutIcon } from '@heroicons/react/24/outline';
 import { StarIcon } from '@heroicons/react/24/solid';
-import ButtonPrimary from '@/shared/Button/ButtonPrimary';
 import ButtonSecondary from '@/shared/Button/ButtonSecondary';
-import BagIcon from './BagIcon';
 import toast from 'react-hot-toast';
 import { Transition } from '@/app/headlessui';
 import ModalQuickView from './ModalQuickView';
@@ -20,6 +18,7 @@ import defaultImage from '@/images/logo-name.svg';
 import RenderColor from './RenderColor';
 import RenderSizeList from './RenderSizeList';
 import RenderGroupButtons from './RenderGroupButtons';
+import { useSession } from 'next-auth/react';
 
 export interface ProductCardProps {
   className?: string;
@@ -48,8 +47,51 @@ const ProductCard: FC<ProductCardProps> = ({
   const [variantActive, setVariantActive] = useState(0);
   const [showModalQuickView, setShowModalQuickView] = useState(false);
   const router = useRouter();
+  const session = useSession();
 
   const notifyAddTocart = ({ sizeName }: { sizeName?: string }) => {
+
+    const handleFetchAddToCart = async () => {
+      try {
+        const response = await fetch(`${process.env.BASE_API_URL}/api/v1/product/findby-color-size`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            productId: productId,
+            color: data?.colors?.[variantActive]?.colorName,
+            size: sizeName
+          }),
+        });
+
+        const detail = await response.json();
+
+        if (detail) {
+          const res = await fetch(`${process.env.BASE_API_URL}/api/v1/wish/cart`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'userEmail': `${session.data?.user.userEmail}`,
+              'Authorization': `Bearer ${session.data?.user.accessToken}`,
+            },
+            body: JSON.stringify({
+              productDetailId: detail.result.productDetailId,
+              brandName: brandName,
+              count: 1
+            }),
+          }
+          );
+          const result = await res.json();
+          // console.log(result);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    handleFetchAddToCart();
+
     toast.custom(
       (t) => (
         <Transition
@@ -169,6 +211,7 @@ const ProductCard: FC<ProductCardProps> = ({
             <RenderSizeList
               sizeName={sizes}
               notifyAddTocart={notifyAddTocart}
+
             />
           ) : (
             <RenderGroupButtons notifyAddTocart={notifyAddTocart} />
