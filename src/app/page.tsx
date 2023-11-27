@@ -2,7 +2,6 @@ import React from 'react';
 import BackgroundSection from '@/components/BackgroundSection/BackgroundSection';
 import SectionHero2 from '@/components/SectionHero/SectionHero2';
 import SectionSliderProductCard from '@/components/SectionSliderProductCard';
-import DiscoverMoreSlider from '@/components/DiscoverMoreSlider';
 import SectionGridMoreExplore from '@/components/SectionGridMoreExplore/SectionGridMoreExplore';
 import SectionGridFeatureItems from '@/components/SectionGridFeatureItems';
 import Chatbot from '@/components/Chatbot/Chatbot';
@@ -33,7 +32,7 @@ function PageHome() {
 
       </div>
       <div className="mt-24 lg:mt-32">
-        <DiscoverMoreSlider />
+        {/* <DiscoverMoreSlider /> */}
         {/* 챗봇 컴포넌트 추가 */}
         <Chatbot />
       </div>

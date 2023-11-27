@@ -50,6 +50,7 @@ function SignupDogForm() {
     // 숫자만 입력
     const [inputValues, setInputValues] = useState({
         dogAge: '',
+        dogWeight: '',
         dogBodyLength: '',
         dogLegLength: '',
         dogNeckGirth: '',
@@ -280,12 +281,16 @@ function SignupDogForm() {
                     <label className='block mb-5 relative'>
                         <div className='mt-2'>
                             <div className='w-full' onChange={handleChange} >
-                                <Select id='dogWeight' name='dogWeight' className='border-[#000000]'>
-                                    <option value="0">몸무게를 선택해 주세요.</option>
-                                    <option value="1">0kg 이상 ~ 10kg 미만</option>
-                                    <option value="2">11kg 이상 ~ 20kg 미만 </option>
-                                    <option value="3">20kg 이상</option>
-                                </Select>
+                                <Input
+                                    type='text'
+                                    placeholder='몸무게를 입력하세요.'
+                                    id='dogWeight'
+                                    name='dogWeight'
+                                    className='mt-1 border-[#000000]'
+                                    onChange={handleChange}
+                                    onInput={handleNumber}
+                                    value={inputValues.dogWeight || ''}
+                                />
                             </div>
                         </div>
                     </label>

@@ -3,5 +3,5 @@ export interface UserDataType {
     usersName: string;
     userPhoneNumber: string;
     userAge: number;
-    userGender: number;
+    userGender: string;
 }

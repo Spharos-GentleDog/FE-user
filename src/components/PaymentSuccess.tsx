@@ -1,5 +1,4 @@
 'use client'
-import { deliveryOrdersInRequest, vendorsOrderListInRequest } from '@/data/paymentProductList';
 import ButtonPrimary from '@/shared/Button/ButtonPrimary';
 import { DeliveryOrdersInRequest, Payment } from '@/types/payment/payment';
 import axios from 'axios';
