@@ -18,6 +18,18 @@ export const PathData: PathdataType[] = [
         title: '마이페이지',
     },
     {
+        path: '/account-address',
+        title: '마이페이지',
+    },
+    {
+        path: '/account-savelists',
+        title: '마이페이지',
+    },
+    {
+        path: '/account-password',
+        title: '마이페이지',
+    },
+    {
 
         path: '/signup/pet',
         title: '반려동물 정보 입력',
@@ -30,5 +42,13 @@ export const PathData: PathdataType[] = [
     {
         path: '/collection',
         title: '상품',
-    }
+    },
+    {
+        path: '/ai',
+        title: 'AI 추천',
+    },
+    {
+        path: '/ai/recommend',
+        title: 'AI 추천 결과',
+    },
 ]
