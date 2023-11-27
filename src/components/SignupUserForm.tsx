@@ -327,9 +327,9 @@ function SignupUserForm(
                 </span>
                 <div className='flex' onChange={handleChange}>
                     <Select id='gender' name='gender'>
-                        <option value="0">선택안함</option>
-                        <option value="1">남자</option>
-                        <option value="2">여자</option>
+                        <option value="NONE">선택안함</option>
+                        <option value="MAN">남자</option>
+                        <option value="FEMALE">여자</option>
                     </Select>
                 </div>
             </label>
@@ -367,16 +367,32 @@ function SignupUserForm(
                         onInput={handleNumber}
                         value={intputPhoneNumber || ''}
                     />
-                    <div className='absolute -right-0 '>
-                        <ButtonSecondary
-                            fontSize='text-[10px]'
-                            sizeClass='py-2 px-3'
-                            translate='top-[5px]'
-                            onClick={handlePhoneAuth}
-                        >
-                            휴대전화 인증
-                        </ButtonSecondary>
-                    </div>
+                    {
+                        authPhoneConfirm
+                            ?
+                            <div className='absolute -right-0 '>
+                                <ButtonSecondary
+                                    fontSize='text-[10px]'
+                                    sizeClass='py-2 px-3'
+                                    translate='top-[5px]'
+                                    onClick={handleEmailAuth}
+                                    disabled
+                                >
+                                    인증 완료
+                                </ButtonSecondary>
+                            </div>
+                            :
+                            <div className='absolute -right-0 '>
+                                <ButtonSecondary
+                                    fontSize='text-[10px]'
+                                    sizeClass='py-2 px-3'
+                                    translate='top-[5px]'
+                                    onClick={handlePhoneAuth}
+                                >
+                                    휴대전화 인증
+                                </ButtonSecondary>
+                            </div>
+                    }
                 </div>
                 {
                     authPhone ?

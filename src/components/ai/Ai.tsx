@@ -25,11 +25,18 @@ function Ai() {
           method: 'POST',
           body: formData,
         });
-        const result = await res.json();
-        console.log(result.result1);
+        const breed = await res.json();
+        const breedName = breed.result1.toLowerCase();
 
-        if (result) {
-
+        if (breed) {
+          const res = await fetch(`${process.env.BASE_API_URL}/api/v1/user/dog/breeds/eng-name/${breedName}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          const breedId = await res.json();
+          console.log(breedId);
         }
       } catch (err) {
         console.log(err);
