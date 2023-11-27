@@ -11,8 +11,6 @@ function PageHome() {
   return (
     <div className="nc-PageHome relative overflow-hidden">
       <SectionHero2 />
-      {/* make slider */}
-
       <div className="container relative space-y-24 my-24 lg:space-y-32 lg:my-32">
         <div className="relative py-24 lg:py-32">
           <BackgroundSection />

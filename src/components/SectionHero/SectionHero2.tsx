@@ -64,9 +64,9 @@ const SectionHero2: FC<SectionHero2Props> = ({ className = "" }) => {
   };
 
   const imagePaths = [
-    '/assets/images/icons/001.jpg',
-    '/assets/images/icons/002.jpg',
-    '/assets/images/icons/003.jpg',
+    '/assets/images/icons/banner01.png',
+    '/assets/images/icons/banner01.png',
+    '/assets/images/icons/banner01.png',
     // Add more image paths as needed
   ];
 
@@ -76,10 +76,6 @@ const SectionHero2: FC<SectionHero2Props> = ({ className = "" }) => {
       <div
         className={`nc-SectionHero2Item nc-SectionHero2Item--animation flex flex-col-reverse lg:flex-col relative overflow-hidden ${className}`}
       >
-        <div className="absolute bottom-4 start-1/2 -translate-x-1/2 rtl:translate-x-1/2 z-20 flex justify-center">
-          {/* ... (rest of your code) */}
-        </div>
-  
         <Prev
           className="absolute start-1 sm:start-5 top-3/4 sm:top-1/2 sm:-translate-y-1/2 z-10 !text-slate-700"
           btnClassName="w-12 h-12 hover:border-slate-400 dark:hover:border-slate-400"
@@ -93,33 +89,17 @@ const SectionHero2: FC<SectionHero2Props> = ({ className = "" }) => {
           onClickNext={handleClickNext}
         />
   
-        <div className="absolute inset-0">
-        <Image
-          fill
-          sizes="(max-width: 768px)"
-          className="w-full h-full object-cover object-right-bottom nc-SectionHero2Item__image" // Change object-contain to object-cover
-          src={item}
-          alt={`Image ${indexActive + 1}`}
-        />
-        </div>
-  
-        <div className="relative container pb-0 pt-14 sm:pt-20 lg:py-44">
-          <div
-            className={`relative z-[1] w-full max-w-3xl space-y-8 sm:space-y-14 nc-SectionHero2Item__left`}
-          >
-            {/* ... (rest of your code) */}
-          </div>
-          <div className="mt-10 lg:mt-0 lg:absolute end-0 rtl:-end-28 bottom-0 top-0 w-full max-w-2xl xl:max-w-3xl 2xl:max-w-4xl">
+          <div className="object-cover h-[400px] sm:w-screen md:h-[600px] bg-black" >
             <Image
-              fill
-              sizes="(max-width: 768px)"
-              className="w-full h-full object-cover object-right-bottom nc-SectionHero2Item__image"
+              objectFit="cover"
+              layout="fill"
+              sizes="100%"
               src={item}
               alt={`Image ${indexActive + 1}`}
             />
           </div>
         </div>
-      </div>
+     
     );
   };
   
