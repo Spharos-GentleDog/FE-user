@@ -44,7 +44,7 @@ export default function CartDropdown() {
 
         const dropdownCartId = await res.json();
         setDropdownCartId(dropdownCartId.result);
-        console.log('dropdownCartId', dropdownCartId);
+        // console.log('dropdownCartId', dropdownCartId);
       } catch (e) {
         console.error('Failed to fetch loadCartId', e);
       }

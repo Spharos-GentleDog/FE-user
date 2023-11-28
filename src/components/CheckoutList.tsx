@@ -208,7 +208,6 @@ export default function CheckoutList() {
     userName: defaultAddress?.recipientName,
     userPhoneNumber: defaultAddress?.recipientPhoneNumber,
     ordersRequestMessage: '',
-    ordersType: 1, // 실제 주문 타입에 맞는 값을 설정하세요.
     dogId: session.data?.user.dogId, // 실제 dogId에 맞는 값을 설정하세요.
     deliveryFee: brandProduct.brandDeliveryFee,
     totalPrice: brandProduct.brandTotalPrice,

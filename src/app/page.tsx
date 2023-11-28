@@ -29,9 +29,7 @@ function PageHome() {
         <SectionGridFeatureItems />
 
       </div>
-      <div className="mt-24 lg:mt-32">
-        {/* <DiscoverMoreSlider /> */}
-        {/* 챗봇 컴포넌트 추가 */}
+      <div className="mt-24 lg:mt-32 z-[9999]">
         <Chatbot />
       </div>
     </div>
