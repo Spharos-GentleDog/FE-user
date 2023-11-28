@@ -1,20 +1,78 @@
 'use client'
-import Input from '@/shared/Input/Input'
-import { useRouter } from 'next/router';
-import React, { useState } from 'react'
-import HeaderFilterSearchPage from '../HeaderFilterSearchPage';
 
+import React, { useState } from 'react';
+import Image from 'next/image';
+import defaultImage from '@/images/upload.png';
+import { useRouter } from 'next/navigation';
 
 function Ai() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const router = useRouter();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedFile(event.target.files ? event.target.files[0] : null);
   };
 
-  const handleFileUpload = () => {
+  const handleFileUpload = async () => {
     if (selectedFile) {
-      console.log('Uploading file:', HeaderFilterSearchPage);
+
+      // formData 생성
+      const formData = new FormData();
+      formData.append('img', selectedFile);
+
+      console.log('formData: ', formData.get('img'))
+      try {
+
+        const res = await fetch(`https://gentledog-ai.duckdns.org/image_predict`, {
+          method: 'POST',
+          body: formData,
+        });
+        const breed = await res.json();
+        const breedName = breed.result1.toLowerCase();
+
+        if (breed) {
+          const res = await fetch(`${process.env.BASE_API_URL}/api/v1/user/dog/breeds/eng-name/${breedName}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          const dogId = await res.json();
+
+          if (dogId) {
+            const res = await fetch(`${process.env.BASE_API_URL}/api/v1/review/find-review-dogId`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                dogIds: dogId.result
+              }),
+            });
+            const productId = await res.json();
+
+            if (productId) {
+              const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/ai-product-detail`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  productIds: productId.result.productIdsList
+                }),
+              });
+
+              const productDetail = await res.json();
+              if (productDetail) {
+                localStorage.setItem('aiProductDetail', JSON.stringify(productDetail.result));
+                router.push('/ai/recommend');
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 
@@ -23,50 +81,52 @@ function Ai() {
   };
 
   return (
-    <div className='mt-10' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '70vh' }}>
-      <Input 
-        type='file'
-        onChange={handleFileChange}
-        style={{ marginBottom: '20px' }}
-      />
-            { selectedFile && 
-        <div className='mt-10'>
-          <img src={URL.createObjectURL(selectedFile)} alt="Selected" style={{ marginTop: '20px', width: '300px', height: '300px' }}/>
+    <div className="mt-10">
+      <label className='block mb-5 relative'>
+        <div className="flex justify-center">
+          <div className="relative overflow-hidden flex">
+            <Image
+              src={selectedFile ? URL.createObjectURL(selectedFile) : defaultImage}
+              alt="dogImage"
+              width={300}
+              height={300}
+              className="w-300 h-300 mx-auto"
+            />
+            {
+              selectedFile ?
+                ""
+                :
+                <div className="absolute inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center text-neutral-50 cursor-pointer">
+                </div>
+            }
+            <input
+              type='file'
+              id='dogImage'
+              name='dogImage'
+              className='hidden'
+              onChange={handleFileChange}
+              accept='image/jpg'
+            />
+          </div>
         </div>
-      }
-      <br></br>
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginBottom: '20px' }}>
-      <button 
-        onClick={handleFileUpload}
-        style={{
-            backgroundColor: '#000000', 
-            color: 'white', 
-            padding: '10px 20px', 
-            border: 'none', 
-            cursor: 'pointer', 
-            borderRadius: '20px',
-            marginRight: '50px'  // 오른쪽 여백을 추가하여 다음 버튼과의 간격을 띄웁니다.
-        }}
+      </label>
+      <br />
+      <div className="flex justify-center gap-[10px] mb-5">
+        <button
+          onClick={handleFileUpload}
+          className="bg-black text-white px-5 py-[10px] border-none cursor-pointer rounded-3xl mr-50"
         >
-        Upload
-       </button>
-       <button 
-        onClick={handleFileDelete} 
-        style={{
-            backgroundColor: '#ffffff', 
-            color: 'black', 
-            padding: '10px 20px', 
-            border: '2px solid black',
-            cursor: 'pointer',
-            borderRadius: '20px'
-        }}
-        >
-        Delete
+          Upload
         </button>
-
+        <button
+          onClick={handleFileDelete}
+          className="bg-white text-black px-5 py-[10px] border-2 border-black cursor-pointer rounded-3xl"
+        >
+          Delete
+        </button>
       </div>
     </div>
-  )
+  );
 }
 
-export default Ai
+export default Ai;

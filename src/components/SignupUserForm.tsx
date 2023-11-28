@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ButtonSecondary from '@/shared/Button/ButtonSecondary'
 import Input from '@/shared/Input/Input'
 import Select from '@/shared/Select/Select'
@@ -126,14 +126,13 @@ function SignupUserForm(
             })
         }
     }
-
-    // cors 
-    const messageService = new coolsms("NCSMAKYXI7OJI1SK", "V69IIMIHQSOTKLMJ4XHMHCIWHUT43FKR");
+    const messageService = new coolsms(process.env.COOLSMS_API_KEY as string, process.env.COOLSMS_API_SECRET as string);
     const [randomNumber, setRandomNumber] = useState<number>(0);
+    const newRandomNumber = Math.floor(100000 + Math.random() * 900000);
+
     // 휴대폰 인증
     const handlePhoneAuth = async () => {
-        setRandomNumber(Math.floor(1000 + Math.random() * 9000));
-
+        console.log(randomNumber);
         if (signup.phoneNumber === '') {
             setSignupError({
                 ...signupError,
@@ -141,13 +140,12 @@ function SignupUserForm(
             })
             return;
         }
-
         try {
             const result = await messageService.sendOne({
                 to: signup.phoneNumber,
                 from: '01049126545',
                 text: `[젠틀독] 인증번호 [${randomNumber}]를 입력해주세요.`,
-                autoTypeDetect: false
+                autoTypeDetect: true,
             })
                 .then((result: any) => {
                     console.log(result);
@@ -162,13 +160,13 @@ function SignupUserForm(
     }
 
     const handleAuthPhoneCheck = async () => {
-        if (signup.authPhone === '') {
+        if (signup.authPhone === "") {
             setSignupError({
                 ...signupError,
                 authNumber: '인증번호를 입력해주세요.'
             })
             return;
-        } else if (signup.authPhone !== randomNumber) {
+        } else if (signup.authPhone != randomNumber) {
             setSignupError({
                 ...signupError,
                 authNumber: '인증번호가 일치하지 않습니다.'
@@ -176,8 +174,7 @@ function SignupUserForm(
             return;
         }
 
-        if (signup.authPhone === randomNumber) {
-
+        if (signup.authPhone == randomNumber) {
             setAuthPhone(false);
             setAuthPhoneConfirm(true);
         }
@@ -196,6 +193,9 @@ function SignupUserForm(
         }
     }
 
+    useEffect(() => {
+        setRandomNumber(newRandomNumber)
+    }, [])
     return (
         <>
             <label className='block relative'>
@@ -327,9 +327,9 @@ function SignupUserForm(
                 </span>
                 <div className='flex' onChange={handleChange}>
                     <Select id='gender' name='gender'>
-                        <option value="0">선택안함</option>
-                        <option value="1">남자</option>
-                        <option value="2">여자</option>
+                        <option value="NONE">선택안함</option>
+                        <option value="MAN">남자</option>
+                        <option value="FEMALE">여자</option>
                     </Select>
                 </div>
             </label>
@@ -367,16 +367,32 @@ function SignupUserForm(
                         onInput={handleNumber}
                         value={intputPhoneNumber || ''}
                     />
-                    <div className='absolute -right-0 '>
-                        <ButtonSecondary
-                            fontSize='text-[10px]'
-                            sizeClass='py-2 px-3'
-                            translate='top-[5px]'
-                            onClick={handlePhoneAuth}
-                        >
-                            휴대전화 인증
-                        </ButtonSecondary>
-                    </div>
+                    {
+                        authPhoneConfirm
+                            ?
+                            <div className='absolute -right-0 '>
+                                <ButtonSecondary
+                                    fontSize='text-[10px]'
+                                    sizeClass='py-2 px-3'
+                                    translate='top-[5px]'
+                                    onClick={handleEmailAuth}
+                                    disabled
+                                >
+                                    인증 완료
+                                </ButtonSecondary>
+                            </div>
+                            :
+                            <div className='absolute -right-0 '>
+                                <ButtonSecondary
+                                    fontSize='text-[10px]'
+                                    sizeClass='py-2 px-3'
+                                    translate='top-[5px]'
+                                    onClick={handlePhoneAuth}
+                                >
+                                    휴대전화 인증
+                                </ButtonSecondary>
+                            </div>
+                    }
                 </div>
                 {
                     authPhone ?

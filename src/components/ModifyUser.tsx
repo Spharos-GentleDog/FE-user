@@ -20,7 +20,7 @@ function ModifyUser() {
         usersName: "",
         userPhoneNumber: "",
         userAge: 0,
-        userGender: 0
+        userGender: ""
     });
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -140,10 +140,10 @@ function ModifyUser() {
                         </div>
                         <div onChange={handleChange}>
                             <Label>성별</Label>
-                            <Select onChange={() => handleChange} className="mt-1.5" value={userModify ? userModify.userGender : 0} name='userGender' id='userGender'>
-                                <option value='0'>모름</option>
-                                <option value="1">남자</option>
-                                <option value="2">여자</option>
+                            <Select onChange={() => handleChange} className="mt-1.5" value={userModify ? userModify.userGender : "NONE"} name='userGender' id='userGender'>
+                                <option value='NONE'>모름</option>
+                                <option value="MAN">남자</option>
+                                <option value="FEMALE">여자</option>
                             </Select>
                         </div>
                         <div className="pt-2">

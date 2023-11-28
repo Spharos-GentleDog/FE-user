@@ -4,7 +4,7 @@ import Input from '@/shared/Input/Input'
 import Select from '@/shared/Select/Select'
 import React, { useEffect, useState } from 'react'
 import ColorPalette from './ColorPalette'
-import { SignupDogDataType } from '@/types/formDataType'
+import { DogBreedsType, SignupDogDataType } from '@/types/formDataType'
 import ButtonPrimary from '@/shared/Button/ButtonPrimary'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -50,6 +50,7 @@ function SignupDogForm() {
     // 숫자만 입력
     const [inputValues, setInputValues] = useState({
         dogAge: '',
+        dogWeight: '',
         dogBodyLength: '',
         dogLegLength: '',
         dogNeckGirth: '',
@@ -142,6 +143,20 @@ function SignupDogForm() {
         }
     }
 
+    const [dogBreeds, setDogBreeds] = useState<DogBreedsType[]>([]);
+    useEffect(() => {
+        const getDatas = async () => {
+            const res = await fetch(`${process.env.BASE_API_URL}/api/v1/user/dog/breeds`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            const result = await res.json();
+            setDogBreeds(result.result);
+        }
+        getDatas();
+    }, [])
 
     useEffect((): void => {
         if (file !== null) {
@@ -167,8 +182,8 @@ function SignupDogForm() {
                                 <Image
                                     src={preview ? preview : defaultImage}
                                     alt="dogImage"
-                                    width={200}
-                                    height={200}
+                                    width={1920}
+                                    height={1080}
                                     className="w-40 h-40 rounded-full object-cover z-0"
                                 />
                                 {
@@ -252,11 +267,13 @@ function SignupDogForm() {
                         <div className='mt-2'>
                             <div className='w-full' onChange={handleChange}>
                                 <Select id='dogBreed' name='dogBreed' className='border-[#000000]'>
-                                    <option value="0">견종을 선택해 주세요.</option>
-                                    <option value="1">모름</option>
-                                    <option value="2">종류1</option>
-                                    <option value="3">종류2</option>
-                                    <option value="4">종류3</option>
+                                    <option>견종을 선택해 주세요.</option>
+                                    {
+                                        dogBreeds &&
+                                        dogBreeds.map((breed) => (
+                                            <option key={breed.id} value={breed.id}>{breed.dogBreedKorName}</option>
+                                        ))
+                                    }
                                 </Select>
                             </div>
                         </div>
@@ -264,12 +281,16 @@ function SignupDogForm() {
                     <label className='block mb-5 relative'>
                         <div className='mt-2'>
                             <div className='w-full' onChange={handleChange} >
-                                <Select id='dogWeight' name='dogWeight' className='border-[#000000]'>
-                                    <option value="0">몸무게를 선택해 주세요.</option>
-                                    <option value="1">0kg 이상 ~ 10kg 미만</option>
-                                    <option value="2">11kg 이상 ~ 20kg 미만 </option>
-                                    <option value="3">20kg 이상</option>
-                                </Select>
+                                <Input
+                                    type='text'
+                                    placeholder='몸무게를 입력하세요.'
+                                    id='dogWeight'
+                                    name='dogWeight'
+                                    className='mt-1 border-[#000000]'
+                                    onChange={handleChange}
+                                    onInput={handleNumber}
+                                    value={inputValues.dogWeight || ''}
+                                />
                             </div>
                         </div>
                     </label>

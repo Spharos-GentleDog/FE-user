@@ -7,6 +7,9 @@ export interface Payment {
     receipt: string
     requestedAt: string
     approvedAt: string
+    easyPay: {
+        provider: string
+    }
 }
 
 export interface receipt {
@@ -35,7 +38,7 @@ export interface vendorsOrderListInRequest {
     vendorEmail: string,
     brandName: string,
     brandLogoImageUrl: string,
-    userEmail: string,
+    userName: string,
     userPhoneNumber: string,
     ordersRequestMessage: string,
     ordersType: number,

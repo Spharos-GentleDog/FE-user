@@ -20,6 +20,9 @@ function ColorPalette(
     const onChangeComplete = (color: any) => {
         setColor(color.hex);
     }
+
+
+
     return (
         <>
             {
@@ -32,7 +35,7 @@ function ColorPalette(
                             color={color}
                             onChangeComplete={(color) => onChangeComplete(color)}
                         />
-                        <div className='flex absolute bottom-2 gap-2 w-full'>
+                        {/* <div className='flex absolute bottom-2 gap-2 w-full'>
                             <ButtonSecondary
                                 className='w-1/2 ml-1'
                                 fontSize='text-[13px]'
@@ -49,7 +52,7 @@ function ColorPalette(
                             >
                                 close
                             </ButtonSecondary>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             }

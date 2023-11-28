@@ -1,24 +1,19 @@
 'use client';
 
 import ShippingAddress from '@/components/Checkout/ShippingAddress';
-import Label from '@/components/Label/Label';
 import { paymentProductList } from '@/data/paymentProductList';
 import ButtonPrimary from '@/shared/Button/ButtonPrimary';
-import Input from '@/shared/Input/Input';
-import { PaymentByProductList } from '@/types/payment/payment';
+import { DeliveryOrdersInRequest, PaymentByProductList, vendorsOrderListInRequest } from '@/types/payment/payment';
 import {
-  CheckoutBrandProductsType,
   CheckoutPriceType,
   orderProductInfoListDtoType,
 } from '@/types/productType';
-import { applyDiscounts } from '@/utils/applyDiscounts';
-import { groupProductsByBrand } from '@/utils/groupProductsByBrand';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import Payment from './Payment';
 import RenderProduct2 from './RenderProduct2';
 import Icon from './Icon';
-import { BrandProductCartDto, CartIdType } from '@/types/cartType';
+import { CartIdType } from '@/types/cartType';
 import { AddressType } from '@/types/userType';
 
 /**
@@ -31,9 +26,9 @@ export default function CheckoutList() {
   const userEmail = session?.data?.user.userEmail;
 
   const [cartId, setCartId] = useState<CartIdType>();
-  const [paymentProduct, setPaymentProduct] = useState<PaymentByProductList[]>(
-    []
-  ); // 결제할 상품들
+  const [paymentProduct, setPaymentProduct] = useState<PaymentByProductList[]>([]); // 결제할 상품들
+  const [delivery, setDelivery] = useState<DeliveryOrdersInRequest>();
+  const [order, setOrder] = useState<vendorsOrderListInRequest[]>([]);
   const [paymentClicked, setPaymentClicked] = useState(false);
   // 페칭 후 저장할 가격 정보
   const [price, setPrice] = useState<CheckoutPriceType>();
@@ -190,68 +185,56 @@ export default function CheckoutList() {
     }, 80);
   };
 
-  const orderList = {
-    deliveryOrdersInRequestDto: {
-      recipientName: defaultAddress.recipientName,
-      recipientAddress: defaultAddress.userAddress,
-      recipientPhoneNumber: defaultAddress.recipientPhoneNumber,
-      entrancePassword: defaultAddress.entrancePassword,
-      deliveryRequestMessage: defaultAddress.addressRequestMessage,
-    },
-    vendorsOrderListInRequestDto: [
-      cartBrandProducts &&
-        cartBrandProducts.map((brandProduct) => ({
-          vendorEmail: brandProduct.vendorEmail,
-          brandName: brandProduct.brandName,
-          brandLogoImageUrl: '', // 실제 이미지 URL이 필요합니다.
-          userEmail: userEmail,
-          userName: defaultAddress?.recipientName,
-          userPhoneNumber: defaultAddress?.recipientPhoneNumber,
-          ordersRequestMessage: '',
-          ordersType: 1, // 실제 주문 타입에 맞는 값을 설정하세요.
-          dogId: 3, // 실제 dogId에 맞는 값을 설정하세요.
-          deliveryFee: brandProduct.brandDeliveryFee,
-          totalPrice: brandProduct.brandTotalPrice,
-          orderDetailList: brandProduct.orderProductInfoDto.map((product) => ({
-            productId: product.productId,
-            productDetailId: product.productDetailId,
-            productName: product.productName,
-            productStock: product.count,
-            productPrice: product.productPrice,
-            productSize: product.size,
-            productColor: product.color,
-            productOrderStatus: 'ORDERS', // 상태 설정
-            productDiscountRate: product.discountRate || 0,
-            productImageUrl: product.imgUrl,
-            couponId: 0, // 쿠폰 ID 설정, 없는 경우 0
-            couponDiscountPrice: 0, // 쿠폰 할인 가격, 없는 경우 0
-          })),
-        })),
-    ],
-  };
 
-  const paymentList = {
-    paymentKey: '200',
-    paymentMethod: 'CARD',
-    paymentStatus: 'DONE',
-    paymentTotalAmount: price?.totalPrice,
-    isPartial: false,
-    receipt_url: 'https://naver.com',
-    balanceAmount: price?.totalPrice,
-    requestedAt: '2021-10-13T15:00:00',
-    approvedAt: '2021-10-13T15:00:00',
-    usedPoint: 0,
-    productPaymentList: cartBrandProducts?.flatMap((brandProduct) =>
-      brandProduct.orderProductInfoDto.map((product) => ({
-        vendorEmail: product.vendorEmail, // 여기에 적절한 값 필요
-        productName: product.productName,
-        productCode: product.productCode, // 여기에 적절한 값 필요
-        productMainImageUrl: product.imgUrl,
-        productAmount: product.productPrice,
-        count: product.count,
-      }))
-    ),
-  };
+  const deliveryOrdersInRequest = {
+    recipientName: defaultAddress.recipientName,
+    recipientAddress: defaultAddress.userAddress,
+    recipientPhoneNumber: defaultAddress.recipientPhoneNumber,
+    entrancePassword: defaultAddress.entrancePassword,
+    deliveryRequestMessage: defaultAddress.addressRequestMessage,
+  }
+
+  console.log('deliveryOrdersInRequest', deliveryOrdersInRequest)
+
+  const vendorsOrderList = cartBrandProducts?.map((brandProduct) => ({
+    vendorEmail: brandProduct.vendorEmail || '',
+    brandName: brandProduct.brandName,
+    brandLogoImageUrl: '', // 실제 이미지 URL이 필요합니다.
+    userName: defaultAddress?.recipientName,
+    userPhoneNumber: defaultAddress?.recipientPhoneNumber,
+    ordersRequestMessage: '',
+    ordersType: 1, // 실제 주문 타입에 맞는 값을 설정하세요.
+    dogId: session.data?.user.dogId, // 실제 dogId에 맞는 값을 설정하세요.
+    deliveryFee: brandProduct.brandDeliveryFee,
+    totalPrice: brandProduct.brandTotalPrice,
+    orderDetailList: brandProduct.orderProductInfoDto.map((product) => ({
+      productId: product.productId,
+      productDetailId: product.productDetailId,
+      productName: product?.productName || '',
+      productStock: product.count,
+      productPrice: product.productPrice,
+      productSize: product.size,
+      productColor: product.color,
+      productOrderStatus: 'ORDERS', // 상태 설정
+      productDiscountRate: product.discountRate || 0,
+      productImageUrl: product.imgUrl,
+      couponId: 0, // 쿠폰 ID 설정, 없는 경우 0
+      couponDiscountPrice: 0, // 쿠폰 할인 가격, 없는 경우 0
+    })),
+  }))
+
+  console.log('vendorsOrderList', vendorsOrderList)
+
+  const paymentList = cartBrandProducts?.flatMap((brandProduct) =>
+    brandProduct.orderProductInfoDto.map((product) => ({
+      vendorEmail: product.vendorEmail, // 여기에 적절한 값 필요
+      productName: product.productName,
+      productCode: product.productCode, // 여기에 적절한 값 필요
+      productMainImageUrl: product.imgUrl,
+      productAmount: product.productPrice,
+      count: product.count,
+    }))
+  );
 
   // /@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   // price의 경우 아래와 같은 형태로 데이터가 들어옵니다.
@@ -267,12 +250,27 @@ export default function CheckoutList() {
   const handlePayment = (data: boolean) => {
     if (session.status === 'authenticated') {
       setPaymentClicked(data);
-      setPrice(242000);
-      setPaymentProduct(paymentProductList);
-      localStorage.setItem(
-        'paymentProduct',
-        JSON.stringify(paymentProductList)
-      );
+
+      if (paymentList && deliveryOrdersInRequest && vendorsOrderList) {
+        setPaymentProduct(paymentList);
+        console.log('deliveryOrdersInRequest', deliveryOrdersInRequest);
+        console.log('vendorsOrderList', vendorsOrderList);
+
+        localStorage.setItem(
+          'paymentProduct',
+          JSON.stringify(paymentList)
+        );
+
+        localStorage.setItem(
+          'deliveryOrdersInRequest',
+          JSON.stringify(deliveryOrdersInRequest)
+        );
+
+        localStorage.setItem(
+          'vendorsOrderListInRequest',
+          JSON.stringify(vendorsOrderList)
+        );
+      }
     } else {
       // todo: 비회원 결제 하기 위한 페이지로 이동
       alert('로그인이 필요합니다.');
@@ -301,7 +299,7 @@ export default function CheckoutList() {
             setPaymentClicked={setPaymentClicked}
             paymentProduct={paymentProduct}
             // price={parseInt(checkoutInfo.totalPriceString.replace(/[₩,]/g, ""))}
-            price={price}
+            price={price?.totalPrice || 0}
           />
         </div>
       </div>
