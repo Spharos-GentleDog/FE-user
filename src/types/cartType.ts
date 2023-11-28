@@ -66,3 +66,15 @@ export interface ProductCartDto {
 export interface BrandProductCartDto {
   [brand: string]: ProductCartDto[];
 }
+
+export interface CheckCartType {
+  productDetailId: number;
+  count: number;
+  checked: boolean;
+  productInCartId: number;
+}
+
+export interface DropdownCartType {
+  cart: CheckCartType[];
+  totalCount: number;
+}
