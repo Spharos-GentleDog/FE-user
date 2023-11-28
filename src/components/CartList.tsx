@@ -130,7 +130,7 @@ export default function CartList() {
 
         const cartId = await res.json();
         setCartId(cartId.result.cart);
-        // console.log('cartId', cartId.result.cart);
+        console.log('cartId', cartId.result.cart);
       } catch (e) {
         console.error('Failed to fetch loadCartId', e);
       }
@@ -169,12 +169,13 @@ export default function CartList() {
         if (!res.ok) throw new Error(res.statusText);
 
         const cartProducts = await res.json();
+        console.log('cartProducts', cartProducts);
         const formated = formatProducts(
           cartProducts.result.productDetailBrandDtoList
         );
-        // console.log('cartProducts', cartProducts);
+        console.log('cartProducts', cartProducts);
         setCartProducts(formated);
-        // console.log('formated', formated);
+        console.log('formated', formated);
       } catch (e) {
         console.error('Failed to fetch cart products', e);
       }
@@ -341,24 +342,24 @@ export default function CartList() {
   };
 
   /**  개별 체크박스 상태에 따라 전체 선택 체크박스 상태 갱신*/
-  // useEffect(() => {
-  //   if (cartBrandProducts) {
-  //     // 브랜드별 체크 상태 업데이트
-  //     const newIsBrandChecked: Record<string, boolean> = {};
-  //     Object.keys(cartBrandProducts).forEach((brandName) => {
-  //       newIsBrandChecked[brandName] = cartBrandProducts[brandName].every(
-  //         (product) => product.checked
-  //       );
-  //     });
-  //     setIsBrandChecked(newIsBrandChecked);
+  useEffect(() => {
+    if (cartBrandProducts) {
+      // 브랜드별 체크 상태 업데이트
+      const newIsBrandChecked: Record<string, boolean> = {};
+      Object.keys(cartBrandProducts).forEach((brandName) => {
+        newIsBrandChecked[brandName] = cartBrandProducts[brandName].every(
+          (product) => product.checked
+        );
+      });
+      setIsBrandChecked(newIsBrandChecked);
 
-  //     // 전체 선택 체크박스 상태 업데이트
-  //     const allChecked = Object.values(cartBrandProducts)
-  //       .flat()
-  //       .every((product) => product.checked);
-  //     setIsAllChecked(allChecked);
-  //   }
-  // }, [cartBrandProducts]);
+      // 전체 선택 체크박스 상태 업데이트
+      const allChecked = Object.values(cartBrandProducts)
+        .flat()
+        .every((product) => product.checked);
+      setIsAllChecked(allChecked);
+    }
+  }, [cartBrandProducts]);
 
   /** 체크된 상품들 삭제 핸들러 */
   const handleCheckedDelete = (cartBrandProducts: CartBrandProductsType) => {
@@ -375,8 +376,42 @@ export default function CartList() {
   };
 
   /** 개별 상품 삭제 헨들러 */
-  const handleItemDelete = (productDetailId: number) => {
-    // console.log(productDetailId);
+  const handleItemDelete = async (productInCartId: number) => {
+    try {
+      const res = await fetch(
+        `${process.env.BASE_API_URL}/api/v1/wish/cart/${productInCartId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            userEmail: userEmail,
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!res.ok) throw new Error('Failed to delete product');
+
+      // 클라이언트 사이드에서 상품 제거 및 브랜드 확인
+      setCartBrandProducts((prevState) => {
+        const newState = { ...prevState };
+
+        for (const brand in newState) {
+          // 상품 제거
+          newState[brand] = newState[brand].filter(
+            (product) => product.productInCartId !== productInCartId
+          );
+
+          // 해당 브랜드의 모든 상품이 삭제되었는지 확인
+          if (newState[brand].length === 0) {
+            delete newState[brand]; // 브랜드 삭제
+          }
+        }
+
+        return newState;
+      });
+    } catch (error) {
+      console.error('Error deleting product', error);
+    }
   };
 
   // 페칭 전 정리(임시)
@@ -444,14 +479,16 @@ export default function CartList() {
     <>
       <div className="w-full md:w-[60%] xl:w-[55%] ">
         <div className="flex justify-between">
-          <Checkbox
-            name="cart-all"
-            label="전체 선택"
-            labelClassName="text-lg font-bold"
-            className="mb-4 flex items-center"
-            isChecked={isAllChecked}
-            onChange={(checked) => handleAllCheck(checked)}
-          />
+          {cartBrandProducts && Object.keys(cartBrandProducts).length > 0 && (
+            <Checkbox
+              name="cart-all"
+              label="전체 선택"
+              labelClassName="text-lg font-bold"
+              className="mb-4 flex items-center"
+              isChecked={isAllChecked}
+              onChange={(checked) => handleAllCheck(checked)}
+            />
+          )}
           {/* todo: 선택 삭제 */}
           {/* <button
             className="flex"
@@ -495,7 +532,7 @@ export default function CartList() {
                   onCountChange={(newCount) =>
                     handleCountChange(item.productDetailId, newCount)
                   }
-                  onItemDelete={() => handleItemDelete(item.productDetailId)}
+                  onItemDelete={() => handleItemDelete(item.productInCartId)}
                 />
               ))}
             </div>

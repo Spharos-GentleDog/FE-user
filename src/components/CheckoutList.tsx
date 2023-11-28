@@ -1,8 +1,8 @@
 'use client';
 
 import ShippingAddress from '@/components/Checkout/ShippingAddress';
+import { paymentProductList } from '@/data/paymentProductList';
 import ButtonPrimary from '@/shared/Button/ButtonPrimary';
-import { CartIdType } from '@/types/cartType';
 import {
   DeliveryOrdersInRequest,
   PaymentByProductList,
@@ -12,12 +12,13 @@ import {
   CheckoutPriceType,
   orderProductInfoListDtoType,
 } from '@/types/productType';
-import { AddressType } from '@/types/userType';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import Icon from './Icon';
 import Payment from './Payment';
 import RenderProduct2 from './RenderProduct2';
+import Icon from './Icon';
+import { CartIdType } from '@/types/cartType';
+import { AddressType } from '@/types/userType';
 
 /**
  * 장바구니 상품 출력
@@ -239,6 +240,14 @@ export default function CheckoutList() {
       count: product.count,
     }))
   );
+
+  // /@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  // price의 경우 아래와 같은 형태로 데이터가 들어옵니다.
+  // "originalTotalPrice": 148000,
+  //         "deliveryFee": 3000,
+  //         "discountTotal": 0,
+  //         "totalPrice": 151000,
+  // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
   /**
    * 결제하기 버튼 클릭

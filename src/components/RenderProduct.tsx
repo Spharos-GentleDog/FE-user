@@ -48,7 +48,7 @@ export default function RenderProduct({
         <button
           className="flex"
           onClick={() =>
-            onItemDelete && onItemDelete(item.productDetailId as number)
+            onItemDelete && onItemDelete(item.productInCartId as number)
           }
         >
           <XMarkIcon className="w-6" />

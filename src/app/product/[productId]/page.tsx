@@ -130,22 +130,23 @@ const Product = ({}) => {
   // 장바구니 추가
   async function addCart() {
     try {
-      const res = await fetch(
-        `${process.env.BASE_API_URL}/api/v1/product/wish/cart`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            userEmail: userEmail,
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            productDetailId: DetailId,
-            brandName: product?.brandName,
-            count: qualitySelected,
-          }),
-        }
-      );
+      console.log('DetailId', DetailId);
+      console.log('product?.brandName', product?.brandName);
+      console.log('qualitySelected', qualitySelected);
+      const res = await fetch(`${process.env.BASE_API_URL}/api/v1/wish/cart`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          userEmail: userEmail,
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          productDetailId: DetailId,
+          brandName: product?.brandName,
+          count: qualitySelected,
+        }),
+      });
+      console.log('res', res);
     } catch (error) {
       console.log(error);
     }

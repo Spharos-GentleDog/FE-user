@@ -11,7 +11,7 @@ import Link from 'next/link';
 import Icon from '../Icon';
 import RenderProduct3 from '../RenderProduct3';
 import { useSession } from 'next-auth/react';
-import { CartType, ProductCartType } from '@/types/cartType';
+import { CartType, DropdownCartType, ProductCartType } from '@/types/cartType';
 
 /**
  * 드롭다운 장바구니
@@ -21,13 +21,14 @@ export default function CartDropdown() {
   const token = session?.data?.user.accessToken;
   const userEmail = session?.data?.user.userEmail;
   const [cartId, setCartId] = useState<ProductCartType[]>();
+  const [dropdownCartId, setDropdownCartId] = useState<DropdownCartType>();
 
   // 장바구니 정보 가져오기
   useEffect(() => {
     async function loadCartId() {
       try {
         const res = await fetch(
-          `${process.env.BASE_API_URL}/api/v1/wish/cart`,
+          `${process.env.BASE_API_URL}/api/v1/wish/cart/checked`,
           {
             method: 'GET',
             headers: {
@@ -39,9 +40,9 @@ export default function CartDropdown() {
         );
         if (!res.ok) throw new Error(res.statusText);
 
-        const cartId = await res.json();
-        setCartId(cartId.result.cart);
-        // console.log('cartId', cartId.result.cart);
+        const dropdownCartId = await res.json();
+        setDropdownCartId(dropdownCartId.result);
+        console.log('dropdownCartId', dropdownCartId);
       } catch (e) {
         console.error('Failed to fetch loadCartId', e);
       }
@@ -61,12 +62,11 @@ export default function CartDropdown() {
                 ${open ? '' : 'text-opacity-90'}
                  group w-10 h-10 sm:w-12 sm:h-12 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full inline-flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 relative`}
           >
-            <div className="w-3.5 h-3.5 flex items-center justify-center bg-primary-500 absolute top-1.5 right-1.5 rounded-full text-[10px] leading-none text-white font-medium">
-              <span className="mt-[1px]">
-                {/* todo: 상품의 개수 표시 실제 페칭 핖요 */}
-                {cartId && Object.keys(cartId).length}
-              </span>
-            </div>
+            {dropdownCartId && (
+              <div className="w-3.5 h-3.5 flex items-center justify-center bg-primary-500 absolute top-1.5 right-1.5 rounded-full text-[10px] leading-none text-white font-medium">
+                <span className="mt-[1px]">{dropdownCartId.totalCount}</span>
+              </div>
+            )}
             <Icon type="cart" />
 
             <Link className="block md:hidden absolute inset-0" href={'/cart'} />
