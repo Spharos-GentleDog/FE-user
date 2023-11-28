@@ -2,23 +2,20 @@
 
 import ButtonPrimary from '@/shared/Button/ButtonPrimary';
 import Checkbox from '@/shared/Checkbox/Checkbox';
-import { CartBrandProductsType, CartProductType } from '@/types/productType';
-import { applyDiscounts } from '@/utils/applyDiscounts';
-import { groupProductsByBrand } from '@/utils/groupProductsByBrand';
-import { useEffect, useState } from 'react';
-import Icon from './Icon';
-import RenderProduct from './RenderProduct';
-import { useSession } from 'next-auth/react';
 import {
   BrandCartType,
   BrandProductCartDto,
   BrandProductDto,
   CartIdType,
-  CartType,
-  ProductCartType,
 } from '@/types/cartType';
+import { CartBrandProductsType, CartProductType } from '@/types/productType';
+import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import Icon from './Icon';
+import RenderProduct from './RenderProduct';
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 브랜드 체크 박스 수정@@@@@@@@@@@@@@@@@
+// 삭제 로직 수정
 
 /**
  * 장바구니 상품 출력
@@ -119,7 +116,7 @@ export default function CartList() {
     async function loadCartId() {
       try {
         const res = await fetch(
-          'https://gentledog-back.duckdns.org/api/v1/wish/cart',
+          `${process.env.BASE_API_URL}/api/v1/wish/cart`,
           {
             method: 'GET',
             headers: {
@@ -158,7 +155,7 @@ export default function CartList() {
          * 장바구니 상품 정보
          */
         const res = await fetch(
-          'https://gentledog-back.duckdns.org/api/v1/product/find-product-detail',
+          `${process.env.BASE_API_URL}/api/v1/product/find-product-detail`,
           {
             method: 'POST',
             headers: {
@@ -231,7 +228,7 @@ export default function CartList() {
         // console.log('productInCartId', productInCartId);
         // console.log('checked', checked);
         const res = await fetch(
-          'https://gentledog-back.duckdns.org/api/v1/wish/cart/checked',
+          `${process.env.BASE_API_URL}/api/v1/wish/cart/checked`,
           {
             method: 'PUT',
             headers: {
@@ -289,7 +286,7 @@ export default function CartList() {
     async function brandcheckboxfetch() {
       try {
         const res = await fetch(
-          'https://gentledog-back.duckdns.org/api/v1/wish/cart/checked',
+          `${process.env.BASE_API_URL}/api/v1/wish/cart/checked`,
           {
             method: 'PUT',
             headers: {

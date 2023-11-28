@@ -1,20 +1,23 @@
 'use client';
 
 import ShippingAddress from '@/components/Checkout/ShippingAddress';
-import { paymentProductList } from '@/data/paymentProductList';
 import ButtonPrimary from '@/shared/Button/ButtonPrimary';
-import { DeliveryOrdersInRequest, PaymentByProductList, vendorsOrderListInRequest } from '@/types/payment/payment';
+import { CartIdType } from '@/types/cartType';
+import {
+  DeliveryOrdersInRequest,
+  PaymentByProductList,
+  vendorsOrderListInRequest,
+} from '@/types/payment/payment';
 import {
   CheckoutPriceType,
   orderProductInfoListDtoType,
 } from '@/types/productType';
+import { AddressType } from '@/types/userType';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import Icon from './Icon';
 import Payment from './Payment';
 import RenderProduct2 from './RenderProduct2';
-import Icon from './Icon';
-import { CartIdType } from '@/types/cartType';
-import { AddressType } from '@/types/userType';
 
 /**
  * 장바구니 상품 출력
@@ -26,7 +29,9 @@ export default function CheckoutList() {
   const userEmail = session?.data?.user.userEmail;
 
   const [cartId, setCartId] = useState<CartIdType>();
-  const [paymentProduct, setPaymentProduct] = useState<PaymentByProductList[]>([]); // 결제할 상품들
+  const [paymentProduct, setPaymentProduct] = useState<PaymentByProductList[]>(
+    []
+  ); // 결제할 상품들
   const [delivery, setDelivery] = useState<DeliveryOrdersInRequest>();
   const [order, setOrder] = useState<vendorsOrderListInRequest[]>([]);
   const [paymentClicked, setPaymentClicked] = useState(false);
@@ -81,7 +86,7 @@ export default function CheckoutList() {
     async function loadCartId() {
       try {
         const res = await fetch(
-          'https://gentledog-back.duckdns.org/api/v1/wish/cart',
+          `${process.env.BASE_API_URL}/api/v1/wish/cart`,
           {
             method: 'GET',
             headers: {
@@ -115,7 +120,7 @@ export default function CheckoutList() {
          * 장바구니 상품 정보
          */
         const res = await fetch(
-          'https://gentledog-back.duckdns.org/api/v1/product/order-product-info',
+          `${process.env.BASE_API_URL}/api/v1/product/order-product-info`,
           {
             method: 'POST',
             headers: {
@@ -185,16 +190,15 @@ export default function CheckoutList() {
     }, 80);
   };
 
-
   const deliveryOrdersInRequest = {
     recipientName: defaultAddress.recipientName,
     recipientAddress: defaultAddress.userAddress,
     recipientPhoneNumber: defaultAddress.recipientPhoneNumber,
     entrancePassword: defaultAddress.entrancePassword,
     deliveryRequestMessage: defaultAddress.addressRequestMessage,
-  }
+  };
 
-  console.log('deliveryOrdersInRequest', deliveryOrdersInRequest)
+  console.log('deliveryOrdersInRequest', deliveryOrdersInRequest);
 
   const vendorsOrderList = cartBrandProducts?.map((brandProduct) => ({
     vendorEmail: brandProduct.vendorEmail || '',
@@ -221,9 +225,9 @@ export default function CheckoutList() {
       couponId: 0, // 쿠폰 ID 설정, 없는 경우 0
       couponDiscountPrice: 0, // 쿠폰 할인 가격, 없는 경우 0
     })),
-  }))
+  }));
 
-  console.log('vendorsOrderList', vendorsOrderList)
+  console.log('vendorsOrderList', vendorsOrderList);
 
   const paymentList = cartBrandProducts?.flatMap((brandProduct) =>
     brandProduct.orderProductInfoDto.map((product) => ({
@@ -235,14 +239,6 @@ export default function CheckoutList() {
       count: product.count,
     }))
   );
-
-  // /@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-  // price의 경우 아래와 같은 형태로 데이터가 들어옵니다.
-  // "originalTotalPrice": 148000,
-  //         "deliveryFee": 3000,
-  //         "discountTotal": 0,
-  //         "totalPrice": 151000,
-  // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
   /**
    * 결제하기 버튼 클릭
@@ -256,10 +252,7 @@ export default function CheckoutList() {
         console.log('deliveryOrdersInRequest', deliveryOrdersInRequest);
         console.log('vendorsOrderList', vendorsOrderList);
 
-        localStorage.setItem(
-          'paymentProduct',
-          JSON.stringify(paymentList)
-        );
+        localStorage.setItem('paymentProduct', JSON.stringify(paymentList));
 
         localStorage.setItem(
           'deliveryOrdersInRequest',

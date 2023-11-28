@@ -37,9 +37,9 @@ export default function AddressForm({
   async function deletAddress(addressId: number) {
     try {
       const res = await fetch(
-        'https://gentledog-back.duckdns.org/api/v1/user/address?addressId=' +
+        `${process.env.BASE_API_URL}/api/v1/user/address?addressId=` +
           addressId +
-          '',
+          ``,
         {
           method: 'DELETE',
           headers: {

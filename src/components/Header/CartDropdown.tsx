@@ -27,7 +27,7 @@ export default function CartDropdown() {
     async function loadCartId() {
       try {
         const res = await fetch(
-          'https://gentledog-back.duckdns.org/api/v1/wish/cart',
+          `${process.env.BASE_API_URL}/api/v1/wish/cart`,
           {
             method: 'GET',
             headers: {

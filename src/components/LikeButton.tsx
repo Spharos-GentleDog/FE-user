@@ -20,15 +20,14 @@ const LikeButton: React.FC<LikeButtonProps> = ({
   const session = useSession();
   const token = session?.data?.user.accessToken;
   const userEmail = session?.data?.user.userEmail;
-  const [isLiked, setIsLiked] = useState<boolean>();
+  const [isLiked, setIsLiked] = useState<boolean>(false);
 
   // 유저의 찜 상태를 가져오기
   useEffect(() => {
     /** 초기 랜더링 */
     async function getWishStatus() {
-
       const res = await fetch(
-        `https://gentledog-back.duckdns.org/api/v1/wish/wishproductlist/${productId}`,
+        `${process.env.BASE_API_URL}/api/v1/wish/wishproductlist/${productId}`,
         {
           method: 'GET',
           headers: {
@@ -61,7 +60,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
     if (session.data?.user.accessToken) {
       try {
         const res = await fetch(
-          'https://gentledog-back.duckdns.org/api/v1/wish/wishproductlist',
+          `${process.env.BASE_API_URL}/api/v1/wish/wishproductlist`,
           {
             method: 'POST',
             headers: {

@@ -39,7 +39,7 @@ const ShippingAddress: React.FC<Props> = ({
     async function loadDefaultAddress() {
       try {
         const res = await fetch(
-          'https://gentledog-back.duckdns.org/api/v1/user/address/default',
+          `${process.env.BASE_API_URL}/api/v1/user/address/default`,
           {
             method: 'GET',
             headers: {
@@ -63,7 +63,7 @@ const ShippingAddress: React.FC<Props> = ({
   async function loadAddress() {
     try {
       const res = await fetch(
-        'https://gentledog-back.duckdns.org/api/v1/user/address',
+        `${process.env.BASE_API_URL}/api/v1/user/address`,
         {
           method: 'GET',
           headers: {

@@ -28,23 +28,23 @@ export default function AddressEdit({
 
   const [formData, setFormData] = useState<AddressType>(editAddress);
 
-    /** 입력 시 저장 */
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const { name, value, type, checked } = e.target;
-  
-      // 체크박스와 일반 입력 필드를 다르게 처리
-      if (type === 'checkbox') {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          [name]: checked,
-        }));
-      } else {
-        setFormData((prevFormData) => ({
-          ...prevFormData,
-          [name]: value,
-        }));
-      }
-    };
+  /** 입력 시 저장 */
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+
+    // 체크박스와 일반 입력 필드를 다르게 처리
+    if (type === 'checkbox') {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: checked,
+      }));
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: value,
+      }));
+    }
+  };
 
   /** 수정 버튼 클릭 시 페칭 */
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -58,7 +58,7 @@ export default function AddressEdit({
     console.log('requestData', requestData);
     try {
       const res = await fetch(
-        'https://gentledog-back.duckdns.org/api/v1/user/address',
+        `${process.env.BASE_API_URL}/api/v1/user/address`,
         {
           method: 'POST',
           headers: {
@@ -80,11 +80,11 @@ export default function AddressEdit({
   }
 
   /** 클릭 시 수정 */
-    async function handleClick(e: React.FormEvent<HTMLFormElement>) {
-      await handleSubmit(e);
-      handlers.reLoadAddress();
-      handlers.showSelect();
-    }
+  async function handleClick(e: React.FormEvent<HTMLFormElement>) {
+    await handleSubmit(e);
+    handlers.reLoadAddress();
+    handlers.showSelect();
+  }
 
   return (
     <div className="p-4 lg:px-0 space-y-2">
