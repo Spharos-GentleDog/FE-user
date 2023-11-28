@@ -95,21 +95,20 @@ export default function AddressRegister({
 
   const handleOpenModal = () => {
     setIsView(!isView);
-  }
+  };
 
   // 우편 주소
   const [isView, setIsView] = useState<boolean>(false);
-  const [address, setAddress] = useState<string>("");
-
+  const [address, setAddress] = useState<string>('');
 
   useEffect(() => {
     if (address) {
       setFormData({
         ...formData,
         userAddress: address,
-      })
+      });
     }
-  }, [address])
+  }, [address]);
 
   return (
     <div className="p-4 lg:px-0 space-y-2 ">
@@ -160,7 +159,11 @@ export default function AddressRegister({
                 onClick={handleOpenModal}
               />
               <div>
-                <Postcode isView={isView} setIsView={setIsView} setAddress={setAddress} />
+                <Postcode
+                  isView={isView}
+                  setIsView={setIsView}
+                  setAddress={setAddress}
+                />
               </div>
               <input
                 name="userDetailAddress"
