@@ -44,7 +44,6 @@ function AiRecomment() {
                         <div className="flex justify-between items-end ">
                             <Prices price={item.productPrice} />
                             <div className="flex items-center mb-0.5">
-                                {/* Additional content */}
                             </div>
                         </div>
                     </div>
