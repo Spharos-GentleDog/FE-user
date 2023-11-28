@@ -1,17 +1,16 @@
-"use client";
+'use client';
 
-import { Popover, Transition } from "@/app/headlessui";
-import { avatarImgs } from "@/contains/fakeData";
-import { Fragment } from "react";
-import Avatar from "@/shared/Avatar/Avatar";
-import SwitchDarkMode2 from "@/shared/SwitchDarkMode/SwitchDarkMode2";
-import Link from "next/link";
-import Icon from "../Icon";
-import { signOut, useSession } from "next-auth/react";
+import { Popover, Transition } from '@/app/headlessui';
+import { avatarImgs } from '@/contains/fakeData';
+import { Fragment } from 'react';
+import Avatar from '@/shared/Avatar/Avatar';
+import SwitchDarkMode2 from '@/shared/SwitchDarkMode/SwitchDarkMode2';
+import Link from 'next/link';
+import Icon from '../Icon';
+import { signOut, useSession } from 'next-auth/react';
 
 /** 아바타 드롭다운을 렌더링합니다. */
 export default function AvatarDropdown() {
-
   const session = useSession();
 
   return (
@@ -42,7 +41,9 @@ export default function AvatarDropdown() {
                       {/* 이름과 주소 출력 */}
                       {/* todo: 유저이름 데이터 패칭 필요 */}
                       <div className="flex-grow">
-                        <h4 className="font-semibold">{session.data?.user.usersName} 님</h4>
+                        <h4 className="font-semibold">
+                          {session.data?.user.usersName} 님
+                        </h4>
                         {/* <p className="text-xs mt-0.5">Los Angeles, CA</p> */}
                       </div>
                     </div>
@@ -52,7 +53,7 @@ export default function AvatarDropdown() {
                     {/* ------------------ 1 --------------------- */}
                     {/* todo: 계정정보 연결 */}
                     <Link
-                      href={"/account"}
+                      href={'/account'}
                       className="flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                       onClick={() => close()}
                     >
@@ -60,14 +61,14 @@ export default function AvatarDropdown() {
                         <Icon type="account" />
                       </div>
                       <div className="ml-4">
-                        <p className="text-sm font-medium ">{"My Account"}</p>
+                        <p className="text-sm font-medium ">{'My Account'}</p>
                       </div>
                     </Link>
 
                     {/* ------------------ 2 --------------------- */}
                     {/* todo: 주문목록 연결 */}
                     <Link
-                      href={"/checkout"}
+                      href={'/checkout'}
                       className="flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                       onClick={() => close()}
                     >
@@ -75,14 +76,14 @@ export default function AvatarDropdown() {
                         <Icon type="order" />
                       </div>
                       <div className="ml-4">
-                        <p className="text-sm font-medium ">{"My Order"}</p>
+                        <p className="text-sm font-medium ">{'My Order'}</p>
                       </div>
                     </Link>
 
                     {/* ------------------ 2 --------------------- */}
                     {/* todo: 좋아요 표시 발바닥으로 변경 */}
                     <Link
-                      href={"/account-savelists"}
+                      href={'/account-savelists'}
                       className="flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                       onClick={() => close()}
                     >
@@ -103,7 +104,7 @@ export default function AvatarDropdown() {
                         </svg>
                       </div>
                       <div className="ml-4">
-                        <p className="text-sm font-medium ">{"Wishlist"}</p>
+                        <p className="text-sm font-medium ">{'Wishlist'}</p>
                       </div>
                     </Link>
 
@@ -145,7 +146,7 @@ export default function AvatarDropdown() {
                           </svg>
                         </div>
                         <div className="ml-4">
-                          <p className="text-sm font-medium ">{"Dark theme"}</p>
+                          <p className="text-sm font-medium ">{'Dark theme'}</p>
                         </div>
                       </div>
                       <SwitchDarkMode2 />
@@ -154,7 +155,7 @@ export default function AvatarDropdown() {
                     {/* ------------------ 2 --------------------- */}
                     {/* todo: ai 이미지 추천 */}
                     <Link
-                      href={"/ai"}
+                      href={'/ai'}
                       className="flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                       onClick={() => close()}
                     >
@@ -162,14 +163,14 @@ export default function AvatarDropdown() {
                         <Icon type="target" />
                       </div>
                       <div className="ml-4">
-                        <p className="text-sm font-medium ">{"TargetImg"}</p>
+                        <p className="text-sm font-medium ">{'AI'}</p>
                       </div>
                     </Link>
 
                     {/* ------------------ 2 --------------------- */}
                     {/* todo: logout */}
                     <Link
-                      href={"/#"}
+                      href={'/#'}
                       className="flex items-center p-2 -m-3 transition duration-150 ease-in-out rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                       onClick={() => close()}
                     >
@@ -177,7 +178,12 @@ export default function AvatarDropdown() {
                         <Icon type="logout" />
                       </div>
                       <div className="ml-4">
-                        <p className="text-sm font-medium" onClick={() => signOut()}>{"Log out"}</p>
+                        <p
+                          className="text-sm font-medium"
+                          onClick={() => signOut()}
+                        >
+                          {'Log out'}
+                        </p>
                       </div>
                     </Link>
                   </div>

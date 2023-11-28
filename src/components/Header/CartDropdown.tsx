@@ -13,6 +13,8 @@ import RenderProduct3 from '../RenderProduct3';
 import { useSession } from 'next-auth/react';
 import { CartType, DropdownCartType, ProductCartType } from '@/types/cartType';
 
+// @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 상품 페칭 필요 todo
+
 /**
  * 드롭다운 장바구니
  */
@@ -48,7 +50,11 @@ export default function CartDropdown() {
       }
     }
 
-    loadCartId();
+    const interval = setInterval(() => {
+      loadCartId(); // 정해진 간격(예: 30초)마다 데이터 갱신
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   /** 체크된 장바구니 물품들의 수량 */
