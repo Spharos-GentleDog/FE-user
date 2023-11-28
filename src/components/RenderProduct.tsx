@@ -26,7 +26,7 @@ export default function RenderProduct({
 }: {
   item: ProductCartDto;
   onItemCheck: (checked: boolean) => void;
-  onCountChange?: (count: number) => void;
+  onCountChange?: (productInCart: number, count: number) => void;
   onItemDelete?: (id: number) => void;
   isChecked: boolean;
 }) {
@@ -91,7 +91,11 @@ export default function RenderProduct({
                     id="qty"
                     className="form-select text-sm rounded-md py-1 border-slate-200 dark:border-slate-700 relative z-10 dark:bg-slate-800 "
                     onChange={(e) =>
-                      onCountChange && onCountChange(Number(e.target.value))
+                      onCountChange &&
+                      onCountChange(
+                        item.productInCartId,
+                        Number(e.target.value)
+                      )
                     }
                     defaultValue={item.count}
                   >
@@ -114,7 +118,8 @@ export default function RenderProduct({
                   defaultValue={item.count}
                   className="relative z-10"
                   onCountChange={(newCount) =>
-                    onCountChange && onCountChange(newCount)
+                    onCountChange &&
+                    onCountChange(item.productInCartId, newCount)
                   }
                 />
               </div>

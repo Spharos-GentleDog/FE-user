@@ -222,9 +222,11 @@ const Product = ({}) => {
                 })}`}
               </div>
 
-              <div className="">
-                <LikeButton productId={product?.productId as number} />
-              </div>
+              {fetchProductId && (
+                <div className="">
+                  <LikeButton productId={Number(fetchProductId)} />
+                </div>
+              )}
             </div>
 
             {/* ---------- 3 VARIANTS AND SIZE LIST ----------  */}

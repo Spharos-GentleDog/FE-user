@@ -97,18 +97,44 @@ export default function CartList() {
    * @param productDetailId 상품 상세 아이디
    * @returns 상품 수량 변경
    */
-  const handleCountChange = (productDetailId: number, newCount: number) => {
-    setCartBrandProducts((prevState) => {
-      const newState = { ...prevState };
-      for (const brand in newState) {
-        newState[brand] = newState[brand].map((product) =>
-          product.productDetailId === productDetailId
-            ? { ...product, count: newCount }
-            : product
+  const handleCountChange = (
+    productInCartId: number,
+    productDetailId: number,
+    newCount: number
+  ) => {
+    async function countfetch() {
+      try {
+        const res = await fetch(
+          `${process.env.BASE_API_URL}/api/v1/wish/cart/${productInCartId}`,
+          {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              userEmail: userEmail,
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              count: { newCount },
+            }),
+          }
         );
+        if (!res.ok) throw new Error(res.statusText);
+        setCartBrandProducts((prevState) => {
+          const newState = { ...prevState };
+          for (const brand in newState) {
+            newState[brand] = newState[brand].map((product) =>
+              product.productDetailId === productDetailId
+                ? { ...product, count: newCount }
+                : product
+            );
+          }
+          return newState;
+        });
+      } catch (e) {
+        console.error('Failed to fetch loadCartId', e);
       }
-      return newState;
-    });
+    }
+    countfetch();
   };
 
   // 장바구니 정보 가져오기
@@ -530,7 +556,11 @@ export default function CartList() {
                     )
                   }
                   onCountChange={(newCount) =>
-                    handleCountChange(item.productDetailId, newCount)
+                    handleCountChange(
+                      item.productDetailId,
+                      newCount,
+                      item.productInCartId
+                    )
                   }
                   onItemDelete={() => handleItemDelete(item.productInCartId)}
                 />
