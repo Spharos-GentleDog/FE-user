@@ -9,13 +9,14 @@ import React, { useEffect, useState } from 'react';
 
 function PaymentSuccess() {
   const session = useSession();
+  const token = session?.data?.user.accessToken;
+  const userEmail = session?.data?.user.userEmail;
   const param = useSearchParams();
   const [data, setData] = useState<Payment>();
   const paymentKey = param.get('paymentKey');
   const orderId = param.get('orderId');
   const amount = param.get('amount');
   const [orederNumber, setOrderNumber] = useState<string>('');
-  const productInCartId = localStorage.getItem('productInCartId');
   const [deliveryOrders, setDeliveryOrders] =
     useState<DeliveryOrdersInRequest>();
   useEffect(() => {
@@ -129,15 +130,19 @@ function PaymentSuccess() {
             // 장바구니 삭제
             // for문으로 반복
             // productInCartId 를 가져야 한다
+            const productInCartIdString =
+              localStorage.getItem('productInCartId');
+            const productInCartId = JSON.parse(productInCartIdString || '{}');
+
             if (productInCartId) {
               for (const Id of productInCartId) {
-                await deleteCart(Number(Id));
+                await deleteCart(Id as number);
               }
             }
           }
         }
       } catch (err: any) {
-        // console.error("err", err);
+        console.error('err', err);
       }
     };
 
@@ -151,13 +156,13 @@ function PaymentSuccess() {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${session.data?.user.accessToken}`,
-          userEmail: `${session.data?.user.userEmail}`,
+          userEmail: userEmail,
+          Authorization: `Bearer ${token}`,
         },
       }
     );
     const result = await res.json();
-    console.log('result', result);
+    // console.log('result', result);
   }
 
   return (

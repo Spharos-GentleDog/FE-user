@@ -92,14 +92,14 @@ const MainNav2Logged: FC<MainNav2LoggedProps> = () => {
                 <Link href="/login" className="px-3">
                   <Icon type="user" />
                 </Link>
-                <Link href="/cart" className="px-3">
+                <Link href="/login" className="">
                   <CartDropdown />
                 </Link>
               </>
             ) : (
               <>
                 <AvatarDropdown />
-                <Link href="/cart" className="px-3">
+                <Link href="/cart" className="">
                   <CartDropdown />
                 </Link>
               </>
