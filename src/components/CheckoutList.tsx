@@ -217,7 +217,7 @@ export default function CheckoutList() {
       productDetailId: product.productDetailId,
       productName: product?.productName || '',
       productStock: product.count,
-      productPrice: product.productPrice,
+      productPrice: product?.productPrice,
       productSize: product.size,
       productColor: product.color,
       productOrderStatus: 'ORDERS', // 상태 설정

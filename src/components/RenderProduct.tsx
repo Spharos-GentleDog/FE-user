@@ -28,7 +28,6 @@ export default function RenderProduct({
   onItemCheck: (checked: boolean) => void;
   onCountChange?: (count: number) => void;
   onItemDelete?: (id: number) => void;
-  newCount?: number;
   isChecked: boolean;
 }) {
   return (
@@ -91,6 +90,10 @@ export default function RenderProduct({
                     name="qty"
                     id="qty"
                     className="form-select text-sm rounded-md py-1 border-slate-200 dark:border-slate-700 relative z-10 dark:bg-slate-800 "
+                    onChange={(e) =>
+                      onCountChange && onCountChange(Number(e.target.value))
+                    }
+                    defaultValue={item.count}
                   >
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -99,6 +102,9 @@ export default function RenderProduct({
                     <option value="5">5</option>
                     <option value="6">6</option>
                     <option value="7">7</option>
+                    <option value="6">8</option>
+                    <option value="7">9</option>
+                    <option value="6">10</option>
                   </select>
                 </div>
               </div>
