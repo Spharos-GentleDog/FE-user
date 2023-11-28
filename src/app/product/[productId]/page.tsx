@@ -29,10 +29,10 @@ const Product = ({}) => {
   const thisPathname = usePathname();
   const searchParams = useSearchParams();
   const modal = searchParams?.get('modal');
+  const [product, setProduct] = useState<ProductDetailType>();
   const [variantActive, setVariantActive] = useState<string>();
   const [sizeSelected, setSizeSelected] = useState<string>();
   const [qualitySelected, setQualitySelected] = useState(1);
-  const [product, setProduct] = useState<ProductDetailType>();
   const [DetailId, setDetailId] = useState<number>();
 
   useEffect(() => {
@@ -364,7 +364,9 @@ const Product = ({}) => {
         );
         const data = await res.json();
         setProduct(data.result);
-        console.log('data', data.result);
+        // console.log('data', data.result);
+        setVariantActive(data.result.productDetailPageOptionsDto[0].color[0]);
+        setSizeSelected(data.result.productDetailPageOptionsDto[0].size[0]);
       } catch (error) {
         console.log(error);
       }
