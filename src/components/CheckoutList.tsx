@@ -86,7 +86,7 @@ export default function CheckoutList() {
     async function loadCartId() {
       try {
         const res = await fetch(
-          'https://gentledog-back.duckdns.org/api/v1/wish/cart',
+          `${process.env.BASE_API_URL}/api/v1/wish/cart`,
           {
             method: 'GET',
             headers: {
@@ -120,7 +120,7 @@ export default function CheckoutList() {
          * 장바구니 상품 정보
          */
         const res = await fetch(
-          'https://gentledog-back.duckdns.org/api/v1/product/order-product-info',
+          `${process.env.BASE_API_URL}/api/v1/product/order-product-info`,
           {
             method: 'POST',
             headers: {

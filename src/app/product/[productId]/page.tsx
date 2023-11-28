@@ -1,93 +1,19 @@
 'use client';
 
-import React, { use, useEffect, useState } from 'react';
-import {
-  NoSymbolIcon,
-  ClockIcon,
-  SparklesIcon,
-} from '@heroicons/react/24/outline';
-import ButtonPrimary from '@/shared/Button/ButtonPrimary';
-import ButtonSecondary from '@/shared/Button/ButtonSecondary';
-import NcImage from '@/shared/NcImage/NcImage';
-import ReviewItem from '@/components/ReviewItem';
-import detail21JPG from '@/images/products/detail3-1.webp';
-import detail22JPG from '@/images/products/detail3-2.webp';
-import detail23JPG from '@/images/products/detail3-3.webp';
-import detail24JPG from '@/images/products/detail3-4.webp';
-import { PRODUCTS } from '@/data/data';
-import IconDiscount from '@/components/IconDiscount';
-import NcInputNumber from '@/components/NcInputNumber';
 import BagIcon from '@/components/BagIcon';
-import toast from 'react-hot-toast';
-import { StarIcon } from '@heroicons/react/24/solid';
-import SectionSliderProductCard from '@/components/SectionSliderProductCard';
-import NotifyAddTocart from '@/components/NotifyAddTocart';
-import Image, { StaticImageData } from 'next/image';
-import LikeSaveBtns from '@/components/LikeSaveBtns';
-import AccordionInfo from '@/components/AccordionInfo';
-import ListingImageGallery from '@/components/listing-image-gallery/ListingImageGallery';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Route } from 'next';
-import ModalViewAllReviews from '@/app/product-detail/ModalViewAllReviews';
-import Policy from '@/app/product-detail/Policy';
-import detail0 from '@/images/products/t0.png';
-import detail1 from '@/images/products/t1.png';
-import detail2 from '@/images/products/t2.png';
-import detail3 from '@/images/products/t3.png';
-import detail4 from '@/images/products/t4.png';
-import detail5 from '@/images/products/t5.png';
-import detail6 from '@/images/products/t6.png';
-import detail7 from '@/images/products/t7.png';
-import detail8 from '@/images/products/t8.png';
-import detail9 from '@/images/products/t9.png';
-import p1 from '@/images/products/p1.png';
-import p2 from '@/images/products/p2.png';
-import p3 from '@/images/products/p3.png';
 import LikeButton from '@/components/LikeButton';
-import { useSession } from 'next-auth/react';
+import NcInputNumber from '@/components/NcInputNumber';
+import NotifyAddTocart2 from '@/components/NotifyAddTocart2';
+import ListingImageGallery from '@/components/listing-image-gallery/ListingImageGallery';
+import { PRODUCTS } from '@/data/data';
+import ButtonPrimary from '@/shared/Button/ButtonPrimary';
+import NcImage from '@/shared/NcImage/NcImage';
 import { ProductDetailType } from '@/types/productType';
-
-// 1. pathname으로 현재 주소의 productId를 가져와서 페칭을 진행한다.
-// 2. 페칭한 데이터를 이용해서 페이지를 구성한다.
-// 3. 옵션은 radio 버튼으로 구성한다.
-// 4. 2가지의 상태를 저장하고 이 상태에 따라 맞는 productDetailId를 가져온다.
-// 5. 찜하기 프론트에서 중계하는 것을 하려고 했으나 취소
-// 6. 후기 삭제
-// 7. 재고 현황, 신제품 상태 등등 상품의 상태는 후로 미룬다.
-// 8.
-
-/**
- * 상품 상세 이미지 더미 데이터
- */
-const LIST_IMAGES_PRODUCT_DETAIL: (string | StaticImageData)[] = [p1, p2, p3];
-
-/**
- * 상품 이미지 데이터
- * todo: 데이터 패칭 필요
- */
-const LIST_IMAGES_GALLERY_DEMO: (string | StaticImageData)[] = [
-  // detail21JPG,
-  // detail22JPG,
-  // detail23JPG,
-  // detail24JPG,
-  // 'https://images.pexels.com/photos/3812433/pexels-photo-3812433.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  // 'https://images.pexels.com/photos/1884581/pexels-photo-1884581.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  // 'https://images.pexels.com/photos/1127000/pexels-photo-1127000.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  // 'https://images.pexels.com/photos/292999/pexels-photo-292999.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  // 'https://images.pexels.com/photos/1778412/pexels-photo-1778412.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  // 'https://images.pexels.com/photos/871494/pexels-photo-871494.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  // 'https://images.pexels.com/photos/2850487/pexels-photo-2850487.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-  detail0,
-  detail1,
-  detail2,
-  detail3,
-  detail4,
-  detail5,
-  detail6,
-  detail7,
-  detail8,
-  detail9,
-];
+import { Route } from 'next';
+import { useSession } from 'next-auth/react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
 /**
  * 상품 디테일 페이지
@@ -99,19 +25,13 @@ const Product = ({}) => {
 
   const pathname = usePathname();
   const fetchProductId = pathname.split('/').pop();
-  const { sizes, variants, status, allOfSizes, image } = PRODUCTS[0];
-  //
   const router = useRouter();
   const thisPathname = usePathname();
   const searchParams = useSearchParams();
-  // console.log('searchParams', searchParams);
   const modal = searchParams?.get('modal');
-  //
   const [variantActive, setVariantActive] = useState<string>();
   const [sizeSelected, setSizeSelected] = useState<string>();
   const [qualitySelected, setQualitySelected] = useState(1);
-  const [isOpenModalViewAllReviews, setIsOpenModalViewAllReviews] =
-    useState(false);
   const [product, setProduct] = useState<ProductDetailType>();
   const [DetailId, setDetailId] = useState<number>();
 
@@ -152,9 +72,7 @@ const Product = ({}) => {
         <label htmlFor="">
           <span className="text-sm font-medium">
             색상:
-            <span className="ml-1 font-semibold">
-              {product.colorDtoList[variantActive]?.colorName}
-            </span>
+            <span className="ml-1 font-semibold">{variantActive}</span>
           </span>
         </label>
         <div className="flex mt-3">
@@ -168,7 +86,7 @@ const Product = ({}) => {
                   : ''
               } ${
                 color.colorCode === '#FFFFFF'
-                  ? 'border-slate-400'
+                  ? 'border-slate-200'
                   : color.colorCode === '#000000'
                   ? 'border-slate-200'
                   : ''
@@ -193,17 +111,45 @@ const Product = ({}) => {
   const notifyAddTocart = () => {
     toast.custom(
       (t) => (
-        <NotifyAddTocart
-          productImage={image}
+        <NotifyAddTocart2
+          productImage={product?.thumnailImgUrl[0].imageUrl || ''}
           qualitySelected={qualitySelected}
           show={t.visible}
-          sizeSelected={sizeSelected}
-          variantActive={variantActive}
+          sizeSelected={sizeSelected || ''}
+          variantActive={variantActive || ''}
+          price={product?.productPrice || 0}
+          name={product?.productName || ''}
         />
       ),
       { position: 'top-right', id: 'nc-product-notify', duration: 3000 }
     );
+
+    addCart();
   };
+
+  // 장바구니 추가
+  async function addCart() {
+    try {
+      const res = await fetch(
+        `${process.env.BASE_API_URL}/api/v1/product/wish/cart`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            userEmail: userEmail,
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            productDetailId: DetailId,
+            brandName: product?.brandName,
+            count: qualitySelected,
+          }),
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   /**
    * 상품 사이즈 리스트
@@ -249,7 +195,6 @@ const Product = ({}) => {
 
   /**
    * 상품 설명 사이드바 옵션, 카트에 추가, 가격
-   * todo: 데이터 패칭 필요
    */
   const renderSectionSidebar = () => {
     return (
@@ -265,9 +210,11 @@ const Product = ({}) => {
                 })}
               </div>
               <div className="flex lg:hidden text-2xl font-semibold">
-                {`${(product?.productPrice * qualitySelected >= 50000
-                  ? product?.productPrice * qualitySelected
-                  : product?.productPrice * qualitySelected + 3000
+                {`${(product?.productPrice !== undefined
+                  ? product.productPrice * qualitySelected >= 50000
+                    ? product.productPrice * qualitySelected
+                    : product.productPrice * qualitySelected + 3000
+                  : ''
                 ).toLocaleString('ko-KR', {
                   style: 'currency',
                   currency: 'KRW',
@@ -313,9 +260,11 @@ const Product = ({}) => {
                 </span>
 
                 <span>
-                  {`${(product?.productPrice * qualitySelected >= 50000
-                    ? product?.productPrice * qualitySelected
-                    : product?.productPrice * qualitySelected + 3000
+                  {`${(product?.productPrice !== undefined
+                    ? product.productPrice * qualitySelected >= 50000
+                      ? product.productPrice * qualitySelected
+                      : product.productPrice * qualitySelected + 3000
+                    : ''
                   ).toLocaleString('ko-KR', {
                     style: 'currency',
                     currency: 'KRW',
@@ -325,9 +274,11 @@ const Product = ({}) => {
               <div className="flex justify-between text-slate-600 dark:text-slate-300">
                 <span>배송비</span>
                 <span>
-                  {product?.productPrice * qualitySelected >= 50000
-                    ? '₩0'
-                    : '₩3,000'}
+                  {product?.productPrice !== undefined
+                    ? product.productPrice * qualitySelected >= 50000
+                      ? '₩0'
+                      : '₩3,000'
+                    : ''}
                 </span>
               </div>
             </div>
@@ -335,9 +286,11 @@ const Product = ({}) => {
             <div className="flex justify-between font-semibold">
               <span>합계</span>
               <span>
-                {`${(product?.productPrice * qualitySelected >= 50000
-                  ? product?.productPrice * qualitySelected
-                  : product?.productPrice * qualitySelected + 3000
+                {`${(product?.productPrice !== undefined
+                  ? product.productPrice * qualitySelected >= 50000
+                    ? product.productPrice * qualitySelected
+                    : product.productPrice * qualitySelected + 3000
+                  : ''
                 ).toLocaleString('ko-KR', {
                   style: 'currency',
                   currency: 'KRW',
@@ -376,7 +329,6 @@ const Product = ({}) => {
 
   /**
    * 상품 설명 2
-   * todo: 원래 계획은 이미지로 상품 설명을 하는 것이었으나 데이터가 없으면 텍스트로 대체
    */
   const renderSection2 = () => {
     return (
@@ -424,14 +376,14 @@ const Product = ({}) => {
           <div className="relative ">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 lg:gap-6">
               <div
-                className="md:h-full col-span-2 md:col-span-1 row-span-2 relative rounded-md sm:rounded-xl cursor-pointer"
+                className="min-w-[200px] min-h-[400px] md:h-full col-span-2 md:col-span-1 row-span-2 relative rounded-md sm:rounded-xl cursor-pointer"
                 onClick={handleOpenModalImageGallery}
               >
                 <NcImage
-                  alt="firt"
+                  alt={product?.thumnailImgUrl[0].imageName}
                   containerClassName="aspect-w-3 aspect-h-4 relative md:aspect-none md:absolute md:inset-0"
-                  className="object-cover rounded-md sm:rounded-xl"
-                  src={LIST_IMAGES_GALLERY_DEMO[0]}
+                  className="object-cover rounded-md sm:rounded-xl "
+                  src={product?.thumnailImgUrl[0].imageUrl || ''}
                   fill
                   sizes="(max-width: 640px) 100vw, 50vw"
                   priority
@@ -439,48 +391,40 @@ const Product = ({}) => {
                 <div className="absolute inset-0 bg-neutral-900/20 opacity-0 hover:opacity-40 transition-opacity rounded-md sm:rounded-xl"></div>
               </div>
 
-              {/*  */}
               <div
                 className="col-span-1 row-span-2 relative rounded-md sm:rounded-xl overflow-hidden z-0 cursor-pointer"
                 onClick={handleOpenModalImageGallery}
               >
                 <NcImage
-                  alt=""
+                  alt={product?.thumnailImgUrl[1].imageName}
                   fill
                   sizes="(max-width: 640px) 100vw, 50vw"
                   containerClassName="absolute inset-0"
                   className="object-cover w-full h-full rounded-md sm:rounded-xl"
-                  src={LIST_IMAGES_GALLERY_DEMO[1]}
+                  src={product?.thumnailImgUrl[1].imageUrl || ''}
                 />
                 <div className="absolute inset-0 bg-neutral-900/20 opacity-0 hover:opacity-40 transition-opacity"></div>
               </div>
 
-              {/*  */}
-              {[LIST_IMAGES_GALLERY_DEMO[2], LIST_IMAGES_GALLERY_DEMO[3]].map(
-                (item, index) => (
-                  <div
-                    key={index}
-                    className={`relative rounded-md sm:rounded-xl overflow-hidden z-0 ${
-                      index >= 2 ? 'block' : ''
-                    }`}
-                  >
-                    <NcImage
-                      alt=""
-                      fill
-                      sizes="(max-width: 640px) 100vw, 33vw"
-                      containerClassName="aspect-w-6 aspect-h-5 lg:aspect-h-4"
-                      className="object-cover w-full h-full rounded-md sm:rounded-xl "
-                      src={item || ''}
-                    />
-
-                    {/* OVERLAY */}
-                    <div
-                      className="absolute inset-0 bg-slate-900/20 opacity-0 hover:opacity-60 transition-opacity cursor-pointer"
-                      onClick={handleOpenModalImageGallery}
-                    />
-                  </div>
-                )
-              )}
+              {product?.thumnailImgUrl.slice(2, 4).map((item, index) => (
+                <div
+                  key={index}
+                  className={`relative rounded-md sm:rounded-xl overflow-hidden z-0 ${
+                    index >= 2 ? 'block' : ''
+                  }`}
+                  onClick={handleOpenModalImageGallery}
+                >
+                  <NcImage
+                    alt={item.imageName}
+                    fill
+                    sizes="(max-width: 640px) 100vw, 33vw"
+                    containerClassName="aspect-w-6 aspect-h-5 lg:aspect-h-4"
+                    className="object-cover w-full h-full rounded-md sm:rounded-xl"
+                    src={item.imageUrl}
+                  />
+                  <div className="absolute inset-0 bg-slate-900/20 opacity-0 hover:opacity-60 transition-opacity cursor-pointer" />
+                </div>
+              ))}
             </div>
 
             {/* 모달 띄우기 버튼 */}
@@ -526,21 +470,15 @@ const Product = ({}) => {
         </div>
       </main>
 
-      {/* MODAL VIEW ALL REVIEW */}
-      <ModalViewAllReviews
-        show={isOpenModalViewAllReviews}
-        onCloseModalViewAllReviews={() => setIsOpenModalViewAllReviews(false)}
-      />
-
       <ListingImageGallery
         isShowModal={modal === 'PHOTO_TOUR_SCROLLABLE'}
         onClose={handleCloseModalImageGallery}
-        images={LIST_IMAGES_GALLERY_DEMO.map((item, index) => {
-          return {
+        images={
+          product?.thumnailImgUrl?.map((item, index) => ({
             id: index,
-            url: item,
-          };
-        })}
+            url: item.imageUrl,
+          })) || []
+        }
       />
     </div>
   );

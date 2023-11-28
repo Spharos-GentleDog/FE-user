@@ -65,7 +65,7 @@ export default function AddressRegister({
     console.log('requestData', requestData);
     try {
       const res = await fetch(
-        'https://gentledog-back.duckdns.org/api/v1/user/address',
+        `${process.env.BASE_API_URL}/api/v1/user/address`,
         {
           method: 'POST',
           headers: {

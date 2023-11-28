@@ -120,7 +120,7 @@ export default function CartList() {
     async function loadCartId() {
       try {
         const res = await fetch(
-          'https://gentledog-back.duckdns.org/api/v1/wish/cart',
+          `${process.env.BASE_API_URL}/api/v1/wish/cart`,
           {
             method: 'GET',
             headers: {
@@ -159,7 +159,7 @@ export default function CartList() {
          * 장바구니 상품 정보
          */
         const res = await fetch(
-          'https://gentledog-back.duckdns.org/api/v1/product/find-product-detail',
+          `${process.env.BASE_API_URL}/api/v1/product/find-product-detail`,
           {
             method: 'POST',
             headers: {
@@ -232,7 +232,7 @@ export default function CartList() {
         // console.log('productInCartId', productInCartId);
         // console.log('checked', checked);
         const res = await fetch(
-          'https://gentledog-back.duckdns.org/api/v1/wish/cart/checked',
+          `${process.env.BASE_API_URL}/api/v1/wish/cart/checked`,
           {
             method: 'PUT',
             headers: {
@@ -290,7 +290,7 @@ export default function CartList() {
     async function brandcheckboxfetch() {
       try {
         const res = await fetch(
-          'https://gentledog-back.duckdns.org/api/v1/wish/cart/checked',
+          `${process.env.BASE_API_URL}/api/v1/wish/cart/checked`,
           {
             method: 'PUT',
             headers: {

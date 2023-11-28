@@ -60,7 +60,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
     if (session.data?.user.accessToken) {
       try {
         const res = await fetch(
-          'https://gentledog-back.duckdns.org/api/v1/wish/wishproductlist',
+          `${process.env.BASE_API_URL}/api/v1/wish/wishproductlist`,
           {
             method: 'POST',
             headers: {

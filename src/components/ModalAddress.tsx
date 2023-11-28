@@ -49,7 +49,7 @@ export default function ModalAddress({
   async function reLoadAddress() {
     try {
       const res = await fetch(
-        'https://gentledog-back.duckdns.org/api/v1/user/address',
+        `${process.env.BASE_API_URL}/api/v1/user/address`,
         {
           method: 'GET',
           headers: {
@@ -115,7 +115,10 @@ export default function ModalAddress({
                     <AddressRegister handlers={addressHandlers} />
                   )}
                   {activeAddress === 'edit' && editAddress && (
-                    <AddressEdit editAddress={editAddress} handlers={addressHandlers} />
+                    <AddressEdit
+                      editAddress={editAddress}
+                      handlers={addressHandlers}
+                    />
                   )}
                 </div>
               </div>
