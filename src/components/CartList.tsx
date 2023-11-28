@@ -2,21 +2,17 @@
 
 import ButtonPrimary from '@/shared/Button/ButtonPrimary';
 import Checkbox from '@/shared/Checkbox/Checkbox';
-import { CartBrandProductsType, CartProductType } from '@/types/productType';
-import { applyDiscounts } from '@/utils/applyDiscounts';
-import { groupProductsByBrand } from '@/utils/groupProductsByBrand';
-import { useEffect, useState } from 'react';
-import Icon from './Icon';
-import RenderProduct from './RenderProduct';
-import { useSession } from 'next-auth/react';
 import {
   BrandCartType,
   BrandProductCartDto,
   BrandProductDto,
   CartIdType,
-  CartType,
-  ProductCartType,
 } from '@/types/cartType';
+import { CartBrandProductsType, CartProductType } from '@/types/productType';
+import { useSession } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import Icon from './Icon';
+import RenderProduct from './RenderProduct';
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 브랜드 체크 박스 수정@@@@@@@@@@@@@@@@@
 // 삭제 로직 수정

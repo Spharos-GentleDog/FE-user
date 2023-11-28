@@ -11,7 +11,6 @@ import { ArrowSmallLeftIcon } from '@heroicons/react/24/outline';
 import { Dialog, Transition } from '@headlessui/react';
 import LikeSaveBtns from '@/components/LikeSaveBtns';
 import { Route } from 'next';
-import { thumbnailImgUrl } from '@/types/productType';
 
 export const getNewParam = ({
   paramName = 'photoId',
@@ -26,7 +25,10 @@ export const getNewParam = ({
 };
 
 interface Props {
-  images: thumbnailImgUrl[];
+  images: {
+    id: number;
+    url: string;
+  }[];
   onClose?: () => void;
   isShowModal: boolean;
 }
