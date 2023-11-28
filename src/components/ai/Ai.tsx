@@ -23,7 +23,7 @@ function Ai() {
       console.log('formData: ', formData.get('img'))
       try {
 
-        const res = await fetch(`http://gentledog-back.duckdns.org:5000/image_predict`, {
+        const res = await fetch(`https://gentledog-ai.duckdns.org/image_predict`, {
           method: 'POST',
           body: formData,
         });

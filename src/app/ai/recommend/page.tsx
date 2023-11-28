@@ -1,5 +1,6 @@
 import AiRecomment from '@/components/ai/AiRecomment'
 import ButtonPrimary from '@/shared/Button/ButtonPrimary'
+import Link from 'next/link'
 import React from 'react'
 
 function page() {
@@ -10,7 +11,9 @@ function page() {
             </div>
             <AiRecomment />
             <ButtonPrimary className='w-full mt-10'>
-                홈으로
+                <Link href='/'>
+                    홈으로
+                </Link>
             </ButtonPrimary>
         </div>
     )

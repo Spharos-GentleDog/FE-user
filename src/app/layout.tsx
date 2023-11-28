@@ -32,6 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko-kr" dir="" className={nanumGothic.className}>
+      {/* <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" /> */}
       <body className=" bg-white text-base dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200">
         <AuthProvider>
           <SiteHeader />

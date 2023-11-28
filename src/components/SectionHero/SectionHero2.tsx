@@ -91,9 +91,12 @@ const SectionHero2: FC<SectionHero2Props> = ({ className = "" }) => {
 
         <div className="object-cover h-[200px] sm:w-screen sm:h-[300px] md:h-[350px] bg-black" >
           <Image
-            objectPosition="center"
-            layout="fill"
-            loading="eager"
+            // objectPosition="center"
+            // layout="fill"
+            // loading="eager"
+            // width={1920}
+            // height={1080}
+            fill
             sizes="100%"
             src={item}
             alt={`Image ${indexActive + 1}`}
