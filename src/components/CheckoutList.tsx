@@ -192,11 +192,11 @@ export default function CheckoutList() {
   };
 
   const deliveryOrdersInRequest = {
-    recipientName: defaultAddress.recipientName,
-    recipientAddress: defaultAddress.userAddress,
-    recipientPhoneNumber: defaultAddress.recipientPhoneNumber,
-    entrancePassword: defaultAddress.entrancePassword,
-    deliveryRequestMessage: defaultAddress.addressRequestMessage,
+    recipientName: defaultAddress?.recipientName,
+    recipientAddress: defaultAddress?.userAddress,
+    recipientPhoneNumber: defaultAddress?.recipientPhoneNumber,
+    entrancePassword: defaultAddress?.entrancePassword,
+    deliveryRequestMessage: defaultAddress?.addressRequestMessage,
   };
 
   console.log('deliveryOrdersInRequest', deliveryOrdersInRequest);
