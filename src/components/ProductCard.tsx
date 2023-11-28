@@ -41,7 +41,7 @@ const ProductCard: FC<ProductCardProps> = ({
     mainImageUrl = defaultImage,
     totalFavorite,
     discounts,
-    salesStatus
+    salesStatus,
   } = data || {};
 
   const [variantActive, setVariantActive] = useState(0);
@@ -50,37 +50,41 @@ const ProductCard: FC<ProductCardProps> = ({
   const session = useSession();
 
   const notifyAddTocart = ({ sizeName }: { sizeName?: string }) => {
-
     const handleFetchAddToCart = async () => {
       try {
-        const response = await fetch(`${process.env.BASE_API_URL}/api/v1/product/findby-color-size`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            productId: productId,
-            color: data?.colors?.[variantActive]?.colorName,
-            size: sizeName
-          }),
-        });
+        const response = await fetch(
+          `${process.env.BASE_API_URL}/api/v1/product/findby-color-size`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              productId: productId,
+              color: data?.colors?.[variantActive]?.colorName,
+              size: sizeName,
+            }),
+          }
+        );
 
         const detail = await response.json();
 
         if (detail) {
-          const res = await fetch(`${process.env.BASE_API_URL}/api/v1/wish/cart`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'userEmail': `${session.data?.user.userEmail}`,
-              'Authorization': `Bearer ${session.data?.user.accessToken}`,
-            },
-            body: JSON.stringify({
-              productDetailId: detail.result.productDetailId,
-              brandName: brandName,
-              count: 1
-            }),
-          }
+          const res = await fetch(
+            `${process.env.BASE_API_URL}/api/v1/wish/cart`,
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                userEmail: `${session.data?.user.userEmail}`,
+                Authorization: `Bearer ${session.data?.user.accessToken}`,
+              },
+              body: JSON.stringify({
+                productDetailId: detail.result.productDetailId,
+                brandName: brandName,
+                count: 1,
+              }),
+            }
           );
           const result = await res.json();
           // console.log(result);
@@ -88,7 +92,7 @@ const ProductCard: FC<ProductCardProps> = ({
       } catch (err) {
         console.log(err);
       }
-    }
+    };
 
     handleFetchAddToCart();
 
@@ -193,10 +197,7 @@ const ProductCard: FC<ProductCardProps> = ({
           </Link>
           <div className="absolute top-3 end-3 z-10 flex gap-1">
             {/* todo: 실제 상품 데이터 페칭 시 타입 확인 */}
-            <LikeButton
-              productId={productId as number}
-              className=""
-            />
+            <LikeButton productId={productId as number} className="" />
             <ButtonSecondary
               className="ms-1.5 bg-white hover:!bg-gray-100 hover:text-slate-900 transition-colors shadow-lg"
               fontSize="text-xs"
@@ -211,7 +212,6 @@ const ProductCard: FC<ProductCardProps> = ({
             <RenderSizeList
               sizeName={sizes}
               notifyAddTocart={notifyAddTocart}
-
             />
           ) : (
             <RenderGroupButtons notifyAddTocart={notifyAddTocart} />
