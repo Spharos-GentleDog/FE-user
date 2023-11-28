@@ -1,10 +1,11 @@
 'use client';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import CustomNav2 from './Header/CustomNav2';
 import Icon from './Icon';
 import Checkbox from '@/shared/Checkbox/Checkbox';
 import { useSession } from 'next-auth/react';
 import { AddressType } from '@/types/userType';
+import Postcode from './Postcode';
 
 // 핸들러들의 타입 정의
 interface AddressHandlers {
@@ -92,6 +93,24 @@ export default function AddressRegister({
     handlers.showSelect();
   }
 
+  const handleOpenModal = () => {
+    setIsView(!isView);
+  }
+
+  // 우편 주소
+  const [isView, setIsView] = useState<boolean>(false);
+  const [address, setAddress] = useState<string>("");
+
+
+  useEffect(() => {
+    if (address) {
+      setFormData({
+        ...formData,
+        userAddress: address,
+      })
+    }
+  }, [address])
+
   return (
     <div className="p-4 lg:px-0 space-y-2 ">
       <CustomNav2 title="배송지 등록" onCloseActive={handlers.showSelect} />
@@ -135,11 +154,14 @@ export default function AddressRegister({
                 name="userAddress"
                 className="w-full dark:bg-neutral-900 dark:placeholder:text-neutral-400 dark:border-neutral-200 rounded-r-sm border-l-0"
                 type="text"
-                disabled
-                placeholder="주소인데 api 사용해야됨"
+                readOnly
                 value={formData.userAddress}
                 onChange={handleChange}
+                onClick={handleOpenModal}
               />
+              <div>
+                <Postcode isView={isView} setIsView={setIsView} setAddress={setAddress} />
+              </div>
               <input
                 name="userDetailAddress"
                 className="w-full dark:bg-neutral-900 dark:placeholder:text-neutral-400 dark:border-neutral-200 rounded-r-sm border-l-0"
