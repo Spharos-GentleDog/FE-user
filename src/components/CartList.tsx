@@ -14,6 +14,10 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import Icon from './Icon';
 import RenderProduct from './RenderProduct';
+import ButtonClose from '@/shared/ButtonClose/ButtonClose';
+import ButtonSecondary from '@/shared/Button/ButtonSecondary';
+import ButtonThird from '@/shared/Button/ButtonThird';
+import Button from '@/shared/Button/Button';
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 브랜드 체크 박스 수정@@@@@@@@@@@@@@@@@
 // 삭제 로직 수정
@@ -371,9 +375,9 @@ export default function CartList() {
           checked: checked,
         }));
       });
+      console.log('newState', newState);
       return newState;
     });
-
     setIsAllChecked(checked);
   };
 
@@ -535,7 +539,6 @@ export default function CartList() {
               onChange={(checked) => handleAllCheck(checked)}
             />
 
-            {/* todo: 선택 삭제 */}
             <button
               className="flex"
               onClick={() =>
@@ -674,9 +677,18 @@ export default function CartList() {
               <span>{checkoutInfo.totalPriceString}</span>
             </div>
           </div>
-          <ButtonPrimary href="/checkout" className="mt-8 w-full">
-            주문하기
-          </ButtonPrimary>
+          {!cartBrandProducts || Object.keys(cartBrandProducts).length === 0 ? (
+            <Button
+              disabled
+              className="mt-8 w-full disabled:bg-opacity-90 bg-slate-900 dark:bg-slate-100 text-slate-50 dark:text-slate-800 shadow-xl"
+            >
+              주문하기
+            </Button>
+          ) : (
+            <ButtonPrimary href="/checkout" className="mt-8 w-full">
+              주문하기
+            </ButtonPrimary>
+          )}
         </div>
       </div>
     </>
