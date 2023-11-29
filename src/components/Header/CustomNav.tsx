@@ -29,7 +29,9 @@ const CustomNav = ({ title }: { title: string }) => {
             </Link>
           </div>
           <div className="flex items-center">
-            <CartDropdown />
+            <Link href="/cart">
+              <CartDropdown />
+            </Link>
           </div>
         </div>
       </div>
