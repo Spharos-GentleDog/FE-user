@@ -365,8 +365,8 @@ const Product = ({}) => {
         const data = await res.json();
         setProduct(data.result);
         // console.log('data', data.result);
-        setVariantActive(data.result.productDetailPageOptionsDto[0].color[0]);
-        setSizeSelected(data.result.productDetailPageOptionsDto[0].size[0]);
+        setVariantActive(data.result.productDetailPageOptionsDto[0].color);
+        setSizeSelected(data.result.productDetailPageOptionsDto[0].size);
       } catch (error) {
         console.log(error);
       }

@@ -355,7 +355,7 @@ export default function CheckoutList() {
           cartBrandProducts.map((brandProducts) => (
             <div
               key={`cart-${brandProducts.brandName}`}
-              className="border-[1px] p-4 mb-2 divide-y divide-slate-200 dark:divide-slate-700"
+              className="border-[1px] shadow-md p-4 mb-2 divide-y divide-slate-200 dark:divide-slate-700"
             >
               <div className="text-lg font-semibold pb-2">
                 {brandProducts.brandName}

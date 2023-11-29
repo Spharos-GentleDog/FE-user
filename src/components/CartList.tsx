@@ -440,7 +440,7 @@ export default function CartList() {
     if (checkedProductIds) {
       for (const id in checkedProductIds) {
         console.log('id', typeof Number(id));
-        await handleItemDelete(id);
+        await handleItemDelete(Number(id));
       }
 
       // 상태 업데이트
@@ -565,7 +565,7 @@ export default function CartList() {
           Object.entries(cartBrandProducts).map(([brandName, items]) => (
             <div
               key={`cart-${brandName}`}
-              className="border-[1px] p-4 mb-2 divide-y divide-slate-200 dark:divide-slate-700"
+              className="border-[1px] shadow-md p-4 mb-2 divide-y divide-slate-200 dark:divide-slate-700"
             >
               <Checkbox
                 name={`cart-${brandName}`}
