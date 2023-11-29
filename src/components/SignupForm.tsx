@@ -187,7 +187,6 @@ function SignupForm() {
       })
       const result = await res.json();
       if (result.code === 200) {
-        alert('회원가입이 완료되었습니다.')
         router.push(`/signup/pet?userEmail=${signup.email}`)
       }
     } catch (error) {

@@ -11,6 +11,8 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import AWS from 'aws-sdk'
 import Image from 'next/image'
 import defaultImage from '@/images/upload.png'
+import toast from 'react-hot-toast'
+import Toast from './Toast'
 
 function SignupDogForm() {
 
@@ -138,11 +140,18 @@ function SignupDogForm() {
 
         const result = await res.json();
         if (result.code === 200) {
-            alert('반려견 정보가 등록되었습니다.')
+            toast.custom((t) => (
+                <Toast message="회원가입이 완료 되었습니다." />
+            ))
             router.push('/login')
         }
     }
 
+    const handleNext = () => {
+        toast.custom((t) => (
+            <Toast message="회원가입이 완료 되었습니다." />
+        ))
+    }
     const [dogBreeds, setDogBreeds] = useState<DogBreedsType[]>([]);
     useEffect(() => {
         const getDatas = async () => {
@@ -361,7 +370,7 @@ function SignupDogForm() {
                 </div >
                 <ButtonPrimary onClick={handleSignupFetch}>회원가입</ButtonPrimary>
                 <div className='text-center font-semibold text-xs'>
-                    <Link href='/login'>
+                    <Link href='/login' onClick={handleNext}>
                         다음에 작성하기
                     </Link>
                 </div>

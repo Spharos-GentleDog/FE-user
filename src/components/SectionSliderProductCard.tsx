@@ -113,7 +113,7 @@ const SectionSliderProductCard: FC<SectionSliderProductCardProps> = ({
             {
               productData
                 ?
-                productData && productData.map((item, index) => (
+                productData.map((item, index) => (
                   <li key={index} className={`glide__slide ${itemClassName}`}>
                     <ProductCard data={item} />
                   </li>
