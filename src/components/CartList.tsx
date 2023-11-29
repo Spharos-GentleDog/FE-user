@@ -365,20 +365,48 @@ export default function CartList() {
   };
 
   /** 전체 선택 체크박스 상태 변경 핸들러 */
-  const handleAllCheck = (checked: boolean) => {
-    setCartBrandProducts((prevState) => {
-      const newState = { ...prevState };
-
-      Object.keys(newState).forEach((brandName) => {
-        newState[brandName] = newState[brandName].map((product) => ({
-          ...product,
+  const handleAllCheck = async (checked: boolean) => {
+    if (!cartBrandProducts) return;
+    const changedCheckedList = Object.values(cartBrandProducts).flatMap(
+      (brandProducts) =>
+        brandProducts.map((product) => ({
+          productInCartId: product.productInCartId,
           checked: checked,
-        }));
+        }))
+    );
+    // console.log('changedCheckedList', JSON.stringify({ changedCheckedList }));
+
+    try {
+      const res = await fetch(
+        `${process.env.BASE_API_URL}/api/v1/wish/cart/checked`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            userEmail: userEmail,
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ changedCheckedList }),
+        }
+      );
+
+      if (!res.ok) throw new Error(res.statusText);
+
+      // 성공적으로 서버가 업데이트 되었으면 로컬 상태도 업데이트
+      setCartBrandProducts((prevState) => {
+        const newState = { ...prevState };
+        Object.keys(newState).forEach((brandName) => {
+          newState[brandName] = newState[brandName].map((product) => ({
+            ...product,
+            checked: checked,
+          }));
+        });
+        return newState;
       });
-      console.log('newState', newState);
-      return newState;
-    });
-    setIsAllChecked(checked);
+      setIsAllChecked(checked);
+    } catch (error) {
+      console.error('Failed to update server', error);
+    }
   };
 
   /**  개별 체크박스 상태에 따라 전체 선택 체크박스 상태 갱신*/
