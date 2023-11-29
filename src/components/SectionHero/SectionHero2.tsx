@@ -65,8 +65,8 @@ const SectionHero2: FC<SectionHero2Props> = ({ className = "" }) => {
 
   const imagePaths = [
     '/assets/images/icons/banner01.png',
-    '/assets/images/icons/banner01.png',
-    '/assets/images/icons/banner01.png',
+    '/assets/images/icons/banner02.png',
+    // '/assets/images/icons/banner01.png',
     // Add more image paths as needed
   ];
 

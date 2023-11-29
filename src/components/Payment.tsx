@@ -27,7 +27,7 @@ function Payment({
     const paymentMethodsWidgetRef = useRef<ReturnType<
         PaymentWidgetInstance["renderPaymentMethods"]
     > | null>(null);
-
+    console.log("paymentPrice", price)
     useAsync(async () => {
         const paymentWidget = await loadPaymentWidget('test_ck_jExPeJWYVQ1RezQ2XYPnV49R5gvN', nanoid());
         const paymentMethodsWidget = paymentWidget.renderPaymentMethods(

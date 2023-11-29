@@ -240,17 +240,6 @@ export default function CheckoutList() {
     }))
   );
 
-  // /@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-  // price의 경우 아래와 같은 형태로 데이터가 들어옵니다.
-  // "originalTotalPrice": 148000,
-  //         "deliveryFee": 3000,
-  //         "discountTotal": 0,
-  //         "totalPrice": 151000,
-  // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-  /**
-   * 결제하기 버튼 클릭
-   */
   const handlePayment = (data: boolean) => {
     if (session.status === 'authenticated') {
       setPaymentClicked(data);
@@ -278,6 +267,7 @@ export default function CheckoutList() {
     }
   };
 
+  console.log('price', price?.totalPrice);
   /**
    * 주문자 정보, 결제 수단 출력
    */
@@ -293,13 +283,13 @@ export default function CheckoutList() {
             setDefaultAddress={setDefaultAddress}
           />
         </div>
-
         <div id="PaymentMethod" className="scroll-mt-24">
           <Payment
             paymentClicked={paymentClicked}
             setPaymentClicked={setPaymentClicked}
             paymentProduct={paymentProduct}
-            // price={parseInt(checkoutInfo.totalPriceString.replace(/[₩,]/g, ""))}
+
+            // price={parseInt(price?.totalPriceString.replace(/[₩,]/g, ""))}
             price={price?.totalPrice || 0}
           />
         </div>
