@@ -22,7 +22,9 @@ const NcImage: FC<NcImageProps> = ({
 }) => {
   return (
     <div className={containerClassName}>
-      <Image className={className} alt={alt} {...args} />
+      <Image className={className} alt={alt} {...args} 
+       placeholder="blur"
+       blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAECAIAAADETxJQAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAMUlEQVR4nGPIrOzOqWhbuHYvw7yNBxK9w/7/+s+g7xSiJaG+eeNBBgY2UUev6LKyZgByfxCvAnvQuAAAAABJRU5ErkJggg=="}  />
     </div>
   );
 };

@@ -49,12 +49,13 @@ export default function CartDropdown() {
         console.error('Failed to fetch loadCartId', e);
       }
     }
+    loadCartId();
 
-    const interval = setInterval(() => {
-      loadCartId(); // 정해진 간격(예: 30초)마다 데이터 갱신
-    }, 1000);
+    // const interval = setInterval(() => {
+    //   loadCartId(); // 정해진 간격(예: 30초)마다 데이터 갱신
+    // }, 1000);
 
-    return () => clearInterval(interval);
+    // return () => clearInterval(interval);
   }, []);
 
   /** 체크된 장바구니 물품들의 수량 */

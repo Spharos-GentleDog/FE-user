@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useEffect, useId, useRef, useState } from "react";
+import React, { FC, Suspense, useEffect, useId, useRef, useState } from "react";
 import Heading from "@/components/Heading/Heading";
 // @ts-ignore
 import Glide from "@glidejs/glide/dist/glide.esm";
@@ -15,6 +15,7 @@ export interface SectionSliderProductCardProps {
   headingClassName?: string;
   subHeading?: string;
   category?: string;
+  produdtData?: ProductList[];
 }
 
 /**
@@ -28,7 +29,7 @@ export interface SectionSliderProductCardProps {
  * @param data 상품 데이터
  * @returns 
  */
-const SectionSliderProductCard: FC<SectionSliderProductCardProps> = ({
+const SectionSliderProductCard = ({
   className = "",
   itemClassName = "",
   headingFontClassName,
@@ -36,26 +37,15 @@ const SectionSliderProductCard: FC<SectionSliderProductCardProps> = ({
   heading,
   subHeading = "",
   category = "new",
-}) => {
+  produdtData
+}:SectionSliderProductCardProps) => {
   const sliderRef = useRef(null);
-
-  //
   const [isShow, setIsShow] = useState(false);
-  const [productData, setProductData] = useState<ProductList[]>([]);
+  // console.log('produdtData', produdtData)
+
+  const [pData, setPData] = useState<ProductList[]>([]);
+
   useEffect(() => {
-    const getData = async () => {
-      const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/product-find?categoryType=${category}&isDiscount=false&page=1`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-
-      const data = await res.json();
-      setProductData(data.result);
-    }
-
-    getData().then(() => {
       const OPTIONS: Partial<Glide.Options> = {
         // direction: document.querySelector("html")?.getAttribute("dir") || "ltr",
         perView: 4,
@@ -91,11 +81,14 @@ const SectionSliderProductCard: FC<SectionSliderProductCardProps> = ({
       return () => {
         slider.destroy();
       };
-    });
 
-    getData();
+  }, [sliderRef, pData]);
 
-  }, [sliderRef]);
+  useEffect(() => {
+    if(produdtData) {
+      setPData(produdtData);
+    }
+  }, [produdtData])
 
   return (
     <div className={`nc-SectionSliderProductCard ${className}`}>
@@ -108,21 +101,19 @@ const SectionSliderProductCard: FC<SectionSliderProductCardProps> = ({
         >
           {heading || ``}
         </Heading>
-        <div className="glide__track" data-glide-el="track">
-          <ul className="glide__slides">
-            {
-              productData
-                ?
-                productData.map((item, index) => (
-                  <li key={index} className={`glide__slide ${itemClassName}`}>
-                    <ProductCard data={item} />
-                  </li>
-                ))
-                :
-                ""
-            }
-          </ul>
-        </div>
+      
+            <div className="glide__track" data-glide-el="track">
+              <ul className="glide__slides">
+                
+                {
+                    pData.map((item:ProductList, index) => (
+                      <li key={index} className={`glide__slide ${itemClassName}`}>
+                        <ProductCard data={item} />
+                      </li>
+                    ))
+                }
+              </ul>
+            </div>
       </div>
     </div>
   );

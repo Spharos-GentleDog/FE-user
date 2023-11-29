@@ -70,8 +70,14 @@ const SectionHero2: FC<SectionHero2Props> = ({ className = "" }) => {
     // Add more image paths as needed
   ];
 
+  const mobileImagePaths = [
+    '/assets/images/icons/mobilebanner01.png',
+    '/assets/images/icons/mobilebanner01.png'
+  ];
+
   const renderItem = () => {
     const item = imagePaths[indexActive];
+    const mobileItem = mobileImagePaths[indexActive];
     return (
       <div
         className={`nc-SectionHero2Item nc-SectionHero2Item--animation flex flex-col-reverse lg:flex-col relative overflow-hidden ${className}`}
@@ -89,17 +95,32 @@ const SectionHero2: FC<SectionHero2Props> = ({ className = "" }) => {
           onClickNext={handleClickNext}
         />
 
-        <div className="object-cover h-[200px] sm:w-screen sm:h-[300px] md:h-[350px] bg-black" >
+        <div className="h-auto bg-black hidden md:block overflow-hidden object-cover"
+          // style={{
+          //   backgroundImage: `url(${item})`,
+          //   backgroundSize: 'cover',
+          //   backgroundPosition: 'center',
+          //   backgroundRepeat: 'no-repeat'
+          // }}
+        >
           <Image
-            // objectPosition="center"
-            // layout="fill"
-            // loading="eager"
-            // width={1920}
-            // height={1080}
-            fill
-            sizes="100%"
+            width={1920}
+            height={1080}
             src={item}
             alt={`Image ${indexActive + 1}`}
+            placeholder="blur"
+            blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAECAIAAADETxJQAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAMUlEQVR4nGPIrOzOqWhbuHYvw7yNBxK9w/7/+s+g7xSiJaG+eeNBBgY2UUev6LKyZgByfxCvAnvQuAAAAABJRU5ErkJggg=="}  
+          />
+        </div>
+
+        <div className="h-auto max-h-[1024px] bg-black block md:hidden overflow-hidden object-contain">
+          <Image
+            width={1920}
+            height={1080}
+            src={mobileItem}
+            alt={`Image ${indexActive + 1}`}
+            placeholder="blur"
+            blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAECAIAAADETxJQAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAMUlEQVR4nGPIrOzOqWhbuHYvw7yNBxK9w/7/+s+g7xSiJaG+eeNBBgY2UUev6LKyZgByfxCvAnvQuAAAAABJRU5ErkJggg=="}  
           />
         </div>
       </div>

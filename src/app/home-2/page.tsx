@@ -22,10 +22,10 @@ function PageHome2() {
         <SectionHowItWork />
 
         {/* SECTION */}
-        <SectionSliderProductCard
+        {/* <SectionSliderProductCard
           // data={SPORT_PRODUCTS.filter((_, i) => i < 8)}
           subHeading="New Sports equipment"
-        />
+        /> */}
 
         {/* SECTION */}
         <SectionPromo2 />
