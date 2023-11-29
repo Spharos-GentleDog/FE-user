@@ -3,7 +3,8 @@ import { Disclosure } from '@headlessui/react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import Icon from './Icon';
 
 // 3. CSS 수정도 필요하다
 // 4. 대표 상품의 이미지를 출력해야 한다.
@@ -119,81 +120,124 @@ export default function OrderList() {
     <>
       {Object.entries(groupedOrders).map(([date, ordersOnDate]) => (
         <div key={date} className="date-group">
-          <span className="my-4">{date} 주문</span>
+          <span className="font-semibold lg:text-lg">{date}</span>
           {Object.entries(ordersOnDate).map(([orderNumber, brandName]) => (
             <div
               key={orderNumber}
-              className="border-[1.5px] rounded-md p-4 w-full mt-2"
+              className="border-[1.5px] rounded-md pt-2 pb-4 px-4 w-full my-4 shadow-lg"
             >
-              <div className="order-number">
-                <span>주문번호: {orderNumber}</span>
+              <div className="order-number text-end text-sm">
+                <div className="pt-2">{orderNumber}</div>
                 {Object.entries(brandName).map(([brand, orders]) => (
                   <div key={brand}>
                     {orders.map((order) => (
                       <Disclosure key={order.groupId}>
-                        <div className="flex flex-col border-[1.5px] rounded-md divide-y-2">
-                          <Disclosure.Button className="h-full flex space-y-6 ">
-                            <div className="flex">
+                        <div className="flex flex-col border-[1.5px] rounded-md my-4 shadow-md">
+                          <Disclosure.Button className="h-full flex p-4">
+                            <div className="flex p-4">
                               <Image
-                                src="https://gentledog.s3.ap-northeast-2.amazonaws.com/product/10.jpg"
-                                alt="임시 이름 어쩌구"
+                                src={order.productImageUrl}
+                                alt={order.productNameAndTotalCount}
                                 width={100}
                                 height={100}
                                 className="rounded-md"
                               />
                             </div>
-                            <div className="flex flex-col w-full">
-                              <span className="">{order.brandName}</span>
-                              <span className="">
+                            <div className="flex flex-col w-full text-start p-4">
+                              <span className="font-semibold text-lg lg:text-2xl">
+                                {order.brandName}
+                              </span>
+                              <div className="border-t border-slate-200 dark:border-slate-700 my-4 md:my-4 flex-shrink-0"></div>
+                              <span className="text-base font-semibold">
                                 {order.productNameAndTotalCount}
                               </span>
-                              <span className="">{order.totalPrice}</span>
                               <span className="">
-                                {order.vendorsOrderListStatus}
+                                {order.totalPrice.toLocaleString('ko-KR', {
+                                  style: 'currency',
+                                  currency: 'KRW',
+                                })}
                               </span>
-                              <span className="">
-                                {order.vendorsOrderListStatusDescription}
-                              </span>
+                              <div className="flex gap-4">
+                                <span className="">
+                                  {order.vendorsOrderListStatus}
+                                </span>
+                                <span className="">
+                                  {order.vendorsOrderListStatusDescription}
+                                </span>
+                              </div>
                             </div>
                           </Disclosure.Button>
-                          <Disclosure.Panel className="flex flex-col h-full">
+                          <Disclosure.Panel className="flex flex-col h-fulld p-4">
                             {order.orderDetailList.map((product) => (
                               <div
                                 key={product.productId}
-                                className="flex space-y-2"
+                                className="flex border-[0.5px] my-1 rounded-md shadow-md"
                               >
                                 <div>
                                   <Link href={`/product/${product.productId}`}>
                                     <Image
-                                      src="https://gentledog.s3.ap-northeast-2.amazonaws.com/product/10.jpg"
-                                      // src={`${product.productImageUrl}`}
+                                      src={`${product.productImageUrl}`}
                                       alt={`${product.productName}`}
-                                      width={100}
-                                      height={100}
+                                      width={150}
+                                      height={150}
                                     />
                                   </Link>
                                 </div>
-                                <div className="py-4 flex flex-col w-full h-full">
-                                  <span className="">
+                                <div className="flex flex-col w-full h-full text-start p-4 ">
+                                  <span className="font-semibold">
                                     {product.productName}
                                   </span>
+                                  <div className="border-t border-slate-200 dark:border-slate-700 my-2 md:my-2 flex-shrink-0"></div>
+                                  <div className="flex gap-2">
+                                    <Icon type="color" />
+                                    <span className="">
+                                      {product.productColor}
+                                    </span>
+                                  </div>
+                                  <div className="flex gap-2">
+                                    <Icon type="size" />
+                                    <span className="">
+                                      {product.productSize}
+                                    </span>
+                                  </div>
                                   <span className="">
-                                    {product.productColor}
+                                    {product.productStock}개
                                   </span>
                                   <span className="">
-                                    {product.productSize}
+                                    {product.productPrice.toLocaleString(
+                                      'ko-KR',
+                                      {
+                                        style: 'currency',
+                                        currency: 'KRW',
+                                      }
+                                    )}
+                                    원
                                   </span>
                                   <span className="">
-                                    {product.productStock}
+                                    {product.productDiscountRate !== 0
+                                      ? '-' +
+                                        product.productDiscountRate.toLocaleString(
+                                          'ko-KR',
+                                          {
+                                            style: 'currency',
+                                            currency: 'KRW',
+                                          }
+                                        ) +
+                                        '원'
+                                      : ''}
                                   </span>
                                   <span className="">
-                                    {product.productPrice}
-                                  </span>
-                                  <span className="">
-                                    {product.productDiscountRate}
-                                  </span>
-                                  <span className="">
-                                    {product.couponDiscountPrice}
+                                    {product.couponDiscountPrice !== 0
+                                      ? '-' +
+                                        product.couponDiscountPrice.toLocaleString(
+                                          'ko-KR',
+                                          {
+                                            style: 'currency',
+                                            currency: 'KRW',
+                                          }
+                                        ) +
+                                        '원'
+                                      : ''}
                                   </span>
                                 </div>
                               </div>

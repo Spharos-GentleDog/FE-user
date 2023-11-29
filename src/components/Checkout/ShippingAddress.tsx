@@ -91,7 +91,7 @@ const ShippingAddress: React.FC<Props> = ({
   const [isModalAddress, setIsModalAddress] = useState(false);
   const renderShippingAddress = () => {
     return (
-      <div className="border border-slate-200 dark:border-slate-700 rounded-xl ">
+      <div className="border shadow-sm border-slate-200 dark:border-slate-700 rounded-xl ">
         <div className="p-6 flex flex-col sm:flex-row items-start">
           <div className="sm:ml-4">
             <h3 className=" text-slate-700 dark:text-slate-300 flex ">

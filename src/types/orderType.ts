@@ -15,6 +15,7 @@ export interface OrderListType {
   orderNumber: string;
   brandName: string;
   brandLogoImageUrl: string;
+  productImageUrl: string;
   vendorEmail: string;
   totalPrice: number;
   productNameAndTotalCount: string;

@@ -196,16 +196,16 @@ const ProductCard: FC<ProductCardProps> = ({
             />
           </Link>
           <div className="absolute top-3 end-3 z-10 flex gap-1">
-            {/* todo: 실제 상품 데이터 페칭 시 타입 확인 */}
             <LikeButton productId={productId as number} className="" />
-            <ButtonSecondary
+            {/* todo: 퀵뷰 수정 필요 */}
+            {/* <ButtonSecondary
               className="ms-1.5 bg-white hover:!bg-gray-100 hover:text-slate-900 transition-colors shadow-lg"
               fontSize="text-xs"
               sizeClass="py-2 px-2.5"
               onClick={() => setShowModalQuickView(true)}
             >
               <ArrowsPointingOutIcon className="w-3.5 h-3.5" />
-            </ButtonSecondary>
+            </ButtonSecondary> */}
           </div>
           {/* 사이즈가 존재하면 사이즈가 뜨고 아니면 addCart 버튼이 뜸 */}
           {sizes ? (
