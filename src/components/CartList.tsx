@@ -107,12 +107,12 @@ export default function CartList() {
       // console.log('productInCartId', productInCartId);
       // console.log('productDetailId', productDetailId);
       // console.log('newCount', newCount);
-      console.log(
-        'countcheck',
-        JSON.stringify({
-          count: newCount,
-        })
-      );
+      // console.log(
+      //   'countcheck',
+      //   JSON.stringify({
+      //     count: newCount,
+      //   })
+      // );
       try {
         const res = await fetch(
           `${process.env.BASE_API_URL}/api/v1/wish/cart/${productInCartId}`,
@@ -437,47 +437,22 @@ export default function CartList() {
   }
 
   /** 체크된 상품들 삭제 핸들러 */
-  const handleCheckedDelete = async (
-    cartBrandProducts: BrandProductCartDto[]
-  ) => {
+  const handleCheckedDelete = (cartBrandProducts: BrandProductCartDto[]) => {
     const checkedProductIds = Object.values(cartBrandProducts)
       .flat()
-      .map((items) => items.productInCartId);
-    console.log('checkedProductIds', checkedProductIds);
+      .filter((item) => item.checked)
+      .map((item) => item.productInCartId);
+    // console.log('checkedProductIds', checkedProductIds);
 
     // 장바구니에서 삭제
-    if (checkedProductIds) {
-      for (const id in checkedProductIds) {
-        console.log('id', typeof Number(id));
-        await handleItemDelete(Number(id));
+    if (checkedProductIds.length > 0) {
+      for (const id of checkedProductIds) {
+        // console.log('checkedProductIds', checkedProductIds);
+        // console.log('id', id);
+        // console.log('id', typeof Number(id));
+        handleItemDelete(Number(id));
       }
-
-      // 상태 업데이트
-      setCartBrandProducts((prevState) => {
-        const newState = { ...prevState };
-
-        for (const brand in newState) {
-          newState[brand] = newState[brand].filter(
-            (product) => !product.checked
-          );
-        }
-
-        return newState;
-      });
     }
-    // 클라이언트 사이드에서 상품 제거 및 브랜드 확인
-    setCartBrandProducts((prevState) => {
-      const newState = { ...prevState };
-
-      for (const brand in newState) {
-        // 해당 브랜드의 모든 상품이 삭제되었는지 확인
-        if (newState[brand].length === 0) {
-          delete newState[brand]; // 브랜드 삭제
-        }
-      }
-
-      return newState;
-    });
   };
 
   // 페칭 전 데이터 정리
