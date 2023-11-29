@@ -104,6 +104,15 @@ export default function CartList() {
     newCount: number
   ) => {
     async function countfetch() {
+      // console.log('productInCartId', productInCartId);
+      // console.log('productDetailId', productDetailId);
+      // console.log('newCount', newCount);
+      console.log(
+        'countcheck',
+        JSON.stringify({
+          count: newCount,
+        })
+      );
       try {
         const res = await fetch(
           `${process.env.BASE_API_URL}/api/v1/wish/cart/${productInCartId}`,
@@ -115,7 +124,7 @@ export default function CartList() {
               Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({
-              count: { newCount },
+              count: newCount,
             }),
           }
         );
@@ -471,20 +480,24 @@ export default function CartList() {
     });
   };
 
-  // 페칭 전 데이터 정리)
+  // 페칭 전 데이터 정리
   function formatCartDataForProduct(cartIdData: CartIdType): {
     requestProductsList: Array<{
       brandName: string;
       productDetailIds: number[];
     }>;
   } {
+    if (!cartIdData) {
+      // console.error('Invalid cartIdData:', cartIdData);
+      return { requestProductsList: [] };
+    }
     const requestProductsList = Object.entries(cartIdData).map(
       ([brandName, products]) => ({
         brandName,
         productDetailIds: products.map((product) => product.productDetailId),
       })
     );
-
+    // console.log('requestProductsList', requestProductsList);
     return { requestProductsList };
   }
 
@@ -581,7 +594,6 @@ export default function CartList() {
                 <RenderProduct
                   key={`cart-${item.productDetailId}`}
                   item={item}
-                  isChecked={item.checked}
                   onItemCheck={(checked) =>
                     handleItemCheck(
                       checked,
@@ -591,9 +603,9 @@ export default function CartList() {
                   }
                   onCountChange={(newCount) =>
                     handleCountChange(
+                      item.productInCartId,
                       item.productDetailId,
-                      newCount,
-                      item.productInCartId
+                      newCount
                     )
                   }
                   onItemDelete={() => handleItemDelete(item.productInCartId)}
@@ -613,7 +625,7 @@ export default function CartList() {
               y="0px"
               width="100%"
               viewBox="0 0 1024 1024"
-              enable-background="new 0 0 1024 1024"
+              enableBackground="new 0 0 1024 1024"
             >
               <path
                 fill="currentColor"
@@ -690,32 +702,6 @@ export default function CartList() {
           <ButtonPrimary href="/checkout" className="mt-8 w-full">
             주문하기
           </ButtonPrimary>
-          <div className="mt-5 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-center">
-            <div className="block relative pl-5">
-              <Icon type="exclamation" />
-              Learn more{` `}
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="##"
-                className="text-slate-900 dark:text-slate-200 underline font-medium"
-              >
-                Taxes
-              </a>
-              <span>
-                {` `}and{` `}
-              </span>
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href="##"
-                className="text-slate-900 dark:text-slate-200 underline font-medium"
-              >
-                Shipping
-              </a>
-              {` `} infomation
-            </div>
-          </div>
         </div>
       </div>
     </>

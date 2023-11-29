@@ -10,6 +10,7 @@ import RenderStatusSoldout from './RenderStatusSoldout';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { ProductCartDto } from '@/types/cartType';
 import Prices2 from './Prices2';
+import { getServerSession } from 'next-auth';
 
 /**
  * 장바구니 상품 출력
@@ -22,13 +23,11 @@ export default function RenderProduct({
   onItemCheck,
   onCountChange,
   onItemDelete,
-  isChecked,
 }: {
   item: ProductCartDto;
   onItemCheck: (checked: boolean) => void;
-  onCountChange?: (productInCart: number, count: number) => void;
+  onCountChange?: (newCount: number) => void;
   onItemDelete?: (id: number) => void;
-  isChecked: boolean;
 }) {
   return (
     <div
@@ -87,28 +86,18 @@ export default function RenderProduct({
 
                 <div className="mt-3 flex justify-between w-full sm:hidden relative">
                   <select
-                    name="qty"
-                    id="qty"
+                    name={`qty-${item.productDetailId}`}
+                    id={`qty-${item.productDetailId}`}
                     className="form-select text-sm rounded-md py-1 border-slate-200 dark:border-slate-700 relative z-10 dark:bg-slate-800 "
-                    onChange={(e) =>
-                      onCountChange &&
-                      onCountChange(
-                        item.productInCartId,
-                        Number(e.target.value)
-                      )
-                    }
+                    onChange={(e) => onCountChange?.(Number(e.target.value))}
                     defaultValue={item.count}
                   >
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="6">8</option>
-                    <option value="7">9</option>
-                    <option value="6">10</option>
+                    {/* todo: 최대 수량을 재고까지 */}
+                    {[...Array(10)].map((_, i) => (
+                      <option key={i} value={i + 1}>
+                        {i + 1}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -118,8 +107,7 @@ export default function RenderProduct({
                   defaultValue={item.count}
                   className="relative z-10"
                   onCountChange={(newCount) =>
-                    onCountChange &&
-                    onCountChange(item.productInCartId, newCount)
+                    onCountChange && onCountChange(newCount)
                   }
                 />
               </div>
