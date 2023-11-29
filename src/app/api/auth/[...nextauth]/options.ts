@@ -27,7 +27,6 @@ export const options: NextAuthOptions = {
                         })
                     })
                     const user = await res.json();
-                    // console.log(user.result)
 
                     return user.result
                 } catch (e: any) {
@@ -42,7 +41,15 @@ export const options: NextAuthOptions = {
         }),
         KakaoProvider({
             clientId: process.env.KAKAO_CLIENT_ID,
-            clientSecret: process.env.KAKAO_CLIENT_SECRET
+            clientSecret: process.env.KAKAO_CLIENT_SECRET,
+            profile(profile: any) {
+                return {
+                    id: profile.id,
+                    usersName: profile.kakao_account?.name,
+                    userEmail: profile.kakao_account?.email,
+                    userPhone: profile.kakao_account?.phone_number,
+                };
+            },
         }),
         {
             id: "naver",
@@ -56,9 +63,9 @@ export const options: NextAuthOptions = {
             profile(profile: any) {
                 return {
                     id: profile.response?.id,
-                    name: profile.response?.name,
-                    email: profile.response?.email,
-                    image: profile.response?.mobile
+                    usersName: profile.response?.name,
+                    userEmail: profile.response?.email,
+                    image: profile.response?.mobile,
                 }
             },
             clientId: process.env.NAVER_CLIENT_ID,
@@ -67,9 +74,8 @@ export const options: NextAuthOptions = {
     ],
 
     callbacks: {
-        
-
         async jwt({ token, user }) {
+
             return { ...token, ...user }
         },
 

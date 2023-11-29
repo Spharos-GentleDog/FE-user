@@ -248,30 +248,6 @@ const NavMobile: React.FC<NavMobileProps> = ({
             </span>
           </Link>
         </Disclosure>
-        <Disclosure
-          as="li"
-          className="break-keep text-slate-900 dark:text-white"
-        >
-          <Link
-            className="flex w-full items-center py-2.5 px-4 font-medium uppercase tracking-wide text-sm hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
-            href={{
-              pathname: `/collection`,
-              query: {
-                categoryType: 'new',
-                categoryName: '신상',
-                isDiscount: false,
-                page: 1
-              }
-            }}
-          >
-            <span
-              // className="block w-full"
-              onClick={onClickClose}
-            >
-              신상
-            </span>
-          </Link>
-        </Disclosure>
         {parentCategoryData.map(_renderItem)}
       </ul>
     </div>

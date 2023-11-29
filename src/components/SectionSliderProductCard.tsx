@@ -42,7 +42,6 @@ const SectionSliderProductCard: FC<SectionSliderProductCardProps> = ({
   //
   const [isShow, setIsShow] = useState(false);
   const [productData, setProductData] = useState<ProductList[]>([]);
-
   useEffect(() => {
     const getData = async () => {
       const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/product-find?categoryType=${category}&isDiscount=false&page=1`, {

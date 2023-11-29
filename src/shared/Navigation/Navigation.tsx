@@ -49,22 +49,6 @@ function Navigation() {
           전체
         </Link>
       </div>
-      <div className="h-20 flex-shrink-0 flex items-center">
-        <Link
-          className="inline-flex items-center text-sm lg:text-[15px] font-medium text-slate-700 dark:text-slate-300 py-2.5 px-2 xl:px-3 rounded-full hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200"
-          href={{
-            pathname: `/collection`,
-            query: {
-              categoryType: 'new',
-              categoryName: '신상',
-              isDiscount: false,
-              page: 1
-            }
-          }}
-        >
-          신상
-        </Link>
-      </div>
       {parentCategoryData.map((item, index) => (
         <NavigationItem key={index} menuItem={item} />
       ))}

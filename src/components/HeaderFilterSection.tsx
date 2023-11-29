@@ -50,7 +50,7 @@ const HeaderFilterSection: FC<HeaderFilterSectionProps> = ({
             )
           )}
         </Nav>
-        <span className="block flex-shrink-0">
+        {/* <span className="block flex-shrink-0">
           <ButtonPrimary
             className="w-full !pr-16"
             sizeClass="pl-4 py-2.5 sm:pl-6"
@@ -91,7 +91,7 @@ const HeaderFilterSection: FC<HeaderFilterSectionProps> = ({
               />
             </span>
           </ButtonPrimary>
-        </span>
+        </span> */}
       </div>
 
       <Transition
