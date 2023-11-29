@@ -67,10 +67,8 @@ const MainNav2Logged: FC<MainNav2LoggedProps> = () => {
         </div>
 
         <div className="lg:flex-1 flex items-center">
-
-          <Link href="/" className='h-auto'>
+          <Link href="/" className="h-auto">
             <Logo className="flex-shrink-0 " />
-
           </Link>
         </div>
 
@@ -94,12 +92,16 @@ const MainNav2Logged: FC<MainNav2LoggedProps> = () => {
                 <Link href="/login" className="px-3">
                   <Icon type="user" />
                 </Link>
-                <CartDropdown />
+                <Link href="/login" className="">
+                  <CartDropdown />
+                </Link>
               </>
             ) : (
               <>
                 <AvatarDropdown />
-                <CartDropdown />
+                <Link href="/cart" className="">
+                  <CartDropdown />
+                </Link>
               </>
             )
           }

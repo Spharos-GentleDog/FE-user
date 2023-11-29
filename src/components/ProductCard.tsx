@@ -15,7 +15,7 @@ import Link from 'next/link';
 import NcImage from '@/shared/NcImage/NcImage';
 import { ProductList } from '@/types/product/productList';
 import defaultImage from '@/images/logo-name.svg';
-import RenderColor from './RenderColor2';
+import RenderColor from './RenderColor';
 import RenderSizeList from './RenderSizeList';
 import RenderGroupButtons from './RenderGroupButtons';
 import { useSession } from 'next-auth/react';

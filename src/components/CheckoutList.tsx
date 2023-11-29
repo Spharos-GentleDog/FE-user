@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react';
 import Payment from './Payment';
 import RenderProduct2 from './RenderProduct2';
 import Icon from './Icon';
-import { CartIdType } from '@/types/cartType';
+import { BrandProductCartDto, CartIdType } from '@/types/cartType';
 import { AddressType } from '@/types/userType';
 
 /**
@@ -112,6 +112,7 @@ export default function CheckoutList() {
 
   // 상품 정보 패칭
   useEffect(() => {
+    if (!cartId) return;
     async function loadCartProducts() {
       try {
         const requestOrderProductInfoList = transformToRequestOrderFormat(
@@ -192,11 +193,11 @@ export default function CheckoutList() {
   };
 
   const deliveryOrdersInRequest = {
-    recipientName: defaultAddress.recipientName,
-    recipientAddress: defaultAddress.userAddress,
-    recipientPhoneNumber: defaultAddress.recipientPhoneNumber,
-    entrancePassword: defaultAddress.entrancePassword,
-    deliveryRequestMessage: defaultAddress.addressRequestMessage,
+    recipientName: defaultAddress?.recipientName,
+    recipientAddress: defaultAddress?.userAddress,
+    recipientPhoneNumber: defaultAddress?.recipientPhoneNumber,
+    entrancePassword: defaultAddress?.entrancePassword,
+    deliveryRequestMessage: defaultAddress?.addressRequestMessage,
   };
 
   console.log('deliveryOrdersInRequest', deliveryOrdersInRequest);
@@ -216,7 +217,7 @@ export default function CheckoutList() {
       productDetailId: product.productDetailId,
       productName: product?.productName || '',
       productStock: product.count,
-      productPrice: product.productPrice,
+      productPrice: product?.productPrice,
       productSize: product.size,
       productColor: product.color,
       productOrderStatus: 'ORDERS', // 상태 설정
@@ -260,6 +261,17 @@ export default function CheckoutList() {
           'vendorsOrderListInRequest',
           JSON.stringify(vendorsOrderList)
         );
+
+        localStorage.setItem(
+          'productInCartId',
+          JSON.stringify(
+            extractMatchingProductInCartIds(cartBrandProducts, cartId)
+          )
+        );
+        // console.log(
+        //   'productInCartIdlocalStorage',
+        //   localStorage.getItem('productInCartId')
+        // );
       }
     } else {
       // todo: 비회원 결제 하기 위한 페이지로 이동
@@ -267,7 +279,35 @@ export default function CheckoutList() {
     }
   };
 
-  console.log('price', price?.totalPrice);
+  const extractMatchingProductInCartIds = (
+    cartBrandProducts: orderProductInfoListDtoType[] | undefined,
+    cartId: CartIdType | undefined
+  ): number[] => {
+    if (!cartBrandProducts) {
+      return [];
+    }
+
+    const productInCartIds: number[] = [];
+
+    cartBrandProducts.forEach((brandProducts) => {
+      brandProducts.orderProductInfoDto.forEach((productInfo) => {
+        if (cartId) {
+          Object.values(cartId).forEach((brand) => {
+            const foundProduct = brand.find(
+              (cartProduct) =>
+                cartProduct.productDetailId === productInfo.productDetailId
+            );
+            if (foundProduct) {
+              productInCartIds.push(foundProduct.productInCartId);
+            }
+          });
+        }
+      });
+    });
+
+    return productInCartIds;
+  };
+  
   /**
    * 주문자 정보, 결제 수단 출력
    */

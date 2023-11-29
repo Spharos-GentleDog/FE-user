@@ -60,7 +60,16 @@ export default function CartDropdown() {
   /** 체크된 장바구니 물품들의 수량 */
 
   return (
-    <Popover className="relative">
+    <>
+      <div className="text-opacity-90 group w-10 h-10 sm:w-12 sm:h-12 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full inline-flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 relative">
+        {dropdownCartId && (
+          <div className="w-3.5 h-3.5 flex items-center justify-center bg-primary-500 absolute top-1.5 right-1.5 rounded-full text-[10px] leading-none text-white font-medium">
+            <span className="mt-[1px]">{dropdownCartId.totalCount}</span>
+          </div>
+        )}
+        <Icon type="cart" />
+      </div>
+      {/* <Popover className="relative">
       {({ open, close }) => (
         <>
           <Popover.Button
@@ -92,7 +101,6 @@ export default function CartDropdown() {
                   <div className="max-h-[60vh] p-5 overflow-y-auto hiddenScrollbar">
                     <h3 className="text-xl font-semibold">장바구니</h3>
                     <div className="divide-y divide-slate-100 dark:divide-slate-700">
-                      {/* todo: 장바구니에 들어간 제품들 패칭 */}
                       {[PRODUCTS[0], PRODUCTS[1], PRODUCTS[2]].map(
                         (item, index) => (
                           <RenderProduct3
@@ -113,7 +121,6 @@ export default function CartDropdown() {
                           쿠폰과 포인트는 주문하기에서 확인하세요.
                         </span>
                       </span>
-                      {/* todo: 총합을 구하는 함수 추가 */}
                       <span className="">299,005</span>
                     </p>
                     <div className="flex space-x-2 mt-5">
@@ -139,6 +146,7 @@ export default function CartDropdown() {
           </Transition>
         </>
       )}
-    </Popover>
+    </Popover> */}
+    </>
   );
 }
