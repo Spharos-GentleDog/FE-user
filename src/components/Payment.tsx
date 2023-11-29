@@ -27,13 +27,13 @@ function Payment({
     const paymentMethodsWidgetRef = useRef<ReturnType<
         PaymentWidgetInstance["renderPaymentMethods"]
     > | null>(null);
+
     useAsync(async () => {
         const paymentWidget = await loadPaymentWidget('test_ck_jExPeJWYVQ1RezQ2XYPnV49R5gvN', nanoid());
         const paymentMethodsWidget = paymentWidget.renderPaymentMethods(
-
             "#payment-widget",
             { value: price },
-            // { variantKey: "DEFAULT" }
+            { variantKey: "DEFAULT" }
         );
         paymentWidget.renderAgreement("#agreement");
 
@@ -54,6 +54,7 @@ function Payment({
                         totalAmount: price,
                         successUrl: `${window.location.origin}/checkout/success`,
                         failUrl: `${window.location.origin}/checkout/fail`,
+                        amount: price,
                     });
                 } catch (error) {
                     toast.custom((t) => (

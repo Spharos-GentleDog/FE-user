@@ -1,12 +1,9 @@
 'use client';
 
 import ShippingAddress from '@/components/Checkout/ShippingAddress';
-import { paymentProductList } from '@/data/paymentProductList';
 import ButtonPrimary from '@/shared/Button/ButtonPrimary';
 import {
-  DeliveryOrdersInRequest,
   PaymentByProductList,
-  vendorsOrderListInRequest,
 } from '@/types/payment/payment';
 import {
   CheckoutPriceType,
@@ -17,8 +14,9 @@ import { useEffect, useState } from 'react';
 import Payment from './Payment';
 import RenderProduct2 from './RenderProduct2';
 import Icon from './Icon';
-import { BrandProductCartDto, CartIdType } from '@/types/cartType';
+import { CartIdType } from '@/types/cartType';
 import { AddressType } from '@/types/userType';
+import { nanoid } from "nanoid";
 
 /**
  * 장바구니 상품 출력
@@ -33,8 +31,6 @@ export default function CheckoutList() {
   const [paymentProduct, setPaymentProduct] = useState<PaymentByProductList[]>(
     []
   ); // 결제할 상품들
-  const [delivery, setDelivery] = useState<DeliveryOrdersInRequest>();
-  const [order, setOrder] = useState<vendorsOrderListInRequest[]>([]);
   const [paymentClicked, setPaymentClicked] = useState(false);
   // 페칭 후 저장할 가격 정보
   const [price, setPrice] = useState<CheckoutPriceType>();
@@ -234,7 +230,7 @@ export default function CheckoutList() {
     brandProduct.orderProductInfoDto.map((product) => ({
       vendorEmail: product.vendorEmail, // 여기에 적절한 값 필요
       productName: product.productName,
-      productCode: product.productCode, // 여기에 적절한 값 필요
+      productCode: nanoid(), // 여기에 적절한 값 필요
       productMainImageUrl: product.imgUrl,
       productAmount: product.productPrice,
       count: product.count,
@@ -307,7 +303,7 @@ export default function CheckoutList() {
 
     return productInCartIds;
   };
-  
+
   /**
    * 주문자 정보, 결제 수단 출력
    */
@@ -328,7 +324,6 @@ export default function CheckoutList() {
             paymentClicked={paymentClicked}
             setPaymentClicked={setPaymentClicked}
             paymentProduct={paymentProduct}
-
             // price={parseInt(price?.totalPriceString.replace(/[₩,]/g, ""))}
             price={price?.totalPrice || 0}
           />
