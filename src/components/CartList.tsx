@@ -14,6 +14,10 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import Icon from './Icon';
 import RenderProduct from './RenderProduct';
+import ButtonClose from '@/shared/ButtonClose/ButtonClose';
+import ButtonSecondary from '@/shared/Button/ButtonSecondary';
+import ButtonThird from '@/shared/Button/ButtonThird';
+import Button from '@/shared/Button/Button';
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 브랜드 체크 박스 수정@@@@@@@@@@@@@@@@@
 // 삭제 로직 수정
@@ -361,20 +365,48 @@ export default function CartList() {
   };
 
   /** 전체 선택 체크박스 상태 변경 핸들러 */
-  const handleAllCheck = (checked: boolean) => {
-    setCartBrandProducts((prevState) => {
-      const newState = { ...prevState };
-
-      Object.keys(newState).forEach((brandName) => {
-        newState[brandName] = newState[brandName].map((product) => ({
-          ...product,
+  const handleAllCheck = async (checked: boolean) => {
+    if (!cartBrandProducts) return;
+    const changedCheckedList = Object.values(cartBrandProducts).flatMap(
+      (brandProducts) =>
+        brandProducts.map((product) => ({
+          productInCartId: product.productInCartId,
           checked: checked,
-        }));
-      });
-      return newState;
-    });
+        }))
+    );
+    // console.log('changedCheckedList', JSON.stringify({ changedCheckedList }));
 
-    setIsAllChecked(checked);
+    try {
+      const res = await fetch(
+        `${process.env.BASE_API_URL}/api/v1/wish/cart/checked`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            userEmail: userEmail,
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ changedCheckedList }),
+        }
+      );
+
+      if (!res.ok) throw new Error(res.statusText);
+
+      // 성공적으로 서버가 업데이트 되었으면 로컬 상태도 업데이트
+      setCartBrandProducts((prevState) => {
+        const newState = { ...prevState };
+        Object.keys(newState).forEach((brandName) => {
+          newState[brandName] = newState[brandName].map((product) => ({
+            ...product,
+            checked: checked,
+          }));
+        });
+        return newState;
+      });
+      setIsAllChecked(checked);
+    } catch (error) {
+      console.error('Failed to update server', error);
+    }
   };
 
   /**  개별 체크박스 상태에 따라 전체 선택 체크박스 상태 갱신*/
@@ -535,7 +567,6 @@ export default function CartList() {
               onChange={(checked) => handleAllCheck(checked)}
             />
 
-            {/* todo: 선택 삭제 */}
             <button
               className="flex"
               onClick={() =>
@@ -674,9 +705,18 @@ export default function CartList() {
               <span>{checkoutInfo.totalPriceString}</span>
             </div>
           </div>
-          <ButtonPrimary href="/checkout" className="mt-8 w-full">
-            주문하기
-          </ButtonPrimary>
+          {!cartBrandProducts || Object.keys(cartBrandProducts).length === 0 ? (
+            <Button
+              disabled
+              className="mt-8 w-full disabled:bg-opacity-90 bg-slate-900 dark:bg-slate-100 text-slate-50 dark:text-slate-800 shadow-xl"
+            >
+              주문하기
+            </Button>
+          ) : (
+            <ButtonPrimary href="/checkout" className="mt-8 w-full">
+              주문하기
+            </ButtonPrimary>
+          )}
         </div>
       </div>
     </>
