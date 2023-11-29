@@ -22,7 +22,7 @@ import { useSession } from 'next-auth/react';
 
 export interface ProductCardProps {
   className?: string;
-  data?: ProductList;
+  data: ProductList;
   isLiked?: boolean;
 }
 
@@ -131,8 +131,10 @@ const ProductCard: FC<ProductCardProps> = ({
           <Image
             width={80}
             height={96}
-            src={mainImageUrl || ''}
-            alt={productName || ''}
+            src={mainImageUrl}
+            alt={productName}
+            placeholder='blur'
+            blurDataURL={"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAAECAIAAADETxJQAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAMUlEQVR4nGPIrOzOqWhbuHYvw7yNBxK9w/7/+s+g7xSiJaG+eeNBBgY2UUev6LKyZgByfxCvAnvQuAAAAABJRU5ErkJggg=="}
             className="absolute object-cover object-center"
           />
         </div>

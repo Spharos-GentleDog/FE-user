@@ -27,7 +27,6 @@ function Payment({
     const paymentMethodsWidgetRef = useRef<ReturnType<
         PaymentWidgetInstance["renderPaymentMethods"]
     > | null>(null);
-    console.log("paymentPrice", price)
     useAsync(async () => {
         const paymentWidget = await loadPaymentWidget('test_ck_jExPeJWYVQ1RezQ2XYPnV49R5gvN', nanoid());
         const paymentMethodsWidget = paymentWidget.renderPaymentMethods(
@@ -44,24 +43,6 @@ function Payment({
 
     useEffect(() => {
         if (paymentClicked) {
-            // const productCodes = paymentProduct.map((product: { productCode: number }) => product.productCode);
-            // const queryParams = JSON.stringify(productCodes);
-            // console.log(queryParams)
-
-            // const inventoryCheck = async () => {
-            //     const res = await fetch(`/api/inventor?productCode=${queryParams}`, {
-            //         method: "GET",
-            //         headers: {
-            //             "Content-Type": "application/json",~V
-            //         },
-            //     });
-            //     const result = await res.json();
-            //     if (result.result === true) {
-            //         return true
-            //     }
-            // }
-
-
             const getData = async () => {
                 const paymentWidget = paymentWidgetRef.current;
                 try {
