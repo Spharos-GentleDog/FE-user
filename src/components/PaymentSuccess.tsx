@@ -98,8 +98,6 @@ function PaymentSuccess() {
           const result = await res.json();
 
           if (result.code === 200) {
-            //     console.log("deliveryOrdersInRequest : ", localStorage.getItem('deliveryOrdersInRequest') || '{}')
-            //     console.log("vendorsOrderListInRequest : ", localStorage.getItem('vendorsOrderListInRequest') || '{}')
             setDeliveryOrders(
               JSON.parse(
                 localStorage.getItem('deliveryOrdersInRequest') || '{}'
@@ -124,7 +122,6 @@ function PaymentSuccess() {
             })
               .then((res) => res.json())
               .then((data) => {
-                console.log('data', data);
                 setOrderNumber(data.result.orderNumber);
               });
             // 장바구니 삭제

@@ -48,7 +48,6 @@ const ProductCard: FC<ProductCardProps> = ({
   const [showModalQuickView, setShowModalQuickView] = useState(false);
   const router = useRouter();
   const session = useSession();
-  console.log(data)
 
   const notifyAddTocart = ({ sizeName }: { sizeName?: string }) => {
     const handleFetchAddToCart = async () => {

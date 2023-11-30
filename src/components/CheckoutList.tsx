@@ -17,6 +17,8 @@ import Icon from './Icon';
 import { CartIdType } from '@/types/cartType';
 import { AddressType } from '@/types/userType';
 import { nanoid } from "nanoid";
+import toast from 'react-hot-toast';
+import Toast from './Toast';
 
 /**
  * 장바구니 상품 출력
@@ -196,8 +198,6 @@ export default function CheckoutList() {
     deliveryRequestMessage: defaultAddress?.addressRequestMessage,
   };
 
-  console.log('deliveryOrdersInRequest', deliveryOrdersInRequest);
-
   const vendorsOrderList = cartBrandProducts?.map((brandProduct) => ({
     vendorEmail: brandProduct.vendorEmail || '',
     brandName: brandProduct.brandName,
@@ -224,8 +224,6 @@ export default function CheckoutList() {
     })),
   }));
 
-  console.log('vendorsOrderList', vendorsOrderList);
-
   const paymentList = cartBrandProducts?.flatMap((brandProduct) =>
     brandProduct.orderProductInfoDto.map((product) => ({
       vendorEmail: product.vendorEmail, // 여기에 적절한 값 필요
@@ -240,11 +238,10 @@ export default function CheckoutList() {
   const handlePayment = (data: boolean) => {
     if (session.status === 'authenticated') {
       setPaymentClicked(data);
+      // setPrice(price);
 
       if (paymentList && deliveryOrdersInRequest && vendorsOrderList) {
         setPaymentProduct(paymentList);
-        console.log('deliveryOrdersInRequest', deliveryOrdersInRequest);
-        console.log('vendorsOrderList', vendorsOrderList);
 
         localStorage.setItem('paymentProduct', JSON.stringify(paymentList));
 
@@ -264,14 +261,11 @@ export default function CheckoutList() {
             extractMatchingProductInCartIds(cartBrandProducts, cartId)
           )
         );
-        // console.log(
-        //   'productInCartIdlocalStorage',
-        //   localStorage.getItem('productInCartId')
-        // );
       }
     } else {
-      // todo: 비회원 결제 하기 위한 페이지로 이동
-      alert('로그인이 필요합니다.');
+      toast.custom((t) => (
+        <Toast message="로그인이 필요합니다." />
+      ));
     }
   };
 
@@ -324,7 +318,6 @@ export default function CheckoutList() {
             paymentClicked={paymentClicked}
             setPaymentClicked={setPaymentClicked}
             paymentProduct={paymentProduct}
-            // price={parseInt(price?.totalPriceString.replace(/[₩,]/g, ""))}
             price={price?.totalPrice || 0}
           />
         </div>
