@@ -129,9 +129,9 @@ export default function OrderList() {
                                 })}
                               </span>
                               <div className="flex gap-4">
-                                <span className="">
+                                {/* <span className="">
                                   {order.vendorsOrderListStatus}
-                                </span>
+                                </span> */}
                                 <span className="">
                                   {order.vendorsOrderListStatusDescription}
                                 </span>
