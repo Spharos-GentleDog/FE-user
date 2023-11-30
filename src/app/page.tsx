@@ -7,7 +7,7 @@ import loading from './loading';
 import { ProductList } from '@/types/product/productList';
 
 async function getProductData() {
-  try{
+  try {
     const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/product-find?categoryType=all&isDiscount=false&page=1`, {
       cache: 'no-cache',
       method: 'GET',
@@ -15,12 +15,12 @@ async function getProductData() {
         'Content-Type': 'application/json'
       }
     })
-  
+
     const data = await res.json();
     // console.log('data', data)
     return data
   }
-  catch(err){
+  catch (err) {
     console.log(err);
   }
 }
@@ -28,18 +28,17 @@ async function getProductData() {
 const PageHome = async () => {
 
   const myData = await getProductData();
-  console.log('myData', myData)
   return (
     <div className="nc-PageHome relative overflow-hidden">
       <SectionHero2 />
       <div className="container relative space-y-16 my-24">
-      <Suspense fallback={<p>...loading</p>}>
-        <SectionSliderProductCard
-          category='all'
-          heading='HOT 신상'
-          produdtData={myData.result as ProductList[]}
-        />
-      </Suspense>
+        <Suspense fallback={<p>...loading</p>}>
+          <SectionSliderProductCard
+            category='all'
+            heading='HOT 신상'
+            produdtData={myData.result as ProductList[]}
+          />
+        </Suspense>
 
         {/* <SectionSliderProductCard
           category='best'

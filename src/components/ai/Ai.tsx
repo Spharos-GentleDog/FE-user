@@ -22,10 +22,10 @@ function Ai() {
       const formData = new FormData();
       formData.append('img', selectedFile);
 
-      console.log('formData: ', formData.get('img'))
+      // console.log('formData: ', formData.get('img'))
       try {
         setLoading(true);
-        const res = await fetch(`https://gentledog-ai-new.duckdns.org/image_predict`, {
+        const res = await fetch(`https://gentledogai.duckdns.org/image_predict`, {
           method: 'POST',
           body: formData,
         });
@@ -41,7 +41,6 @@ function Ai() {
           });
           const dogId = await res.json();
 
-          console.log('dogId: ', dogId);
           if (dogId) {
             const res = await fetch(`${process.env.BASE_API_URL}/api/v1/review/find-review-dogId`, {
               method: 'POST',
@@ -54,7 +53,6 @@ function Ai() {
             });
             const productId = await res.json();
 
-            console.log('productId: ', productId);
             if (productId) {
               const res = await fetch(`${process.env.BASE_API_URL}/api/v1/product/ai-product-detail`, {
                 method: 'POST',
@@ -67,7 +65,6 @@ function Ai() {
               });
 
               const productDetail = await res.json();
-              console.log('productDetail: ', productDetail);
 
               if (productDetail) {
                 localStorage.setItem('aiProductDetail', JSON.stringify(productDetail.result));
