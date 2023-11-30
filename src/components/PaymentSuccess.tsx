@@ -201,7 +201,7 @@ function PaymentSuccess() {
                   <td className="py-2 px-4">
                     <div className="flex">
                       {data?.method}
-                      {data?.easyPay.provider
+                      {data?.easyPay && data?.easyPay.provider
                         ? '(' + data.easyPay.provider + ')'
                         : ''}
                     </div>
