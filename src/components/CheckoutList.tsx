@@ -237,30 +237,37 @@ export default function CheckoutList() {
 
   const handlePayment = (data: boolean) => {
     if (session.status === 'authenticated') {
-      setPaymentClicked(data);
-      // setPrice(price);
+      if (deliveryOrdersInRequest.recipientAddress) {
 
-      if (paymentList && deliveryOrdersInRequest && vendorsOrderList) {
-        setPaymentProduct(paymentList);
+        setPaymentClicked(data);
+        // setPrice(price);
 
-        localStorage.setItem('paymentProduct', JSON.stringify(paymentList));
+        if (paymentList && deliveryOrdersInRequest && vendorsOrderList) {
+          setPaymentProduct(paymentList);
 
-        localStorage.setItem(
-          'deliveryOrdersInRequest',
-          JSON.stringify(deliveryOrdersInRequest)
-        );
+          localStorage.setItem('paymentProduct', JSON.stringify(paymentList));
 
-        localStorage.setItem(
-          'vendorsOrderListInRequest',
-          JSON.stringify(vendorsOrderList)
-        );
+          localStorage.setItem(
+            'deliveryOrdersInRequest',
+            JSON.stringify(deliveryOrdersInRequest)
+          );
 
-        localStorage.setItem(
-          'productInCartId',
-          JSON.stringify(
-            extractMatchingProductInCartIds(cartBrandProducts, cartId)
-          )
-        );
+          localStorage.setItem(
+            'vendorsOrderListInRequest',
+            JSON.stringify(vendorsOrderList)
+          );
+
+          localStorage.setItem(
+            'productInCartId',
+            JSON.stringify(
+              extractMatchingProductInCartIds(cartBrandProducts, cartId)
+            )
+          );
+        }
+      } else {
+        toast.custom((t) => (
+          <Toast message="배송지 정보를 선택해주세요." />
+        ));
       }
     } else {
       toast.custom((t) => (

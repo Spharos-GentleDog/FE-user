@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react';
 
 function PaymentSuccess() {
   const session = useSession();
+  console.log(session.data?.user.userEmail)
   const token = session?.data?.user.accessToken;
   const userEmail = session?.data?.user.userEmail;
   const param = useSearchParams();
