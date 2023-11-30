@@ -6,16 +6,12 @@ import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import Icon from './Icon';
 
-// 3. CSS 수정도 필요하다
-// 4. 대표 상품의 이미지를 출력해야 한다.
-// 5. 변동이 생길 예정
-
 export default function OrderList() {
   const session = useSession();
   const token = session?.data?.user.accessToken;
   const userEmail = session?.data?.user.userEmail;
 
-  const [nextGroup, setNextGroup] = useState<number>();
+  const [nextGroup, setNextGroup] = useState();
   const [groupedOrders, setGroupedOrders] = useState<
     Record<string, Record<string, Record<string, OrderListType[]>>>
   >({});
