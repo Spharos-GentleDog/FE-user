@@ -3,11 +3,14 @@ import React, { useEffect } from "react";
 import NavigationItem from "./NavigationItem";
 import { ParentCategoryType } from "@/types/product/category";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 /**
  * 네비게이션 중앙에 있는 메뉴들을 렌더링합니다.
  */
 function Navigation() {
+  const session = useSession();
+
   const [parentCategoryData, setParentCategoryData] = React.useState<ParentCategoryType[]>([]);
 
   useEffect(() => {
@@ -33,6 +36,21 @@ function Navigation() {
 
   return (
     <ul className="nc-Navigation flex items-center">
+      {
+        session.status === 'authenticated' ?
+          <div className="h-20 flex-shrink-0 flex items-center">
+            <Link
+              className="inline-flex items-center text-sm lg:text-[15px] font-medium text-slate-700 dark:text-slate-300 py-2.5 px-2 xl:px-3 rounded-full hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+              href={{
+                pathname: `/ai`,
+              }}
+            >
+              AI 추천 기능
+            </Link>
+          </div>
+          :
+          ""
+      }
       <div className="h-20 flex-shrink-0 flex items-center">
         <Link
           className="inline-flex items-center text-sm lg:text-[15px] font-medium text-slate-700 dark:text-slate-300 py-2.5 px-2 xl:px-3 rounded-full hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200"
