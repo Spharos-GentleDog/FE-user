@@ -8,7 +8,9 @@ export default function Order() {
   return (
     <>
       <div className="p-8">
-        <h2 className="text-lg lg:text-3xl font-semibold mb-4">주문내역</h2>
+        <h2 className="hidden md:block text-lg lg:text-3xl font-semibold mb-4">
+          주문내역
+        </h2>
         <OrderList />
       </div>
     </>

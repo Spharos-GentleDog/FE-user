@@ -50,7 +50,7 @@ export const PathData: PathdataType[] = [
     title: 'AI 추천 결과',
   },
   {
-    path: 'order',
+    path: '/order',
     title: '주문내역',
   },
 ];
