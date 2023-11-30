@@ -12,7 +12,7 @@ import Link from 'next/link';
 import Icon from '../Icon';
 import { useSession } from 'next-auth/react';
 
-export interface MainNav2LoggedProps {}
+export interface MainNav2LoggedProps { }
 
 /**
  *
@@ -73,18 +73,19 @@ const MainNav2Logged: FC<MainNav2LoggedProps> = () => {
         </div>
 
         <div className="flex-[4] hidden lg:flex justify-center">
-          {showSearchForm ? renderSearchForm() : <Navigation />}
+          {/* {showSearchForm ? renderSearchForm() : <Navigation />} */}
+          <Navigation />
         </div>
 
         <div className="flex-1 flex items-center justify-end text-slate-700 dark:text-slate-100">
-          {!showSearchForm && (
+          {/* {!showSearchForm && (
             <button
               className="hidden lg:flex w-10 h-10 sm:w-12 sm:h-12 rounded-full text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:outline-none items-center justify-center"
               onClick={() => setShowSearchForm(!showSearchForm)}
             >
               {renderMagnifyingGlassIcon()}
             </button>
-          )}
+          )} */}
           {
             // 로그인 상태 판단
             session.status === 'unauthenticated' ? (
