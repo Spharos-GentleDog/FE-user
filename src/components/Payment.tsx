@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import {
     PaymentWidgetInstance,
     loadPaymentWidget,
@@ -32,7 +32,7 @@ function Payment({
         const paymentWidget = await loadPaymentWidget('test_ck_jExPeJWYVQ1RezQ2XYPnV49R5gvN', nanoid());
         const paymentMethodsWidget = paymentWidget.renderPaymentMethods(
             "#payment-widget",
-            { value: price },
+            { value: 10000 },
             { variantKey: "DEFAULT" }
         );
         paymentWidget.renderAgreement("#agreement");
