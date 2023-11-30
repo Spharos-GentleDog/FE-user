@@ -8,6 +8,7 @@ import { ChevronDownIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { useThemeMode } from "@/hooks/useThemeMode";
 import { ChildCategory, ParentCategoryType } from "@/types/product/category";
+import { useSession } from "next-auth/react";
 
 export interface NavMobileProps {
   onClickClose?: () => void;
@@ -171,6 +172,7 @@ const NavMobile: React.FC<NavMobileProps> = ({
 
   const [parentCategoryData, setParentCategoryData] = React.useState<ParentCategoryType[]>([]);
   const [categoryData, setCategoryData] = React.useState<any[]>([]);
+  const session = useSession();
 
   useEffect(() => {
     const getData = async () => {
@@ -224,6 +226,29 @@ const NavMobile: React.FC<NavMobileProps> = ({
         {/* <div className="mt-5">{renderSearchForm()}</div> */}
       </div>
       <ul className="flex flex-col py-6 px-2 space-y-1">
+        {
+          session.status === 'authenticated' ?
+            <Disclosure
+              as="li"
+              className="break-keep text-slate-900 dark:text-white"
+            >
+              <Link
+                className="flex w-full items-center py-2.5 px-4 font-medium uppercase tracking-wide text-sm hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg"
+                href={{
+                  pathname: `/ai`,
+                }}
+              >
+                <span
+                  // className="block w-full"
+                  onClick={onClickClose}
+                >
+                  AI 추천 기능
+                </span>
+              </Link>
+            </Disclosure>
+            :
+            ""
+        }
         <Disclosure
           as="li"
           className="break-keep text-slate-900 dark:text-white"
